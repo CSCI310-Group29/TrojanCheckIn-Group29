@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE androidx.wear.widget.BoxInsetLayout [<!ELEMENT androidx.wear.widget.BoxInsetLayout (FrameLayout)*><!ATTLIST androidx.wear.widget.BoxInsetLayoutxmlns:android CDATA #REQUIREDxmlns:app CDATA #REQUIREDxmlns:tools CDATA #REQUIREDandroid:layout_width CDATA #REQUIREDandroid:layout_height CDATA #REQUIREDandroid:background CDATA #REQUIREDandroid:padding CDATA #REQUIREDtools:context CDATA #REQUIREDtools:deviceIds CDATA #REQUIRED><!ELEMENT FrameLayout (androidx.constraintlayout.widget.ConstraintLayout)*><!ATTLIST FrameLayoutandroid:layout_width CDATA #REQUIREDandroid:layout_height CDATA #REQUIREDandroid:padding CDATA #REQUIREDandroid:boxedEdges CDATA #REQUIRED><!ELEMENT androidx.constraintlayout.widget.ConstraintLayout (com.google.android.material.textfield.TextInputEditText|EditText|Spinner)*><!ATTLIST androidx.constraintlayout.widget.ConstraintLayoutandroid:layout_width CDATA #REQUIREDandroid:layout_height CDATA #REQUIRED><!ELEMENT com.google.android.material.textfield.TextInputEditText (#PCDATA)><!ATTLIST com.google.android.material.textfield.TextInputEditTextandroid:id CDATA #REQUIREDandroid:layout_width CDATA #REQUIREDandroid:layout_height CDATA #REQUIREDandroid:hint CDATA #REQUIREDapp:layout_constraintBottom_toBottomOf CDATA #REQUIREDapp:layout_constraintEnd_toEndOf CDATA #REQUIREDapp:layout_constraintHorizontal_bias CDATA #REQUIREDapp:layout_constraintStart_toStartOf CDATA #REQUIREDapp:layout_constraintTop_toTopOf CDATA #REQUIREDapp:layout_constraintVertical_bias CDATA #REQUIRED><!ELEMENT EditText (#PCDATA)><!ATTLIST EditTextandroid:ems CDATA #REQUIREDandroid:hint CDATA #IMPLIEDandroid:id CDATA #REQUIREDandroid:inputType CDATA #REQUIREDandroid:layout_height CDATA #REQUIREDandroid:layout_marginBottom CDATA #IMPLIEDandroid:layout_width CDATA #REQUIREDandroid:text CDATA #IMPLIEDapp:layout_constraintBottom_toBottomOf CDATA #IMPLIEDapp:layout_constraintEnd_toEndOf CDATA #IMPLIEDapp:layout_constraintHorizontal_bias CDATA #IMPLIEDapp:layout_constraintStart_toStartOf CDATA #IMPLIEDapp:layout_constraintTop_toTopOf CDATA #IMPLIEDapp:layout_constraintVertical_bias CDATA #IMPLIEDtools:layout_editor_absoluteX CDATA #IMPLIEDtools:layout_editor_absoluteY CDATA #IMPLIED><!ELEMENT Spinner (#PCDATA)><!ATTLIST Spinnerandroid:id CDATA #REQUIREDandroid:layout_width CDATA #REQUIREDandroid:layout_height CDATA #REQUIREDtools:layout_editor_absoluteX CDATA #REQUIREDtools:layout_editor_absoluteY CDATA #REQUIRED>]>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/boxInsetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".views.RegisterActivity"
+    tools:deviceIds="wear">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/FirstNameInput"
+            android:layout_width="134dp"
+            android:layout_height="38dp"
+            android:hint="First Name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.224"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.309" />
+
+        <EditText
+            android:id="@+id/editTextTextEmailAddress"
+            android:layout_width="288dp"
+            android:layout_height="59dp"
+            android:layout_marginBottom="396dp"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.521"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextTextPassword2"
+            android:layout_width="291dp"
+            android:layout_height="53dp"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.535"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.513" />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName2"
+            android:layout_width="143dp"
+            android:layout_height="43dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Last Name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.311" />
+
+        <Spinner
+            android:id="@+id/major_spinner"
+            android:layout_width="131dp"
+            android:layout_height="46dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.231"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.614" />
+
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.476"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.725" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
