@@ -1,13 +1,18 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
+import com.csci310_group29.trojancheckincheckout.data.fake.AuthFakeDataSource
 import com.csci310_group29.trojancheckincheckout.data.models.User
 import com.csci310_group29.trojancheckincheckout.data.remote.AuthFirebaseDataSource
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
-class AuthRepoImpl: AuthRepository {
-    private val remoteDataSource = AuthFirebaseDataSource()
+class AuthRepoImpl(fake: Boolean = false): AuthRepository {
+    private val remoteDataSource: AuthRepository = if (!fake) {
+        AuthFirebaseDataSource()
+    } else {
+        AuthFakeDataSource()
+    }
 
     override fun getCurrentUser(): Single<User> {
         return remoteDataSource.getCurrentUser()
@@ -26,17 +31,15 @@ class AuthRepoImpl: AuthRepository {
     }
 
     override fun updateEmail(newEmail: String): Completable {
-        TODO("Not yet implemented")
+        return remoteDataSource.updateEmail(newEmail)
     }
 
     override fun resetPassword(): Completable {
-        TODO("Not yet implemented")
+        return remoteDataSource.resetPassword()
     }
 
     override fun deleteCurrentUser(): Completable {
-        return Completable.create { emitter ->
-            emitter.onComplete()
-        }
+        return remoteDataSource.deleteCurrentUser()
     }
 
 }
