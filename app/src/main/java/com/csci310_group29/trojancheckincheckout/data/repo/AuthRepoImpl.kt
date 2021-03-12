@@ -9,7 +9,7 @@ class AuthRepoImpl: AuthRepository {
     private val remoteDataSource = AuthRemoteDataSource()
 
     override fun getCurrentUser(): Observable<User?> {
-        TODO("Not yet implemented")
+        return remoteDataSource.getCurrentUser()
     }
 
     override fun getUserWithCredentials(email: String, password: String): Observable<User?> {

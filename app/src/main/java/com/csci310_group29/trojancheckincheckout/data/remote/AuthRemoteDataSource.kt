@@ -80,7 +80,8 @@ class AuthRemoteDataSource: AuthRepository {
                             "firstName" to user.firstName,
                             "lastName" to user.lastName,
                             "major" to user.major,
-                            "studentId" to user.studentId
+                            "studentId" to user.studentId,
+                            "isStudent" to user.isStudent
                         )
                         db.collection("users").document(authUser.uid).set(userData)
                             .addOnSuccessListener {

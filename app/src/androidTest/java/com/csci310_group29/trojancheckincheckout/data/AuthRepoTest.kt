@@ -8,16 +8,11 @@ import org.junit.Test
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepository
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import io.reactivex.subscribers.TestSubscriber
-import kotlinx.coroutines.handleCoroutineException
-import kotlinx.coroutines.runBlocking
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
-import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
 class AuthRepoTest {
@@ -25,7 +20,6 @@ class AuthRepoTest {
 
     private val TAG = "AuthRepoTest"
 
-    @Test
     fun testSignUp() {
         FirebaseApp.initializeApp(context)
         val repo = AuthRepoImpl()
@@ -45,5 +39,61 @@ class AuthRepoTest {
             assertTrue(false)
         }
         Log.d(TAG, "testing finished")
+    }
+
+    @Test
+    fun testSignIn() {
+        FirebaseApp.initializeApp(context)
+        val repo = AuthRepoImpl()
+        val email = "tommy@gmail.com"
+        val password = "123456"
+        val observable = repo.getUserWithCredentials(email = email, password = password)
+        observable.blockingSubscribe(object: Observer<User?> {
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onNext(t: User) {
+                val user = t
+                assertTrue(true)
+            }
+
+            override fun onError(e: Throwable) {
+                Log.d(TAG, e.message.toString())
+                assertTrue(false)
+            }
+
+            override fun onComplete() {
+                assertTrue(true)
+            }
+
+        })
+    }
+
+    @Test
+    fun testStayLoggedIn() {
+        FirebaseApp.initializeApp(context)
+        val repo = AuthRepoImpl()
+        val observable = repo.getCurrentUser()
+        observable.blockingSubscribe(object: Observer<User?> {
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onNext(t: User) {
+                val user = t
+                assertTrue(true)
+            }
+
+            override fun onError(e: Throwable) {
+                Log.d(TAG, e.message.toString())
+                assertTrue(false)
+            }
+
+            override fun onComplete() {
+                assertTrue(true)
+            }
+
+        })
     }
 }
