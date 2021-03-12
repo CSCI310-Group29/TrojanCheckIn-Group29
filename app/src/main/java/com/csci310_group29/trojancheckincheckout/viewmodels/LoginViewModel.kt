@@ -1,12 +1,11 @@
 package com.csci310_group29.trojancheckincheckout.viewmodels
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.remote.AuthRemoteDataSource
+import com.csci310_group29.trojancheckincheckout.data.remote.AuthFirebaseDataSource
 
 class LoginViewModel: ViewModel() {
-    private var authRepo = AuthRemoteDataSource()
+    private var authRepo = AuthFirebaseDataSource()
     private var User = User()
 
 
