@@ -20,7 +20,7 @@ class LoginActivity : AppCompatActivity() {
 
             if(email.length > 0 && password.length > 0) {
                 loginViewModel.login(email, password)
-            } else if(email.length == 0 ) {
+            } else if(email.length == 0) {
                 val toast = Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT)
                 toast.show()
             } else if(password.length == 0) {

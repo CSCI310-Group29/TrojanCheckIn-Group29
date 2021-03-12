@@ -28,6 +28,9 @@
         <activity
             android:name=".views.RegisterActivity"
             android:label="@string/title_activity_register">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.csci310_group29.trojancheckincheckout.views.AppHomeActivity" />
         </activity>
         <activity
             android:name=".views.LoginActivity"

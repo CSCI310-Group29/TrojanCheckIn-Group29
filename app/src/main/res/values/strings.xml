@@ -22,9 +22,14 @@
         <item>Biology</item>
         <item>Computer Engineering</item>
         <item>Dance</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+        <item>Chemistry</item>
+        <item>Business Administration</item>
+        <item>Architecture</item>
+        <item>Film</item>
+    </string-array>
+
+    <string-array name="account_type">
+        <item>Student</item>
+        <item>Manager</item>
     </string-array>
 </resources>

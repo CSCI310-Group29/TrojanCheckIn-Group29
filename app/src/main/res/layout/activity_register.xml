@@ -26,21 +26,21 @@
         app:layout_constraintVertical_bias="0.0">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/FirstNameInput"
-            android:layout_width="134dp"
-            android:layout_height="38dp"
+            android:id="@+id/NameInput"
+            android:layout_width="291dp"
+            android:layout_height="49dp"
             android:hint="First Name"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.224"
+            app:layout_constraintHorizontal_bias="0.544"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.309" />
+            app:layout_constraintVertical_bias="0.228" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            android:id="@+id/EmailInput"
             android:layout_width="288dp"
-            android:layout_height="59dp"
+            android:layout_height="50dp"
             android:layout_marginBottom="396dp"
             android:ems="10"
             android:hint="Email"
@@ -51,7 +51,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/editTextTextPassword2"
+            android:id="@+id/PasswordInput"
             android:layout_width="291dp"
             android:layout_height="53dp"
             android:ems="10"
@@ -64,27 +64,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.513" />
 
-        <EditText
-            android:id="@+id/editTextTextPersonName2"
-            android:layout_width="143dp"
-            android:layout_height="43dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Last Name"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.311" />
-
         <Spinner
             android:id="@+id/major_spinner"
-            android:layout_width="131dp"
-            android:layout_height="46dp"
+            android:layout_width="140dp"
+            android:layout_height="43dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.231"
+            app:layout_constraintHorizontal_bias="0.228"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.614" />
@@ -96,10 +82,48 @@
             android:text="Register"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.476"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.725" />
+            app:layout_constraintVertical_bias="0.842" />
+
+        <Spinner
+            android:id="@+id/accountTypeSpinner"
+            android:layout_width="128dp"
+            android:layout_height="45dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.613" />
+
+        <EditText
+            android:id="@+id/LastNameInput"
+            android:layout_width="290dp"
+            android:layout_height="52dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Last Name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.539"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.318" />
+
+        <EditText
+            android:id="@+id/idInput"
+            android:layout_width="289dp"
+            android:layout_height="45dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Student ID"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.526"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.706" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
