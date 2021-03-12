@@ -1,22 +1,20 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
 import com.csci310_group29.trojancheckincheckout.data.models.User
+import io.reactivex.Completable
+import io.reactivex.Observable
 
 interface AuthRepository {
 
-    interface Callback {
-        fun onSuccess(user: User?)
-        fun onFailure()
-    }
-    fun getCurrentUser(callback: Callback): User?
+    fun getCurrentUser(): Observable<User?>
 
-    fun getUserWithCredentials(email: String, password: String, callback: Callback): User?
+    fun getUserWithCredentials(email: String, password: String): Observable<User?>
 
-    fun createUser(email: String, password: String, user: User, callback: Callback)
+    fun createUser(email: String, password: String, user: User): Completable
 
-    fun updateEmail(newEmail: String): User?
+    fun updateEmail(newEmail: String): Observable<User?>
 
-    fun resetPassword(): User?
+    fun resetPassword(): Observable<User?>
 
-    fun deleteCurrentUser()
+    fun deleteCurrentUser(): Completable
 }
