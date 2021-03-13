@@ -47,6 +47,26 @@ class VisitFakeDataSource: VisitRepository {
         }
     }
 
+    override fun isCheckedIn(userId: String): Single<Visit> {
+        return Single.create { emitter ->
+            val user = User(
+                    id = "1234",
+                    isStudent = true,
+                    firstName = "Tommy",
+                    lastName = "Trojan",
+                    major = "Computer Science",
+                    studentId = "1234"
+            )
+            val checkIn = LocalDateTime.now()
+            emitter.onSuccess(Visit(
+                    user = user,
+                    buildingName = "Sample Building",
+                    checkIn = checkIn,
+                    checkOut = null
+            ))
+        }
+    }
+
     override fun queryVisits(user: User, visit: Visit): Single<List<Visit>> {
         return Single.create { emitter ->
             val user1 = User(

@@ -17,6 +17,10 @@ class VisitRepoImpl(fake: Boolean = false): VisitRepository {
         return remoteDataSource.checkOut(userId)
     }
 
+    override fun isCheckedIn(userId: String): Single<Visit> {
+        return remoteDataSource.isCheckedIn(userId)
+    }
+
     override fun queryVisits(user: User, visit: Visit): Single<List<Visit>> {
         return remoteDataSource.queryVisits(user, visit)
     }
