@@ -14,6 +14,10 @@ class VisitFirebaseDataSource: VisitRepository {
         TODO("Not yet implemented")
     }
 
+    override fun isCheckedIn(userId: String): Single<Visit> {
+        TODO("Not yet implemented")
+    }
+
     override fun queryVisits(user: User, visit: Visit): Single<List<Visit>> {
         TODO("Not yet implemented")
     }
