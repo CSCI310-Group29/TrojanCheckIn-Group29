@@ -3,13 +3,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.data.fake.AuthFakeDataSource
 import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
 
 private const val TAG = "RegisterViewModel"
 
 class RegisterViewModel: ViewModel() {
-    private var authRepo = AuthFakeDataSource()
+    private var authRepo = AuthRepoImpl(true)
     private var user = User()
 
 

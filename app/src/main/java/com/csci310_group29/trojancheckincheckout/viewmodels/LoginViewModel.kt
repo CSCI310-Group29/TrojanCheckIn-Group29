@@ -12,9 +12,8 @@ import io.reactivex.disposables.Disposable
 
 private const val TAG = "LoginViewModel"
 class LoginViewModel: ViewModel() {
-    private var authRepo = AuthFakeDataSource()
+    private var authRepo = AuthRepoImpl(true)
     private var user = User()
-
 
     public fun login(email: String, password: String): User {
         var success: Boolean = true

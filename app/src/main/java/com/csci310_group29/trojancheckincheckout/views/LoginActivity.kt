@@ -13,7 +13,7 @@ import com.csci310_group29.trojancheckincheckout.viewmodels.LoginViewModel
 private const val TAG = "LoginActivity"
 
 class LoginActivity : AppCompatActivity() {
-    private var loginViewModel = LoginViewModel()
+    private val loginViewModel = LoginViewModel()
     private var user = User()
 
     override fun onCreate(savedInstanceState: Bundle?) {
