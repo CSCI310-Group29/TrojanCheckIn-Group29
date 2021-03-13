@@ -8,21 +8,17 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 class BuildingRepoImpl(fake: Boolean = false): BuildingRepository {
-    private val remoteDataSource = if (!fake) {
-        BuildingFirebaseDataSource()
-    } else {
-        BuildingFakeDataSource()
-    }
+    private val remoteDataSource = if (!fake) BuildingFirebaseDataSource() else BuildingFakeDataSource()
 
     override fun getBuildingInfo(buildingName: String): Single<Building> {
-        TODO("Not yet implemented")
+        return remoteDataSource.getBuildingInfo(buildingName)
     }
 
     override fun updateBuildingCapacities(buildingCapacities: HashMap<String, Int>): Completable {
-        TODO("Not yet implemented")
+        return remoteDataSource.updateBuildingCapacities(buildingCapacities)
     }
 
     override fun getQRCode(buildingName: String): Single<Bitmap> {
-        TODO("Not yet implemented")
+        return remoteDataSource.getQRCode(buildingName)
     }
 }
