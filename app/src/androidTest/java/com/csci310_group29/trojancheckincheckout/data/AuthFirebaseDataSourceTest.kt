@@ -10,6 +10,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.csci310_group29.trojancheckincheckout.data.remote.AuthFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepository
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.SingleObserver
+import io.reactivex.disposables.Disposable
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
@@ -64,6 +68,24 @@ class AuthFirebaseDataSourceTest {
 
     private fun testSignOut(remoteDataSource: AuthRepository) {
         val observable = remoteDataSource.logoutCurrentUser()
+//        observable.subscribe(object: Observer<> {
+//            override fun onSubscribe(d: Disposable) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun onNext(t: ???) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun onError(e: Throwable) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun onComplete() {
+//                TODO("Not yet implemented")
+//            }
+//
+//        })
         try {
             observable.blockingAwait()
             assertTrue(true)
@@ -75,6 +97,20 @@ class AuthFirebaseDataSourceTest {
 
     private fun testStayLoggedIn(remoteDataSource: AuthRepository, loggedIn: Boolean) {
         val observable = remoteDataSource.getCurrentUser()
+//        observable.subscribe(object: SingleObserver<User> {
+//            override fun onSubscribe(d: Disposable) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun onSuccess(t: User) {
+//                // viewmodel do action with t
+//            }
+//
+//            override fun onError(e: Throwable) {
+//                TODO("Not yet implemented")
+//            }
+//
+//        })
         try {
             val user = observable.blockingGet()
             assertTrue(loggedIn)
