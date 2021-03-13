@@ -1,19 +1,12 @@
-package com.csci310_group29.trojancheckincheckout.data.repo
+package com.csci310_group29.trojancheckincheckout.data.remote
 
 import android.graphics.Bitmap
-import com.csci310_group29.trojancheckincheckout.data.fake.BuildingFakeDataSource
 import com.csci310_group29.trojancheckincheckout.data.models.Building
-import com.csci310_group29.trojancheckincheckout.data.remote.BuildingFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.data.repo.BuildingRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 
-class BuildingRepoImpl(fake: Boolean = false): BuildingRepository {
-    private val remoteDataSource = if (!fake) {
-        BuildingFirebaseDataSource()
-    } else {
-        BuildingFakeDataSource()
-    }
-
+class BuildingFirebaseDataSource: BuildingRepository {
     override fun getBuildingInfo(buildingName: String): Single<Building> {
         TODO("Not yet implemented")
     }
