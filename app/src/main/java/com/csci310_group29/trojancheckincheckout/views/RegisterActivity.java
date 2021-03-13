@@ -1,28 +1,31 @@
 package com.csci310_group29.trojancheckincheckout.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.csci310_group29.trojancheckincheckout.R;
 import com.csci310_group29.trojancheckincheckout.data.models.User;
-import com.csci310_group29.trojancheckincheckout.data.remote.AuthRemoteDataSource;
+import com.csci310_group29.trojancheckincheckout.viewmodels.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private AuthRemoteDataSource authRepo;
+    private RegisterViewModel registerViewModel;
+    private static final String TAG = "RegisterActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        authRepo = new AuthRemoteDataSource();
+        registerViewModel = new RegisterViewModel();
 
         Spinner spinner = (Spinner) findViewById(R.id.major_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -36,11 +39,15 @@ public class RegisterActivity extends AppCompatActivity {
                 R.array.account_type, android.R.layout.simple_spinner_item);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter1);
+        spinner1.setAdapter(adapter1);
+
+        Log.i(TAG,"oncreate registeractivity");
 
     }
 
-    private void onRegister(View view) {
+    public void onRegister(View view) {
+
+
         TextInputEditText firstNameText = findViewById(R.id.NameInput);
         EditText emailText = findViewById(R.id.EmailInput);
         EditText passwordText = findViewById(R.id.PasswordInput);
@@ -56,13 +63,25 @@ public class RegisterActivity extends AppCompatActivity {
         Spinner mSpinner = findViewById(R.id.major_spinner);
         String major =  mSpinner.getSelectedItem().toString();
         Spinner tSpinner = findViewById(R.id.accountTypeSpinner);
-        String type =  mSpinner.getSelectedItem().toString();
+        String type =  tSpinner.getSelectedItem().toString();
         Boolean isStudent = (type.equals("Student")) ? true : false;
 
         User newUser = new User(null,isStudent,first,last,major,id);
 
 
-        authRepo.createUser(email,pass,newUser);
+
+        try {
+            registerViewModel.register(email, pass, newUser);
+            Toast toast = Toast.makeText(this,"Registered", Toast.LENGTH_SHORT);
+            toast.show();
+        } catch(Exception e) {
+            //Log.i(TAG, "error returned from register function in registerViewmodel " + e.getMessage());
+            Toast toast = Toast.makeText(this,"Cannot Register: " + e.getMessage(), Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+
+
 
 
     }

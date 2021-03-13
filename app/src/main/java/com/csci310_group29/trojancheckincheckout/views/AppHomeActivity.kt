@@ -20,7 +20,7 @@ class AppHomeActivity : AppCompatActivity() {
     }
 
     fun onSignUp(view: View) {
-        var intent = Intent(this, LoginActivity::class.java)
+        var intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
 }
