@@ -27,6 +27,8 @@ class RegisterViewModel: ViewModel() {
         } else if(user.id == "" && !user.isStudent!!) {
             //Log.e(TAG, "No student id passed to registerViewModel")
             throw Exception("Must enter student id if you are a student")
+        } else if(password.isEmpty()) {
+            throw Exception("Must enter password")
         }
 
         val domain = getEmailDomain(email)

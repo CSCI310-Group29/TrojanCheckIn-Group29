@@ -7,6 +7,7 @@ import com.csci310_group29.trojancheckincheckout.data.models.User
 import com.csci310_group29.trojancheckincheckout.data.models.Visit
 import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.VisitRepoImpl
+import io.reactivex.CompletableObserver
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 
@@ -43,11 +44,11 @@ class StudentHomeViewModel:ViewModel() {
     }
 
 
-    fun scan(view: View) {
+    fun scan() {
         TODO("Add scanning implementation")
     }
 
-    fun checkOutManual(view: View) {
+    fun checkOutManual() {
         val observable = visitRepo.checkOut(currUser.value!!.id!!)
         observable.subscribe(object: SingleObserver<Visit> {
             override fun onSuccess(t: Visit) {
@@ -62,6 +63,26 @@ class StudentHomeViewModel:ViewModel() {
         })
 
 
+
+    }
+
+    fun logout() {
+        lateinit var dis: Disposable
+        val observable = authRepo.logoutCurrentUser();
+        observable.subscribe(object:CompletableObserver {
+            override fun onComplete() {
+                dis.dispose()
+            }
+
+            override fun onSubscribe(d: Disposable) {
+                dis = d
+            }
+
+            override fun onError(e: Throwable) {
+                dis.dispose()
+                throw Exception(e.localizedMessage)
+            }
+        })
 
     }
 

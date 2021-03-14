@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         String type =  tSpinner.getSelectedItem().toString();
         Boolean isStudent = (type.equals("Student")) ? true : false;
 
-        User newUser = new User(null,isStudent,first,last,major,id);
+        User newUser = new User(null,isStudent,first,last,major,null,id);
 
 
 

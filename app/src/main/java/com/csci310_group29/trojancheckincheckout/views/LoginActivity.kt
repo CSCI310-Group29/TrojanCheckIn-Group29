@@ -1,5 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.views
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -32,8 +33,8 @@ class LoginActivity : AppCompatActivity() {
             //Log.i(TAG,"User returned is: " + user.firstName + " " + user.lastName + " " + user.major + " " + user.isStudent)
 
             if(user.isStudent!!) {
-                val toast = Toast.makeText(this, "is Student", Toast.LENGTH_SHORT);
-                toast.show()
+                startActivity(Intent(this,StudentHomeActivity::class.java))
+                finish()
             } else {
                 val toast = Toast.makeText(this, "is Manager", Toast.LENGTH_SHORT);
                 toast.show()
