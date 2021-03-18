@@ -1,8 +1,8 @@
-package com.csci310_group29.trojancheckincheckout.data.repo
+package com.csci310_group29.trojancheckincheckout.domain.repo
 
-import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.data.entities.AuthEntity
+import com.csci310_group29.trojancheckincheckout.data.entities.UserEntity
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 
 interface AuthRepository {
@@ -14,20 +14,7 @@ interface AuthRepository {
         Single that emits a User object if the user is logged in, or an error if the user is not
             logged in
      */
-    fun getCurrentUser(): Single<User>
-
-    /*
-    Gets the user using the email and password as credentials
-
-    Params:
-        email: String specifying the email of the user
-        password: String specifying the raw inputted password of the user
-
-    Returns:
-        Single that emits a user if the credentials were valid, or an error if the
-            credentials were invalid
-     */
-    fun getUserWithCredentials(email: String, password: String): Single<User>
+    fun getCurrentUser(): Single<AuthEntity>
 
     /*
     Logs out the current user
@@ -37,6 +24,8 @@ interface AuthRepository {
         if the user couldn't be logged out
      */
     fun logoutCurrentUser(): Completable
+
+    fun updatePhotoURL(url: String): Completable
 
     /*
     Creates a new user
@@ -50,7 +39,9 @@ interface AuthRepository {
         Completable that emits completion if the user was succesfully created, or an error if
             the user couldn't be created
      */
-    fun createUser(email: String, password: String, user: User): Completable
+    fun createUser(email: String, password: String): Completable
+
+    fun loginUser(email: String, password: String): Completable
 
     /*
     This function is TBD

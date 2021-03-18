@@ -1,19 +1,14 @@
 package com.csci310_group29.trojancheckincheckout.data
 
-import android.os.Handler
 import android.util.Log
-import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.google.firebase.FirebaseApp
 import org.junit.Test
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.csci310_group29.trojancheckincheckout.data.remote.AuthFirebaseDataSource
-import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepository
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*

@@ -1,8 +1,6 @@
-package com.csci310_group29.trojancheckincheckout.data.repo
+package com.csci310_group29.trojancheckincheckout.domain.repo
 
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.models.Visit
-import io.reactivex.Observable
+import com.csci310_group29.trojancheckincheckout.data.entities.VisitEntity
 import io.reactivex.Single
 
 interface VisitRepository {
@@ -15,7 +13,7 @@ interface VisitRepository {
         Single that emits a Visit object if the user check in was successful, and an error
         if the check in was unsuccessful
      */
-    fun attemptCheckIn(userId: String, buildingName: String): Single<Visit>
+//    fun attemptCheckIn(userId: String, buildingName: String): Single<Visit>
 
     /*
     Given a userId of a user, attempts to check out the user from the current checked in building
@@ -25,7 +23,15 @@ interface VisitRepository {
         Single that emits a Visit object if the user check out was successful, and an error
         if the check out was unsuccessful
      */
-    fun checkOut(userId: String): Single<Visit>
+//    fun checkOut(userId: String): Single<Visit>
+
+    fun createVisit(userId: String, buildingId: String): Single<VisitEntity>
+
+    fun getVisit(visitId: String): Single<VisitEntity>
+
+    fun getLatestVisit(userId: String): Single<VisitEntity>
+
+    fun checkOutVisit(visitId: String): Single<VisitEntity>
 
     /*
     Given a userId of a user, checks if the user is currently checked into a building
@@ -35,7 +41,7 @@ interface VisitRepository {
         Single that emits a Visit object if the user is currently checked in, and an error
         if the user is not checked in
      */
-    fun isCheckedIn(userId: String): Single<Visit>
+//    fun isCheckedIn(userId: String): Single<Visit>
 
 
     /*
@@ -50,5 +56,5 @@ interface VisitRepository {
     Returns
         Single that emits a list of visit objects matching the specified query
      */
-    fun queryVisits(user: User, visit: Visit): Single<List<Visit>>
+//    fun queryVisits(user: User, visit: Visit): Single<List<Visit>>
 }

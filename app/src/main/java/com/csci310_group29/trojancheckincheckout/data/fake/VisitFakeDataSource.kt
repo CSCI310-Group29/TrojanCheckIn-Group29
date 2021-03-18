@@ -1,8 +1,8 @@
 package com.csci310_group29.trojancheckincheckout.data.fake
 
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.models.Visit
-import com.csci310_group29.trojancheckincheckout.data.repo.VisitRepository
+import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.domain.models.Visit
+import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import io.reactivex.Single
 import java.time.LocalDateTime
 

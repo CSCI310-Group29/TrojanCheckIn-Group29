@@ -1,10 +1,11 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
+import com.csci310_group29.trojancheckincheckout.data.entities.AuthEntity
 import com.csci310_group29.trojancheckincheckout.data.fake.AuthFakeDataSource
-import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.data.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.data.remote.AuthFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 
 class AuthRepoImpl(fake: Boolean = false): AuthRepository {
@@ -14,20 +15,25 @@ class AuthRepoImpl(fake: Boolean = false): AuthRepository {
         AuthFakeDataSource()
     }
 
-    override fun getCurrentUser(): Single<User> {
+    override fun getCurrentUser(): Single<AuthEntity> {
         return remoteDataSource.getCurrentUser()
-    }
-
-    override fun getUserWithCredentials(email: String, password: String): Single<User> {
-        return remoteDataSource.getUserWithCredentials(email, password)
     }
 
     override fun logoutCurrentUser(): Completable {
         return remoteDataSource.logoutCurrentUser()
     }
 
-    override fun createUser(email: String, password: String, user: User) : Completable {
-        return remoteDataSource.createUser(email, password, user)
+    override fun updatePhotoURL(url: String): Completable {
+        TODO("Not yet implemented")
+    }
+
+
+    override fun createUser(email: String, password: String) : Completable {
+        return remoteDataSource.createUser(email, password)
+    }
+
+    override fun loginUser(email: String, password: String): Completable {
+        TODO("Not yet implemented")
     }
 
     override fun updateEmail(newEmail: String): Completable {

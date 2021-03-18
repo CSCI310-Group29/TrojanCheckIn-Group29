@@ -1,10 +1,9 @@
 package com.csci310_group29.trojancheckincheckout.viewmodels
 
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.models.Visit
+import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.VisitRepoImpl
 import io.reactivex.CompletableObserver

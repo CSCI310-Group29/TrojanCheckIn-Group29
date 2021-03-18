@@ -1,11 +1,16 @@
-package com.csci310_group29.trojancheckincheckout.data.repo
+package com.csci310_group29.trojancheckincheckout.domain.repo
 
 import android.graphics.Bitmap
-import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.data.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import io.reactivex.Completable
 import io.reactivex.Single
 
 interface UserRepository {
+
+    fun getUser(userId: String): Single<UserEntity>
+
+    fun setCheckedIn(userId: String, checkIn: Boolean): Single<UserEntity>
     /*
     Given either a firstName, lastName, major, studentId, or a combination of the previous,
     updates the profile of the user

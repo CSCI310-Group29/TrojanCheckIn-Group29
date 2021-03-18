@@ -2,12 +2,11 @@ package com.csci310_group29.trojancheckincheckout.views
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import kotlinx.android.synthetic.main.activity_login.*
 import com.csci310_group29.trojancheckincheckout.viewmodels.LoginViewModel
 

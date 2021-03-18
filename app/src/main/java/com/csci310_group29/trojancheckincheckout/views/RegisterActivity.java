@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.csci310_group29.trojancheckincheckout.R;
-import com.csci310_group29.trojancheckincheckout.data.models.User;
+import com.csci310_group29.trojancheckincheckout.domain.models.User;
 import com.csci310_group29.trojancheckincheckout.viewmodels.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 

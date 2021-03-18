@@ -1,11 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.viewmodels
 
-import android.util.Log
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.csci310_group29.trojancheckincheckout.data.fake.AuthFakeDataSource
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.remote.AuthFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable

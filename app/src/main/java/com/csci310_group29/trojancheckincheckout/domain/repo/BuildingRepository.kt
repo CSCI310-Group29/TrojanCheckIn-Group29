@@ -1,7 +1,7 @@
-package com.csci310_group29.trojancheckincheckout.data.repo
+package com.csci310_group29.trojancheckincheckout.domain.repo
 
 import android.graphics.Bitmap
-import com.csci310_group29.trojancheckincheckout.data.models.Building
+import com.csci310_group29.trojancheckincheckout.data.entities.BuildingEntity
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -16,7 +16,12 @@ interface BuildingRepository {
         Single that emits a Building object on success. The Building object contains the info of
             the building
      */
-    fun getBuildingInfo(buildingName: String): Single<Building>
+
+    fun getBuilding(buildingId: String): Single<BuildingEntity>
+
+    fun getBuildingInfo(buildingName: String): Single<BuildingEntity>
+
+    fun incrementNumStudents(buildingId: String, incrementCount: Int): Single<BuildingEntity>
 
     /*
     Given building names and their corresponding building capacities, updates the building capacities

@@ -7,11 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.data.fake.AuthFakeDataSource
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import com.csci310_group29.trojancheckincheckout.viewmodels.StudentHomeViewModel
 
 private const val TAG = "StudentHomeActivity"

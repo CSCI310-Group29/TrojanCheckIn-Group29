@@ -1,10 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.data.fake
 
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepository
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 

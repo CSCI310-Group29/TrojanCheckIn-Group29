@@ -1,11 +1,8 @@
 package com.csci310_group29.trojancheckincheckout.data.fake
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.data.models.Building
-import com.csci310_group29.trojancheckincheckout.data.repo.BuildingRepository
+import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 
