@@ -31,8 +31,9 @@ class AuthFirebaseDataSource: AuthRepository {
                         val isStudent = userDocument.get("isStudent") as Boolean
                         val major = userDocument.get("major") as String
                         val studentId = userDocument.get("studentId") as String
+                        val isCheckedIn = userDocument.get("isCheckedIn") as Boolean
 
-                        emitter.onSuccess(User(uid, isStudent, firstName, lastName, major, studentId))
+                        emitter.onSuccess(User(uid, isStudent, firstName, lastName, major, isCheckedIn, studentId))
                     }
                     .addOnFailureListener { exception ->
                         emitter.onError(exception)
@@ -55,7 +56,8 @@ class AuthFirebaseDataSource: AuthRepository {
                                 val isStudent = userDocument.get("isStudent") as Boolean
                                 val major = userDocument.get("major") as String
                                 val studentId = userDocument.get("studentId") as String
-                                emitter.onSuccess(User(user.uid, isStudent, firstName, lastName, major, studentId))
+                                val isCheckedIn = userDocument.get("isCheckedIn") as Boolean
+                                emitter.onSuccess(User(user.uid, isStudent, firstName, lastName, major, isCheckedIn, studentId))
                             }
                     }
                     else {

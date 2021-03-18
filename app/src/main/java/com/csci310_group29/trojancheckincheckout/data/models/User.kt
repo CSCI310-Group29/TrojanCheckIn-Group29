@@ -8,5 +8,5 @@ data class User(val id: String? = null,
                 val firstName: String? = null,
                 val lastName: String? = null,
                 val major: String? = null,
-                val isCheckedIn: Visit? = null,
+                val isCheckedIn: Boolean? = null,
                 val studentId: String? = null)
