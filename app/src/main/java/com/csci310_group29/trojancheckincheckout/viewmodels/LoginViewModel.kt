@@ -32,20 +32,27 @@ class LoginViewModel @Inject constructor(private val authDomain: AuthUseCases, p
 
             observable.subscribe(object : SingleObserver<User> {
                 override fun onSubscribe(d: Disposable) {
+                    Log.i(TAG, "started subscribe in viewmodel")
                     dis = d
                 }
 
                 override fun onSuccess(t: User) {
+                    Log.i(TAG, "success login from domain in viewmodel")
                     Session.uid = t.id!!
                     Session.user = t
                     emitter.onSuccess(t)
                 }
 
                 override fun onError(e: Throwable) {
-                    emitter.onError(Exception("Failed to login"))
+                    Log.i(TAG, "error in viewmodel")
+                    emitter.onError(e)
                     dis!!.dispose()
                 }
             })
         }
+    }
+
+    fun log(msg: String) {
+        Log.i(TAG, msg)
     }
 }
