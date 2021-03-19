@@ -35,6 +35,18 @@ class VisitFirebaseDataSource: VisitRepository {
         }
     }
 
+    override fun getVisit(visitId: String): Single<VisitEntity> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLatestVisit(userId: String): Single<VisitEntity> {
+        TODO("Not yet implemented")
+    }
+
+    override fun checkOutVisit(visitId: String): Single<VisitEntity> {
+        TODO("Not yet implemented")
+    }
+
 //    private fun getUser(userId: String): Single<User> {
 //        return Single.create { emitter ->
 //            val userRef = db.collection("users")

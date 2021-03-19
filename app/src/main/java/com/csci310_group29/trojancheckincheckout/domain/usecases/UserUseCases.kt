@@ -15,11 +15,11 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class UserUseCases {
-    private val authRepo: AuthRepository = AuthRepoImpl()
-    private val userRepo: UserRepository = UserRepoImpl()
-    private val pictureRepo: PicturesRepository = PicturesRepoImpl()
+class UserUseCases @Inject constructor(private val authRepo: AuthRepository,
+                                       private val userRepo: UserRepository,
+                                       private val pictureRepo: PicturesRepository) {
 
     fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
         return authRepo.getCurrentUser()
@@ -28,7 +28,7 @@ class UserUseCases {
                             .flatMap {userEntity ->
                                     if (picture) {
                                         pictureRepo.getProfilePicture(authEntity.photoURL)
-                                                .flatMap {picture ->
+                                                .flatMap { picture ->
                                                     Single.just(buildUser(authEntity, userEntity, null, picture))
                                                 }
                                     } else {
@@ -47,7 +47,7 @@ class UserUseCases {
     }
 
 
-    private fun buildUser(authEntity: AuthEntity, userEntity: UserEntity, visitEntity: VisitEntity?, picture: Bitmap? = null): User {
+    private fun buildUser(authEntity: AuthEntity, userEntity: UserEntity, visitEntity: VisitEntity?, picture: ByteArray? = null): User {
 
         return User(authEntity.id, userEntity.isStudent,
                 authEntity.email, userEntity.firstName,

@@ -4,9 +4,9 @@ import android.graphics.Bitmap
 import io.reactivex.Single
 
 interface PicturesRepository {
-    fun getProfilePicture(url: String): Single<Bitmap>
+    fun getProfilePicture(url: String): Single<ByteArray>
 
-    fun getQrCode(url: String): Single<Bitmap>
+    fun getQrCode(url: String): Single<ByteArray>
 
-    fun updateProfilePicture(picture: Bitmap): Single<String>
+    fun updateProfilePicture(picture: ByteArray): Single<String>
 }

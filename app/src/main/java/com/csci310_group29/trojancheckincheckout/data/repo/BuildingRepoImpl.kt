@@ -1,15 +1,15 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
 import android.graphics.Bitmap
-import com.csci310_group29.trojancheckincheckout.data.fake.BuildingFakeDataSource
 import com.csci310_group29.trojancheckincheckout.data.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.data.remote.BuildingFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class BuildingRepoImpl(fake: Boolean = false): BuildingRepository {
-    private val remoteDataSource = if (!fake) BuildingFirebaseDataSource() else BuildingFakeDataSource()
+class BuildingRepoImpl @Inject constructor(private val remoteDataSource: BuildingFirebaseDataSource):
+        BuildingRepository {
 
     override fun getBuildingInfo(buildingName: String): Single<BuildingEntity> {
         return remoteDataSource.getBuildingInfo(buildingName)

@@ -8,16 +8,16 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class AuthUseCases {
-    private val authRepo: AuthRepository = AuthRepoImpl()
-    private val pictureRepo: PicturesRepository = PicturesRepoImpl()
+class AuthUseCases @Inject constructor(private val authRepo: AuthRepository,
+                                       private val pictureRepo: PicturesRepository) {
 
     fun getUserAuth(): Single<AuthEntity> {
         return authRepo.getCurrentUser()
     }
 
-    fun updateProfilePicture(picture: Bitmap): Completable {
+    fun updateProfilePicture(picture: ByteArray): Completable {
         return pictureRepo.updateProfilePicture(picture)
                 .flatMapCompletable {url ->
                     authRepo.updatePhotoURL(url)

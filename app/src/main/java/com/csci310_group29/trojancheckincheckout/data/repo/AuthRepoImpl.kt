@@ -1,19 +1,15 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
 import com.csci310_group29.trojancheckincheckout.data.entities.AuthEntity
-import com.csci310_group29.trojancheckincheckout.data.fake.AuthFakeDataSource
 import com.csci310_group29.trojancheckincheckout.data.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.data.remote.AuthFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class AuthRepoImpl(fake: Boolean = false): AuthRepository {
-    private val remoteDataSource: AuthRepository = if (!fake) {
-        AuthFirebaseDataSource()
-    } else {
-        AuthFakeDataSource()
-    }
+class AuthRepoImpl @Inject constructor(private val remoteDataSource: AuthFirebaseDataSource):
+        AuthRepository {
 
     override fun getCurrentUser(): Single<AuthEntity> {
         return remoteDataSource.getCurrentUser()

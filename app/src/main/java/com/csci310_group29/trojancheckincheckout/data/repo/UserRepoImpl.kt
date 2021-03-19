@@ -2,15 +2,14 @@ package com.csci310_group29.trojancheckincheckout.data.repo
 
 import android.graphics.Bitmap
 import com.csci310_group29.trojancheckincheckout.data.entities.UserEntity
-import com.csci310_group29.trojancheckincheckout.data.fake.UserFakeDataSource
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.data.remote.UserFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class UserRepoImpl(fake: Boolean = false): UserRepository {
-    private val remoteDataSource = if (!fake) UserFirebaseDataSource() else UserFakeDataSource()
+class UserRepoImpl @Inject constructor(private val remoteDataSource: UserFirebaseDataSource): UserRepository {
     override fun getUser(userId: String): Single<UserEntity> {
         TODO("Not yet implemented")
     }

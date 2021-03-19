@@ -15,17 +15,17 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import io.reactivex.Single
 import java.lang.Exception
+import javax.inject.Inject
 
-class VisitUseCases {
-    private val buildingRepo: BuildingRepository = BuildingRepoImpl()
-    private val authRepo: AuthRepository = AuthRepoImpl()
-    private val visitRepo: VisitRepository = VisitRepoImpl()
-    private val userRepo: UserRepository = UserRepoImpl()
+class VisitUseCases @Inject constructor(private val buildingRepo: BuildingRepository,
+                                        private val visitRepo: VisitRepository,
+                                        private val userRepo: UserRepository,
+                                        private val userUserCases: UserUseCases) {
 
     fun attemptCheckIn(buildingId: String): Single<Visit> {
         return buildingRepo.incrementNumStudents(buildingId, 1)
                 .flatMap { building ->
-                    UserUseCases().getCurrentlyLoggedInUser()
+                    userUserCases.getCurrentlyLoggedInUser()
                             .flatMap {user ->
                                 userRepo.setCheckedIn(user.id, true)
                                         .flatMap {visitRepo.createVisit(user.id, building.id)
@@ -38,7 +38,7 @@ class VisitUseCases {
     }
 
     fun checkOut(): Single<Visit> {
-        return UserUseCases().getCurrentlyLoggedInUser(picture = false)
+        return userUserCases.getCurrentlyLoggedInUser(picture = false)
                 .flatMap { user ->
                     if (user.isCheckedIn) {
                         visitRepo.getLatestVisit(user.id)

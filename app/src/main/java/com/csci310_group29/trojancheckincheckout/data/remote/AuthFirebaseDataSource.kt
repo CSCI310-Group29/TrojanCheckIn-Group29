@@ -51,6 +51,10 @@ class AuthFirebaseDataSource: AuthRepository {
         }
     }
 
+    override fun updatePhotoURL(url: String): Completable {
+        TODO("Not yet implemented")
+    }
+
     override fun loginUser(email: String, password: String): Completable {
         return Completable.create { emitter ->
             auth.signInWithEmailAndPassword(email, password)
