@@ -1,14 +1,11 @@
-package com.csci310_group29.trojancheckincheckout.data.repo
+package com.csci310_group29.trojancheckincheckout.data.datasource.fake
 
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.PictureFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import io.reactivex.Single
-import javax.inject.Inject
-import javax.inject.Named
 
-class PicturesRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: PicturesRepository): PicturesRepository {
+class PictureFakeDataSource: PicturesRepository {
     override fun getProfilePicture(url: String): Single<ByteArray> {
-        return remoteDataSource.getProfilePicture(url)
+        TODO("Not yet implemented")
     }
 
     override fun getQrCode(url: String): Single<ByteArray> {

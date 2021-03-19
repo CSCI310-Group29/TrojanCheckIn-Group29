@@ -1,7 +1,7 @@
-package com.csci310_group29.trojancheckincheckout.data.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
 import android.graphics.Bitmap
-import com.csci310_group29.trojancheckincheckout.data.entities.BuildingEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import io.reactivex.Completable
@@ -25,12 +25,10 @@ class BuildingFirebaseDataSource: BuildingRepository {
     }
 
     fun incrementNumStudents(buildingId: String): Single<Building> {
-        return Single.create { emitter ->
-
-        }
+        TODO("Not yet implemented")
     }
 
-    override fun getQRCode(buildingName: String): Single<Bitmap> {
+    override fun getQRCode(buildingName: String): Single<ByteArray> {
         TODO("Not yet implemented")
     }
 }

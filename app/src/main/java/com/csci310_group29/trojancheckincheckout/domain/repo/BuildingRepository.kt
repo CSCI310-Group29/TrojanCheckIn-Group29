@@ -1,7 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.domain.repo
 
 import android.graphics.Bitmap
-import com.csci310_group29.trojancheckincheckout.data.entities.BuildingEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -44,5 +44,5 @@ interface BuildingRepository {
     Returns:
         Bitmap containing the QR code
      */
-    fun getQRCode(buildingName: String): Single<Bitmap>
+    fun getQRCode(buildingName: String): Single<ByteArray>
 }

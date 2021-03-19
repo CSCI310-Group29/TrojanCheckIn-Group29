@@ -1,7 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.domain.repo
 
-import com.csci310_group29.trojancheckincheckout.data.entities.AuthEntity
-import com.csci310_group29.trojancheckincheckout.data.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import io.reactivex.Completable
 import io.reactivex.Single
 

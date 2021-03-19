@@ -1,15 +1,12 @@
-package com.csci310_group29.trojancheckincheckout.data.repo
+package com.csci310_group29.trojancheckincheckout.data.datasource.fake
 
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.VisitFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import io.reactivex.Single
-import javax.inject.Inject
-import javax.inject.Named
 
-class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: VisitRepository): VisitRepository {
+class VisitFakeDataSource: VisitRepository {
     override fun createVisit(userId: String, buildingId: String): Single<VisitEntity> {
-        return remoteDataSource.createVisit(userId, buildingId)
+        TODO("Not yet implemented")
     }
 
     override fun getVisit(visitId: String): Single<VisitEntity> {

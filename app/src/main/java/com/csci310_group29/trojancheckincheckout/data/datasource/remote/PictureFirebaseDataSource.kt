@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.data.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import io.reactivex.Single
@@ -13,6 +13,6 @@ class PictureFirebaseDataSource: PicturesRepository {
     }
 
     override fun updateProfilePicture(picture: ByteArray): Single<String> {
-        return Single.just("exampleURL")
+        TODO("Not yet implemented")
     }
 }

@@ -1,14 +1,15 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
 import android.graphics.Bitmap
-import com.csci310_group29.trojancheckincheckout.data.entities.BuildingEntity
-import com.csci310_group29.trojancheckincheckout.data.remote.BuildingFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
+import com.csci310_group29.trojancheckincheckout.data.datasource.remote.BuildingFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
+import javax.inject.Named
 
-class BuildingRepoImpl @Inject constructor(private val remoteDataSource: BuildingFirebaseDataSource):
+class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: BuildingRepository):
         BuildingRepository {
 
     override fun getBuildingInfo(buildingName: String): Single<BuildingEntity> {
@@ -27,7 +28,7 @@ class BuildingRepoImpl @Inject constructor(private val remoteDataSource: Buildin
         return remoteDataSource.updateBuildingCapacities(buildingCapacities)
     }
 
-    override fun getQRCode(buildingName: String): Single<Bitmap> {
+    override fun getQRCode(buildingName: String): Single<ByteArray> {
         return remoteDataSource.getQRCode(buildingName)
     }
 }

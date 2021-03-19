@@ -1,21 +1,19 @@
-package com.csci310_group29.trojancheckincheckout.domain.models
+package com.csci310_group29.trojancheckincheckout.domain.entities
 
-import android.net.Uri
 import com.google.firebase.firestore.DocumentId
 
-data class Building(@DocumentId
-                    val id: String,
-                    val buildingName: String,
-                    val address: String? = null,
-                    val capacity: Int,
-                    val numPeople: Int,
-                    val qrCodeRef: String) {
-
+data class BuildingEntity(@DocumentId
+                          val id: String,
+                          val buildingName: String,
+                          val address: String? = null,
+                          val capacity: Int,
+                          val numPeople: Int,
+                          val qrCodeRef: String) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Building
+        other as BuildingEntity
 
         if (id != other.id) return false
         if (buildingName != other.buildingName) return false

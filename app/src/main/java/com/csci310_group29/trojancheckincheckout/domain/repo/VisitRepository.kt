@@ -1,6 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.domain.repo
 
-import com.csci310_group29.trojancheckincheckout.data.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import io.reactivex.Single
 
 interface VisitRepository {

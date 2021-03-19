@@ -1,7 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.domain.usecases
 
-import com.csci310_group29.trojancheckincheckout.data.entities.BuildingEntity
-import com.csci310_group29.trojancheckincheckout.data.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
@@ -16,11 +16,12 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import io.reactivex.Single
 import java.lang.Exception
 import javax.inject.Inject
+import javax.inject.Named
 
-class VisitUseCases @Inject constructor(private val buildingRepo: BuildingRepository,
-                                        private val visitRepo: VisitRepository,
-                                        private val userRepo: UserRepository,
-                                        private val userUserCases: UserUseCases) {
+class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo: BuildingRepository,
+                                        @Named("Repo") private val visitRepo: VisitRepository,
+                                        @Named("Repo") private val userRepo: UserRepository,
+                                        @Named("Repo") private val userUserCases: UserUseCases) {
 
     fun attemptCheckIn(buildingId: String): Single<Visit> {
         return buildingRepo.incrementNumStudents(buildingId, 1)
@@ -65,7 +66,8 @@ class VisitUseCases @Inject constructor(private val buildingRepo: BuildingReposi
                 buildingName = buildingEntity.buildingName,
                 address = buildingEntity.address,
                 capacity = buildingEntity.capacity,
-                numPeople = buildingEntity.numPeople
+                numPeople = buildingEntity.numPeople,
+                qrCodeRef = buildingEntity.qrCodeRef
         )
         return Visit(
                 user = user,

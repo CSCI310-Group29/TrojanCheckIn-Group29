@@ -1,9 +1,9 @@
 package com.csci310_group29.trojancheckincheckout.domain.usecases
 
 import android.graphics.Bitmap
-import com.csci310_group29.trojancheckincheckout.data.entities.AuthEntity
-import com.csci310_group29.trojancheckincheckout.data.entities.UserEntity
-import com.csci310_group29.trojancheckincheckout.data.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.PicturesRepoImpl
@@ -17,10 +17,11 @@ import com.google.rpc.context.AttributeContext
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
+import javax.inject.Named
 
-class UserUseCases @Inject constructor(private val authRepo: AuthRepository,
-                                       private val userRepo: UserRepository,
-                                       private val pictureRepo: PicturesRepository) {
+class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: AuthRepository,
+                                       @Named("Repo") private val userRepo: UserRepository,
+                                       @Named("Repo") private val pictureRepo: PicturesRepository) {
 
     fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
         return authRepo.getCurrentUser()
@@ -46,7 +47,7 @@ class UserUseCases @Inject constructor(private val authRepo: AuthRepository,
                 }
     }
 
-    fun updateProfile(fields: HashMap<String, Any>): Completable {
+    fun updateProfile(userEntity: UserEntity): Completable {
         TODO("Not yet implemented")
     }
 
@@ -60,6 +61,6 @@ class UserUseCases @Inject constructor(private val authRepo: AuthRepository,
         return User(authEntity.id, userEntity.isStudent,
                 authEntity.email, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
-                userEntity.isCheckedIn, userEntity.studentId, picture)
+                userEntity.isCheckedIn ?: false, userEntity.studentId, picture)
     }
 }

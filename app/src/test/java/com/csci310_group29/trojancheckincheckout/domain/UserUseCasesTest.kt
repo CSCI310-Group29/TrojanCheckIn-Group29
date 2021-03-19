@@ -1,8 +1,8 @@
 package com.csci310_group29.trojancheckincheckout.domain
 
 import android.graphics.BitmapFactory
-import com.csci310_group29.trojancheckincheckout.data.entities.AuthEntity
-import com.csci310_group29.trojancheckincheckout.data.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository

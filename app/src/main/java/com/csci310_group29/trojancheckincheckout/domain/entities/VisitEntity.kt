@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.data.entities
+package com.csci310_group29.trojancheckincheckout.domain.entities
 
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.google.firebase.firestore.DocumentId

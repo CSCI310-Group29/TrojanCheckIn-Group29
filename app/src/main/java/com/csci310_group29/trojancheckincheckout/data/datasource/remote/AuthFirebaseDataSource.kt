@@ -1,7 +1,7 @@
-package com.csci310_group29.trojancheckincheckout.data.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
 import android.util.Log
-import com.csci310_group29.trojancheckincheckout.data.entities.AuthEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.google.firebase.auth.ktx.auth
