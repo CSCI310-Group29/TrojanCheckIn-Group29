@@ -17,25 +17,15 @@ class AuthFirebaseDataSource: AuthRepository {
 
     override fun getCurrentUser(): Single<AuthEntity> {
         return Single.create { emitter ->
-//            val currentUser = auth.currentUser
-//            if (currentUser != null) {
-//                val uid = currentUser.uid
-//                val userRef = db.collection("users").document(uid)
-//                userRef.get()
-//                    .addOnSuccessListener { userDocument ->
-//                        val firstName = userDocument.get("firstName") as String
-//                        val lastName = userDocument.get("lastName") as String
-//                        val isStudent = userDocument.get("isStudent") as Boolean
-//                        val major = userDocument.get("major") as String
-//                        val studentId = userDocument.get("studentId") as String
-//                        val isCheckedIn = userDocument.get("isCheckedIn") as Boolean
-//
-//                        emitter.onSuccess(User(uid, isStudent, firstName, lastName, major, isCheckedIn, studentId))
-//                    }
-//                    .addOnFailureListener { exception ->
-//                        emitter.onError(exception)
-//                    }
-//            }
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val uid = currentUser.uid
+                var userPhotoUri = currentUser.photoUrl
+                var photoURL: String?
+                if (userPhotoUri != null) photoURL = userPhotoUri.toString()
+                else photoURL = null
+                emitter.onSuccess(AuthEntity(uid, currentUser.email, photoURL))
+            }
         }
     }
 
@@ -49,10 +39,6 @@ class AuthFirebaseDataSource: AuthRepository {
             }
 
         }
-    }
-
-    override fun updatePhotoURL(url: String): Completable {
-        TODO("Not yet implemented")
     }
 
     override fun loginUser(email: String, password: String): Completable {

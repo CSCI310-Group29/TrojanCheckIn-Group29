@@ -33,6 +33,8 @@ interface UserRepository {
                       major: String? = null,
                       studentId: String? = null): Completable
 
+    fun updatePhotoURL(url: String): Completable
+
     /*
     Given the profile picture of the user, updates the profile picture of the user to the new
     profile picture

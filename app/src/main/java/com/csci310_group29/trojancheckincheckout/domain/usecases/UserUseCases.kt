@@ -26,7 +26,7 @@ class UserUseCases @Inject constructor(private val authRepo: AuthRepository,
                 .flatMap { authEntity ->
                     userRepo.getUser(authEntity.id)
                             .flatMap {userEntity ->
-                                    if (picture) {
+                                    if (picture && authEntity.photoURL != null) {
                                         pictureRepo.getProfilePicture(authEntity.photoURL)
                                                 .flatMap { picture ->
                                                     Single.just(buildUser(authEntity, userEntity, null, picture))
@@ -36,6 +36,13 @@ class UserUseCases @Inject constructor(private val authRepo: AuthRepository,
                                     }
                                 }
                             }
+    }
+
+    fun updateProfilePicture(picture: ByteArray): Completable {
+        return pictureRepo.updateProfilePicture(picture)
+                .flatMapCompletable {url ->
+                    userRepo.updatePhotoURL(url)
+                }
     }
 
     fun updateProfile(fields: HashMap<String, Any>): Completable {

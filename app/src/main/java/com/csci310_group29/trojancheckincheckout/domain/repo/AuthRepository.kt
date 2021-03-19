@@ -25,8 +25,6 @@ interface AuthRepository {
      */
     fun logoutCurrentUser(): Completable
 
-    fun updatePhotoURL(url: String): Completable
-
     /*
     Creates a new user
 
