@@ -5,9 +5,8 @@ import com.google.firebase.firestore.DocumentId
 import java.util.*
 
 data class VisitEntity(@DocumentId
-                 val id: String,
-                       val userId: User,
-                       val buildingId: String,
+                       val id: String? = null,
+                       val userId: String? = null,
+                       val buildingId: String? = null,
                        val checkIn: Date? = null,
-                       val checkOut: Date? = null,
-                       val photoUrl: String? = null)
+                       val checkOut: Date? = null)

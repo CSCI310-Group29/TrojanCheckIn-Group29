@@ -19,7 +19,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
 
-class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: AuthRepository,
+open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: AuthRepository,
                                        @Named("Repo") private val userRepo: UserRepository,
                                        @Named("Repo") private val pictureRepo: PicturesRepository) {
 
@@ -29,7 +29,7 @@ class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: Auth
                     userRepo.get(authEntity.id)
                             .flatMap {userEntity ->
                                     if (picture && userEntity.photoUrl != null) {
-                                        pictureRepo.get(userEntity.photoUrl)
+                                        pictureRepo.get(userEntity.photoUrl!!)
                                                 .flatMap { picture ->
                                                     Single.just(buildUser(authEntity, userEntity, picture))
                                                 }
@@ -52,7 +52,7 @@ class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: Auth
                                     userRepo.updatePhotoUrl(url)
                                 }
                     } else {
-                        pictureRepo.update(user.photoUrl, picture)
+                        pictureRepo.update(user.photoUrl!!, picture)
                     }
                 }
     }
@@ -63,6 +63,7 @@ class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: Auth
                     userRepo.get(authEntity.id)
                 }
                 .flatMapCompletable { user ->
+                    user.merge(userEntity)
                     userRepo.update(userEntity)
                 }
     }

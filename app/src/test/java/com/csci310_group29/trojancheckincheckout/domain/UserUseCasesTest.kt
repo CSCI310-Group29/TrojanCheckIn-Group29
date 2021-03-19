@@ -36,6 +36,8 @@ class UserUseCasesTest {
     @Mock
     private lateinit var mockUserRepo: UserRepository
 
+    private lateinit var userUseCases: UserUseCases
+
     @Before
     fun setupRepo() {
         `when`(mockAuthRepo.getCurrentUser()).thenReturn(Single.just(authEntity))
@@ -49,24 +51,19 @@ class UserUseCasesTest {
             `when`(mockPictureRepo.get("exampleURL")).thenReturn(Single.just(profileByteArray))
         }
         `when`(mockUserRepo.get("12")).thenReturn(Single.just(userEntity))
-//        `when`(mockPictureRepo.update("exampleUrl", any())).thenReturn(Completable.complete())
+        `when`(mockUserRepo.update(userEntity)).thenReturn(Completable.complete())
+        userUseCases = UserUseCases(mockAuthRepo, mockUserRepo, mockPictureRepo)
     }
 
     @Test
     fun getLoggedInUserTest() {
-        val userUseCase = UserUseCases(mockAuthRepo, mockUserRepo, mockPictureRepo)
-        val observable = userUseCase.getCurrentlyLoggedInUser()
+        val observable = userUseCases.getCurrentlyLoggedInUser()
         observable.test().assertSubscribed().assertComplete().assertValue(user).dispose()
     }
 
     @Test
-    fun updateProfilePictureTest() {
-        `when`(mockPictureRepo.update("exampleURL", anyObject())).thenReturn(Completable.complete())
-        `when`(mockPictureRepo.create(anyObject())).thenReturn(Single.just("exampleURL"))
-        `when`(mockUserRepo.updatePhotoUrl(anyObject())).thenReturn(Completable.complete())
-//        val userUseCase = UserUseCases(mockAuthRepo, mockUserRepo, mockPictureRepo)
-//        userUseCase.updateProfilePicture(ByteArray(1024)).test().assertComplete().dispose()
+    fun updateProfileTest() {
+        userUseCases.updateProfile(userEntity).test().assertSubscribed().assertComplete()
     }
-
 
 }
