@@ -11,11 +11,11 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
-class AuthUseCases @Inject constructor(private val authRepo: AuthRepository,
-                                       private val pictureRepo: PicturesRepository,
-                                       private val userUseCases: UserUseCases) {
+open class AuthUseCases @Inject constructor(private val authRepo: AuthRepository,
+                                            private val pictureRepo: PicturesRepository,
+                                            private val userUseCases: UserUseCases) {
 
-    fun getUserAuth(): Single<AuthEntity> {
+    protected fun getUserAuth(): Single<AuthEntity> {
         return authRepo.getCurrentUser()
     }
 

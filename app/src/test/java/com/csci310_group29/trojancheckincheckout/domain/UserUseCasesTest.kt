@@ -21,7 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner
 private val userEntity = UserEntity("12", false, "Tommy", "Trojan", "Computer Science", false, "123")
 private val user = User("12", false, "test@gmail.com", "Tommy", "Trojan", "Computer Science", false, "123")
 private val authEntity = AuthEntity("12",
-        "test@gmail.com", photoURL="exampleURL")
+        "test@gmail.com")
 
 @RunWith(MockitoJUnitRunner::class)
 class UserUseCasesTest {

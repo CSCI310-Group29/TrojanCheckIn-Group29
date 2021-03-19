@@ -20,11 +20,7 @@ class AuthFirebaseDataSource: AuthRepository {
             val currentUser = auth.currentUser
             if (currentUser != null) {
                 val uid = currentUser.uid
-                var userPhotoUri = currentUser.photoUrl
-                var photoURL: String?
-                if (userPhotoUri != null) photoURL = userPhotoUri.toString()
-                else photoURL = null
-                emitter.onSuccess(AuthEntity(uid, currentUser.email, photoURL))
+                emitter.onSuccess(AuthEntity(uid, currentUser.email))
             }
         }
     }

@@ -9,4 +9,5 @@ data class VisitEntity(@DocumentId
                        val userId: User,
                        val buildingId: String,
                        val checkIn: Date? = null,
-                       val checkOut: Date? = null)
+                       val checkOut: Date? = null,
+                       val photoUrl: String? = null)
