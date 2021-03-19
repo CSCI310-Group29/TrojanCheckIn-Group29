@@ -5,8 +5,9 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class BuildingFakeDataSource: BuildingRepository {
+class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
     override fun getBuilding(buildingId: String): Single<BuildingEntity> {
         return Single.just(BuildingEntity(buildingId, "building", "mayflow dr", 10, 5, "qrCodeRef"))
     }

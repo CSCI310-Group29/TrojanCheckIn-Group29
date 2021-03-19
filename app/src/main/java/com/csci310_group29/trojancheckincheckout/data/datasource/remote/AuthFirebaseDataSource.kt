@@ -9,8 +9,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class AuthFirebaseDataSource: AuthRepository {
+class AuthFirebaseDataSource @Inject constructor(): AuthRepository {
 
     private var TAG = "AuthRemoteDataSource"
     private var auth = Firebase.auth

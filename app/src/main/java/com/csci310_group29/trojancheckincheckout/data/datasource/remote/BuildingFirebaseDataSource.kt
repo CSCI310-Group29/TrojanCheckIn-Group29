@@ -6,8 +6,9 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class BuildingFirebaseDataSource: BuildingRepository {
+class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
     override fun getBuilding(buildingId: String): Single<BuildingEntity> {
         TODO("Not yet implemented")
     }

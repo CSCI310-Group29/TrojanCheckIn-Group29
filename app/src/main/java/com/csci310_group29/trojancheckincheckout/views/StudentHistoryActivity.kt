@@ -1,23 +1,23 @@
-//
-//package com.csci310_group29.trojancheckincheckout.views
-//
-//import android.os.Bundle
-//import android.view.View
-//import android.widget.Toast
-//import androidx.appcompat.app.AppCompatActivity
-//import androidx.recyclerview.widget.LinearLayoutManager
-//import androidx.recyclerview.widget.RecyclerView
-//import com.csci310_group29.trojancheckincheckout.R
-//import com.csci310_group29.trojancheckincheckout.data.datasource.fake.VisitFakeDataSource
-//import com.csci310_group29.trojancheckincheckout.domain.models.Visit
-//import com.csci310_group29.trojancheckincheckout.viewmodels.Session
-//import io.reactivex.SingleObserver
-//import io.reactivex.disposables.Disposable
-//
-//class StudentHistoryActivity : AppCompatActivity() {
-//    val visitRepo = VisitFakeDataSource()
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
+
+package com.csci310_group29.trojancheckincheckout.views
+
+import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.csci310_group29.trojancheckincheckout.R
+import com.csci310_group29.trojancheckincheckout.data.datasource.fake.VisitFakeDataSource
+import com.csci310_group29.trojancheckincheckout.domain.models.Visit
+import com.csci310_group29.trojancheckincheckout.viewmodels.Session
+import io.reactivex.SingleObserver
+import io.reactivex.disposables.Disposable
+
+class StudentHistoryActivity : AppCompatActivity() {
+    val visitRepo = VisitFakeDataSource()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_student_history)
 //
 //        val rv = findViewById<View>(R.id.visitHistory) as RecyclerView
@@ -46,8 +46,8 @@
 //        }
 //
 //        rv.layoutManager = LinearLayoutManager(this)
-//
-//
-//    }
-//
-//}
+
+
+    }
+
+}

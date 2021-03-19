@@ -3,8 +3,9 @@ package com.csci310_group29.trojancheckincheckout.data.datasource.fake
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import io.reactivex.Single
+import javax.inject.Inject
 
-class VisitFakeDataSource: VisitRepository {
+class VisitFakeDataSource @Inject constructor(): VisitRepository {
     override fun createVisit(userId: String, buildingId: String): Single<VisitEntity> {
         TODO("Not yet implemented")
     }

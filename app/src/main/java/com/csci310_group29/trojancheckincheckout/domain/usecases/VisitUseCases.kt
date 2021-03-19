@@ -46,7 +46,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                                 .flatMap {visitEntity ->
                                     Single.zip(visitRepo.checkOutVisit(visitEntity.id),
                                     buildingRepo.incrementNumStudents(visitEntity.buildingId, -1),
-                                            { visitEnity, buildingEntity ->
+                                            { visitEntity, buildingEntity ->
                                         buildVisitModel(user, buildingEntity, visitEntity)
                                     })
                                 }
