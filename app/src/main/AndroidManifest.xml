@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TrojanCheckInCheckOut">
-        <activity android:name=".views.StudentProfileActivity"></activity>
+        <activity android:name=".views.ManagerProfileActivity"></activity>
+        <activity android:name=".views.StudentHistoryActivity" />
+        <activity android:name=".views.StudentProfileActivity" />
         <activity android:name=".views.ManagerHomeActivity" />
         <activity android:name=".views.StudentHomeActivity" />
 
