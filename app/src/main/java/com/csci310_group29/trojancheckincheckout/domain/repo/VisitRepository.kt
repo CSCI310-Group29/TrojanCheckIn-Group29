@@ -25,9 +25,9 @@ interface VisitRepository {
      */
 //    fun checkOut(userId: String): Single<Visit>
 
-    fun createVisit(userId: String, buildingId: String): Single<VisitEntity>
+    fun create(userId: String, buildingId: String): Single<VisitEntity>
 
-    fun getVisit(visitId: String): Single<VisitEntity>
+    fun get(visitId: String): Single<VisitEntity>
 
     fun getLatestVisit(userId: String): Single<VisitEntity>
 

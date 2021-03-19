@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.views
+package com.csci310_group29.trojancheckincheckout.ui.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -9,11 +9,12 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
-    override fun getBuilding(buildingId: String): Single<BuildingEntity> {
+
+    override fun get(id: String): Single<BuildingEntity> {
         TODO("Not yet implemented")
     }
 
-    override fun getBuildingInfo(buildingName: String): Single<BuildingEntity> {
+    override fun getByName(buildingName: String): Single<BuildingEntity> {
         TODO("Not yet implemented")
     }
 
@@ -21,15 +22,7 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
         TODO("Not yet implemented")
     }
 
-    override fun updateBuildingCapacities(buildingCapacities: HashMap<String, Int>): Completable {
-        TODO("Not yet implemented")
-    }
-
-    fun incrementNumStudents(buildingId: String): Single<Building> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getQRCode(buildingName: String): Single<ByteArray> {
+    override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
         TODO("Not yet implemented")
     }
 }

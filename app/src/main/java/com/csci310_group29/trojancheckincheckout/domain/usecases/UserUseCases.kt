@@ -19,17 +19,17 @@ import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
 
-class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: AuthRepository,
+open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: AuthRepository,
                                        @Named("Repo") private val userRepo: UserRepository,
                                        @Named("Repo") private val pictureRepo: PicturesRepository) {
 
     fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
         return authRepo.getCurrentUser()
                 .flatMap { authEntity ->
-                    userRepo.getUser(authEntity.id)
+                    userRepo.get(authEntity.id)
                             .flatMap {userEntity ->
                                     if (picture && userEntity.photoUrl != null) {
-                                        pictureRepo.getProfilePicture(userEntity.photoUrl)
+                                        pictureRepo.get(userEntity.photoUrl!!)
                                                 .flatMap { picture ->
                                                     Single.just(buildUser(authEntity, userEntity, picture))
                                                 }
@@ -41,14 +41,31 @@ class UserUseCases @Inject constructor(@Named("Repo") private val authRepo: Auth
     }
 
     fun updateProfilePicture(picture: ByteArray): Completable {
-        return pictureRepo.updateProfilePicture(picture)
-                .flatMapCompletable {url ->
-                    userRepo.updatePhotoURL(url)
+        return authRepo.getCurrentUser()
+                .flatMap { authEntity ->
+                    userRepo.get(authEntity.id)
+                }
+                .flatMapCompletable {user ->
+                    if (user.photoUrl == null) {
+                        pictureRepo.create(picture)
+                                .flatMapCompletable { url ->
+                                    userRepo.updatePhotoUrl(url)
+                                }
+                    } else {
+                        pictureRepo.update(user.photoUrl!!, picture)
+                    }
                 }
     }
 
     fun updateProfile(userEntity: UserEntity): Completable {
-        TODO("Not yet implemented")
+        return authRepo.getCurrentUser()
+                .flatMap { authEntity ->
+                    userRepo.get(authEntity.id)
+                }
+                .flatMapCompletable { user ->
+                    user.merge(userEntity)
+                    userRepo.update(userEntity)
+                }
     }
 
     fun searchCheckedInUsers(): Single<List<User>> {

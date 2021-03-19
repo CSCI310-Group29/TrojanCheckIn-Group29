@@ -9,23 +9,24 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class UserFirebaseDataSource @Inject constructor(): UserRepository {
-    override fun getUser(userId: String): Single<UserEntity> {
+
+    override fun get(id: String): Single<UserEntity> {
         TODO("Not yet implemented")
     }
 
-    override fun setCheckedIn(userId: String, checkIn: Boolean): Single<UserEntity> {
+    override fun update(userEntity: UserEntity): Completable {
         TODO("Not yet implemented")
     }
 
-    override fun updateProfile(firstName: String?, lastName: String?, major: String?, studentId: String?): Completable {
+    override fun delete(id: String): Completable {
         TODO("Not yet implemented")
     }
 
-    override fun updatePhotoURL(url: String): Completable {
+    override fun setCheckedIn(userId: String, checkedIn: Boolean): Single<UserEntity> {
         TODO("Not yet implemented")
     }
 
-    override fun updateProfilePicture(profilePicture: Bitmap): Completable {
+    override fun updatePhotoUrl(id: String): Completable {
         TODO("Not yet implemented")
     }
 

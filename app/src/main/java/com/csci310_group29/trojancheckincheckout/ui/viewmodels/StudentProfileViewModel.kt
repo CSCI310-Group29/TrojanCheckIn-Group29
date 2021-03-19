@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.viewmodels
+package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import android.content.ContentResolver
 import android.net.Uri

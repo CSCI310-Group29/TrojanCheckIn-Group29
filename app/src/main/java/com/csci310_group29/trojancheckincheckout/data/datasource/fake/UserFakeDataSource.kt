@@ -9,23 +9,23 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class UserFakeDataSource @Inject constructor(): UserRepository {
-    override fun getUser(userId: String): Single<UserEntity> {
+    override fun get(id: String): Single<UserEntity> {
         TODO("Not yet implemented")
     }
 
-    override fun setCheckedIn(userId: String, checkIn: Boolean): Single<UserEntity> {
-        return Single.just(UserEntity("123", true, "Tommy", "Trojan", "Compute Science", checkIn, "1234", "exampleURL"))
-    }
-
-    override fun updateProfile(firstName: String?, lastName: String?, major: String?, studentId: String?): Completable {
+    override fun update(userEntity: UserEntity): Completable {
         TODO("Not yet implemented")
     }
 
-    override fun updatePhotoURL(url: String): Completable {
+    override fun delete(id: String): Completable {
         TODO("Not yet implemented")
     }
 
-    override fun updateProfilePicture(profilePicture: Bitmap): Completable {
+    override fun setCheckedIn(userId: String, checkedIn: Boolean): Single<UserEntity> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updatePhotoUrl(id: String): Completable {
         TODO("Not yet implemented")
     }
 

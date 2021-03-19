@@ -12,23 +12,19 @@ import javax.inject.Named
 class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: BuildingRepository):
         BuildingRepository {
 
-    override fun getBuildingInfo(buildingName: String): Single<BuildingEntity> {
-        return remoteDataSource.getBuildingInfo(buildingName)
+    override fun get(id: String): Single<BuildingEntity> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getByName(buildingName: String): Single<BuildingEntity> {
+        TODO("Not yet implemented")
     }
 
     override fun incrementNumStudents(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
         return remoteDataSource.incrementNumStudents(buildingId, incrementCount)
     }
 
-    override fun getBuilding(buildingId: String): Single<BuildingEntity> {
+    override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
         TODO("Not yet implemented")
-    }
-
-    override fun updateBuildingCapacities(buildingCapacities: HashMap<String, Int>): Completable {
-        return remoteDataSource.updateBuildingCapacities(buildingCapacities)
-    }
-
-    override fun getQRCode(buildingName: String): Single<ByteArray> {
-        return remoteDataSource.getQRCode(buildingName)
     }
 }

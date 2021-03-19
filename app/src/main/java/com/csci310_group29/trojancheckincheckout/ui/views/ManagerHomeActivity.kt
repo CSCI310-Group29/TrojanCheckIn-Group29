@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.views
+package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +13,7 @@ class ManagerHomeActivity : AppCompatActivity() {
     }
 
     fun onViewProfile(view: View) {
-        startActivity(Intent(this,ManagerProfileActivity::class.java))
+        startActivity(Intent(this, ManagerProfileActivity::class.java))
     }
 
     fun onLogout(view: View)  {

@@ -11,24 +11,25 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: UserRepository): UserRepository {
-    override fun getUser(userId: String): Single<UserEntity> {
+
+    override fun get(id: String): Single<UserEntity> {
         TODO("Not yet implemented")
     }
 
-    override fun setCheckedIn(userId: String, checkIn: Boolean): Single<UserEntity> {
-        return remoteDataSource.setCheckedIn(userId, checkIn)
+    override fun update(userEntity: UserEntity): Completable {
+        TODO("Not yet implemented")
     }
 
-    override fun updateProfile(firstName: String?, lastName: String?, major: String?, studentId: String?): Completable {
-        return remoteDataSource.updateProfile(firstName, lastName, major, studentId)
+    override fun delete(id: String): Completable {
+        TODO("Not yet implemented")
     }
 
-    override fun updatePhotoURL(url: String): Completable {
-        return remoteDataSource.updatePhotoURL(url)
+    override fun setCheckedIn(userId: String, checkedIn: Boolean): Single<UserEntity> {
+        TODO("Not yet implemented")
     }
 
-    override fun updateProfilePicture(profilePicture: Bitmap): Completable {
-        return remoteDataSource.updateProfilePicture(profilePicture)
+    override fun updatePhotoUrl(id: String): Completable {
+        TODO("Not yet implemented")
     }
 
     override fun queryCheckedInUsers(buildingName: String?, user: User): Single<List<User>> {

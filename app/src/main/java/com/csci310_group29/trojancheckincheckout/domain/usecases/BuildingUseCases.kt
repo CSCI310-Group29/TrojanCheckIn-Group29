@@ -13,22 +13,22 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
                                            @Named("Repo") private val pictureRepo: PicturesRepository) {
 
     fun getBuildingInfo(buildingName: String): Single<Building> {
-        return buildingRepo.getBuildingInfo(buildingName)
+        return buildingRepo.getByName(buildingName)
                 .flatMap {building -> Single.just(buildModel(building))}
     }
 
     fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Int): Completable {
-        return buildingRepo.updateBuildingCapacities(hashMapOf(buildingName to newCapacity))
+        return buildingRepo.updateCapacities(hashMapOf(buildingName to newCapacity))
     }
 
     fun updateMultipleBuildingCapacities(buildings: HashMap<String, Int>): Completable {
-        return buildingRepo.updateBuildingCapacities(buildings)
+        return buildingRepo.updateCapacities(buildings)
     }
 
     fun getQrCode(buildingName: String): Single<ByteArray> {
         return getBuildingInfo(buildingName)
                 .flatMap { building ->
-                    pictureRepo.getQrCode(building.qrCodeRef)
+                    pictureRepo.get(building.qrCodeRef)
                 }
     }
 
