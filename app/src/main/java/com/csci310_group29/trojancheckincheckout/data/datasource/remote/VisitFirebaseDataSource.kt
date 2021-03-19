@@ -5,8 +5,9 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import io.reactivex.Single
+import javax.inject.Inject
 
-class VisitFirebaseDataSource: VisitRepository {
+class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
     private val db = Firebase.firestore
 
     override fun createVisit(userId: String, buildingId: String): Single<VisitEntity> {

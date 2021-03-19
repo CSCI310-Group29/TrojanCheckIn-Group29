@@ -2,8 +2,9 @@ package com.csci310_group29.trojancheckincheckout.data.datasource.fake
 
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import io.reactivex.Single
+import javax.inject.Inject
 
-class PictureFakeDataSource: PicturesRepository {
+class PictureFakeDataSource @Inject constructor(): PicturesRepository {
     override fun getProfilePicture(url: String): Single<ByteArray> {
         TODO("Not yet implemented")
     }

@@ -6,8 +6,9 @@ import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class UserFakeDataSource: UserRepository {
+class UserFakeDataSource @Inject constructor(): UserRepository {
     override fun getUser(userId: String): Single<UserEntity> {
         TODO("Not yet implemented")
     }

@@ -50,7 +50,7 @@ class StudentProfileActivity : AppCompatActivity() {
     }
 
     fun onViewHistory(view: View) {
-        startActivity(Intent(this,StudentHistoryActivity::class.java))
+        startActivity(Intent(this, StudentHistoryActivity::class.java))
     }
 
     fun onUpdateProfilePicture(view: View) {

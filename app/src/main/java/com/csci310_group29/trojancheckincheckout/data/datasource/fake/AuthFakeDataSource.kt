@@ -4,8 +4,10 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthFakeDataSource: AuthRepository {
+class AuthFakeDataSource @Inject constructor(): AuthRepository {
     override fun getCurrentUser(): Single<AuthEntity> {
         return Single.just(AuthEntity("123", "tommy@usc.edu"))
     }

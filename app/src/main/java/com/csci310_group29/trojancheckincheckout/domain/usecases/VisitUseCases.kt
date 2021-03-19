@@ -40,20 +40,20 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
 
     fun checkOut(): Single<Visit> {
         return userUserCases.getCurrentlyLoggedInUser(picture = false)
-            .flatMap { user ->
-                if (user.isCheckedIn) {
-                    visitRepo.getLatestVisit(user.id)
-                        .flatMap {visitEntity ->
-                            Single.zip(visitRepo.checkOutVisit(visitEntity.id),
-                                buildingRepo.incrementNumStudents(visitEntity.buildingId, -1),
-                                { visitEntity, buildingEntity ->
-                                    buildVisitModel(user, buildingEntity, visitEntity)
-                                })
-                        }
-                } else {
-                    throw Exception("hello")
+                .flatMap { user ->
+                    if (user.isCheckedIn) {
+                        visitRepo.getLatestVisit(user.id)
+                                .flatMap {visitEntity ->
+                                    Single.zip(visitRepo.checkOutVisit(visitEntity.id),
+                                    buildingRepo.incrementNumStudents(visitEntity.buildingId, -1),
+                                            { visitEntity, buildingEntity ->
+                                        buildVisitModel(user, buildingEntity, visitEntity)
+                                    })
+                                }
+                    } else {
+                        throw Exception("hello")
+                    }
                 }
-            }
     }
 
     fun searchVisits(): Single<List<Visit>> {
