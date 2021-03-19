@@ -8,25 +8,28 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
+
+private val userEntity = UserEntity("12", true, "Tommy", "Trojan", "Compute Science", false, "1234", "exampleURL")
+
 class UserFakeDataSource @Inject constructor(): UserRepository {
     override fun get(id: String): Single<UserEntity> {
-        TODO("Not yet implemented")
+        return Single.just(userEntity)
     }
 
     override fun update(userEntity: UserEntity): Completable {
-        TODO("Not yet implemented")
+        return Completable.complete()
     }
 
     override fun delete(id: String): Completable {
-        TODO("Not yet implemented")
+        return Completable.complete()
     }
 
     override fun setCheckedIn(userId: String, checkedIn: Boolean): Single<UserEntity> {
-        TODO("Not yet implemented")
+        return Single.just(userEntity)
     }
 
     override fun updatePhotoUrl(id: String): Completable {
-        TODO("Not yet implemented")
+        return Completable.complete()
     }
 
     override fun queryCheckedInUsers(buildingName: String?, user: User): Single<List<User>> {

@@ -12,12 +12,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataSourceModule {
+abstract class ADataSourceModule {
 
     @Binds
     @Singleton
     @Named("Data")
-    abstract fun bindAuthDataSource(authRepo: AuthFakeDataSource): AuthRepository
+    abstract fun bindAuthDataSource(authRepo: AuthFirebaseDataSource): AuthRepository
 
     @Binds
     @Singleton
