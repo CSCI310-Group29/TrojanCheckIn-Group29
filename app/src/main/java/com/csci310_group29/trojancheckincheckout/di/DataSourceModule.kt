@@ -17,7 +17,7 @@ abstract class ADataSourceModule {
     @Binds
     @Singleton
     @Named("Data")
-    abstract fun bindAuthDataSource(authRepo: AuthFirebaseDataSource): AuthRepository
+    abstract fun bindAuthDataSource(authRepo: AuthFakeDataSource): AuthRepository
 
     @Binds
     @Singleton

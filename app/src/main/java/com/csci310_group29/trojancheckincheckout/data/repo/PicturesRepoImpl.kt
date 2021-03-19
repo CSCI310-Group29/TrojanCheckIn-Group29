@@ -9,18 +9,18 @@ import javax.inject.Named
 
 class PicturesRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: PicturesRepository): PicturesRepository {
     override fun get(url: String): Single<ByteArray> {
-        TODO("Not yet implemented")
+        return remoteDataSource.get(url)
     }
 
     override fun create(picture: ByteArray): Single<String> {
-        TODO("Not yet implemented")
+        return remoteDataSource.create(picture)
     }
 
     override fun update(url: String, picture: ByteArray): Completable {
-        TODO("Not yet implemented")
+        return remoteDataSource.update(url, picture)
     }
 
     override fun delete(url: String): Completable {
-        TODO("Not yet implemented")
+        return remoteDataSource.delete(url)
     }
 }
