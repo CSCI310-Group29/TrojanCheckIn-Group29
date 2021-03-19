@@ -1,5 +1,5 @@
 
-package com.csci310_group29.trojancheckincheckout.views
+package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,7 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.viewmodels.StudentHomeViewModel
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentHomeViewModel
 import java.io.File
 
 private const val TAG = "StudentHomeActivity"
@@ -38,7 +38,7 @@ class StudentHomeActivity : AppCompatActivity() {
     fun onLogout(view: View) {
         try {
             viewModel.logout()
-            startActivity(Intent(this,AppHomeActivity::class.java))
+            startActivity(Intent(this, AppHomeActivity::class.java))
             finishAffinity()
         } catch(e:Exception) {
             Log.e(TAG, e.localizedMessage)

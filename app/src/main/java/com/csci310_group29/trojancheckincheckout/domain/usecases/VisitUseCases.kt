@@ -29,7 +29,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                     userUserCases.getCurrentlyLoggedInUser()
                             .flatMap {user ->
                                 userRepo.setCheckedIn(user.id, true)
-                                        .flatMap {visitRepo.createVisit(user.id, building.id)
+                                        .flatMap {visitRepo.create(user.id, building.id)
                                                     .flatMap { visit ->
                                                         Single.just(buildVisitModel(user, building, visit))
                                                     }

@@ -1,5 +1,5 @@
 
-package com.csci310_group29.trojancheckincheckout.views
+package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +18,7 @@ class VisitHistoryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapt
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VisitHistoryAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
 

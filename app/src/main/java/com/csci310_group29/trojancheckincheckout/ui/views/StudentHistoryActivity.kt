@@ -1,5 +1,5 @@
 
-package com.csci310_group29.trojancheckincheckout.views
+package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.os.Bundle
 import android.view.View
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.data.datasource.fake.VisitFakeDataSource
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
-import com.csci310_group29.trojancheckincheckout.viewmodels.Session
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 

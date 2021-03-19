@@ -1,5 +1,5 @@
 
-package com.csci310_group29.trojancheckincheckout.views;
+package com.csci310_group29.trojancheckincheckout.ui.views;
 /*
 import android.content.Context;
 import android.os.Bundle;

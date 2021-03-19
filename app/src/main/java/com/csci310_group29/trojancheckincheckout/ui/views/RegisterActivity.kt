@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.views
+package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.content.Context
 import android.os.Bundle
@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
-import com.csci310_group29.trojancheckincheckout.viewmodels.RegisterViewModel
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.RegisterViewModel
 import com.google.android.material.textfield.TextInputEditText
 import javax.inject.Inject
 

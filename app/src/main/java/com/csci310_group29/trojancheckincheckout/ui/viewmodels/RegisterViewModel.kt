@@ -1,5 +1,5 @@
 
-package com.csci310_group29.trojancheckincheckout.viewmodels
+package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases

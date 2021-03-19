@@ -8,23 +8,20 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
-    override fun getBuilding(buildingId: String): Single<BuildingEntity> {
-        return Single.just(BuildingEntity(buildingId, "building", "mayflow dr", 10, 5, "qrCodeRef"))
+
+    override fun get(id: String): Single<BuildingEntity> {
+        TODO("Not yet implemented")
     }
 
-    override fun getBuildingInfo(buildingName: String): Single<BuildingEntity> {
-        return Single.just(BuildingEntity("1234", buildingName, "mayflow dr", 10, 5, "qrCodeRef"))
+    override fun getByName(buildingName: String): Single<BuildingEntity> {
+        TODO("Not yet implemented")
     }
 
     override fun incrementNumStudents(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
         return Single.just(BuildingEntity(buildingId, "building", "mayflow dr", 10, 5, "qrCodeRef"))
     }
 
-    override fun updateBuildingCapacities(buildingCapacities: HashMap<String, Int>): Completable {
-        return Completable.complete()
-    }
-
-    override fun getQRCode(buildingName: String): Single<ByteArray> {
-        return Single.just(ByteArray(1024))
+    override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
+        TODO("Not yet implemented")
     }
 }

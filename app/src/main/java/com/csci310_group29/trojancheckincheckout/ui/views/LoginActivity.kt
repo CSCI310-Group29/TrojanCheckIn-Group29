@@ -1,6 +1,6 @@
 
 
-package com.csci310_group29.trojancheckincheckout.views
+package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
-import com.csci310_group29.trojancheckincheckout.viewmodels.LoginViewModel
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun loginNextActivity(user: User) {
         if(user != null && user!!.isStudent!!) {
-            startActivity(Intent(this,StudentHomeActivity::class.java))
+            startActivity(Intent(this, StudentHomeActivity::class.java))
             finish()
         } else if ( user != null) {
             startActivity(Intent(this, ManagerHomeActivity::class.java))
