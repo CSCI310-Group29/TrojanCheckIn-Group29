@@ -8,18 +8,18 @@ import javax.inject.Inject
 class PictureFakeDataSource @Inject constructor(): PicturesRepository {
 
     override fun get(url: String): Single<ByteArray> {
-        TODO("Not yet implemented")
+        return Single.just(ByteArray(1024))
     }
 
     override fun create(picture: ByteArray): Single<String> {
-        TODO("Not yet implemented")
+        return Single.just("exampleURL")
     }
 
     override fun update(url: String, picture: ByteArray): Completable {
-        TODO("Not yet implemented")
+        return Completable.complete()
     }
 
     override fun delete(url: String): Completable {
-        TODO("Not yet implemented")
+        return Completable.complete()
     }
 }

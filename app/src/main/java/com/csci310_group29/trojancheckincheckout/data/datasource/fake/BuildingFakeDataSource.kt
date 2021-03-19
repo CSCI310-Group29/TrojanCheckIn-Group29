@@ -7,21 +7,23 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
+private val buildingEntity = BuildingEntity("12", "building", "12", 10, 5, "qrRef")
+
 class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
 
     override fun get(id: String): Single<BuildingEntity> {
-        TODO("Not yet implemented")
+        return Single.just(buildingEntity)
     }
 
     override fun getByName(buildingName: String): Single<BuildingEntity> {
-        TODO("Not yet implemented")
+        return Single.just(buildingEntity)
     }
 
     override fun incrementNumStudents(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
-        return Single.just(BuildingEntity(buildingId, "building", "mayflow dr", 10, 5, "qrCodeRef"))
+        return Single.just(buildingEntity)
     }
 
     override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
-        TODO("Not yet implemented")
+        return Completable.complete()
     }
 }
