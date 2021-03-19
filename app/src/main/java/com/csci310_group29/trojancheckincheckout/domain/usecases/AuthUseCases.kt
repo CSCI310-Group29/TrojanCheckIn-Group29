@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
 import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.PicturesRepoImpl
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
@@ -20,7 +21,7 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
         return authRepo.getCurrentUser()
     }
 
-    fun signup(email: String, password: String): Completable {
+    fun signup(email: String, password: String, userEntity: UserEntity): Completable {
         return authRepo.createUser(email, password)
     }
 
