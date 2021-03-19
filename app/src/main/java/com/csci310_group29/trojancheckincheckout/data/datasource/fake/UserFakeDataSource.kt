@@ -33,6 +33,6 @@ class UserFakeDataSource @Inject constructor(): UserRepository {
     }
 
     override fun queryCheckedInUsers(buildingName: String?, user: User): Single<List<User>> {
-        TODO("Not yet implemented")
+        return Single.just(listOf())
     }
 }
