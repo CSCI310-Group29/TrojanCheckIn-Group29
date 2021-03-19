@@ -10,11 +10,11 @@ import javax.inject.Inject
 class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
     private val db = Firebase.firestore
 
-    override fun createVisit(userId: String, buildingId: String): Single<VisitEntity> {
+    override fun create(userId: String, buildingId: String): Single<VisitEntity> {
         TODO("Not yet implemented")
     }
 
-    override fun getVisit(visitId: String): Single<VisitEntity> {
+    override fun get(visitId: String): Single<VisitEntity> {
         TODO("Not yet implemented")
     }
 
