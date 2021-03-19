@@ -49,7 +49,7 @@ open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo:
                     if (user.photoUrl == null) {
                         pictureRepo.create(picture)
                                 .flatMapCompletable { url ->
-                                    userRepo.updatePhotoUrl(url)
+                                    userRepo.updatePhotoUrl(user.id!!, url)
                                 }
                     } else {
                         pictureRepo.update(user.photoUrl!!, picture)
@@ -63,8 +63,7 @@ open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo:
                     userRepo.get(authEntity.id)
                 }
                 .flatMapCompletable { user ->
-                    user.merge(userEntity)
-                    userRepo.update(userEntity)
+                    userRepo.update(overwrite(user, userEntity))
                 }
     }
 
@@ -79,5 +78,18 @@ open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo:
                 authEntity.email, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
                 userEntity.isCheckedIn ?: false, userEntity.studentId, picture)
+    }
+
+    private fun overwrite(curr: UserEntity, truth: UserEntity): UserEntity {
+        return UserEntity(
+            truth.id ?: curr.id,
+            truth.isStudent ?: curr.isStudent,
+            truth.firstName ?: curr.firstName,
+            truth.lastName ?: curr.lastName,
+            truth.major ?: curr.major,
+            truth.isCheckedIn ?: curr.isCheckedIn,
+            truth.studentId ?: curr.studentId,
+            truth.photoUrl ?: curr.photoUrl
+        )
     }
 }

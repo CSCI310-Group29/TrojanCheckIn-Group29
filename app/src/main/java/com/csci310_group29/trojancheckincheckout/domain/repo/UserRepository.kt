@@ -14,9 +14,11 @@ interface UserRepository {
 
     fun delete(id: String): Completable
 
+    fun create(userEntity: UserEntity): Single<UserEntity>
+
     fun setCheckedIn(userId: String, checkedIn: Boolean): Single<UserEntity>
 
-    fun updatePhotoUrl(id: String): Completable
+    fun updatePhotoUrl(id: String, url: String): Completable
 
     fun queryCheckedInUsers(buildingName: String? = null, user: User): Single<List<User>>
 }

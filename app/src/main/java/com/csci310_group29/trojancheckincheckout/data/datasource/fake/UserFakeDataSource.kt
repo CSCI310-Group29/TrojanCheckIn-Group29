@@ -24,11 +24,15 @@ class UserFakeDataSource @Inject constructor(): UserRepository {
         return Completable.complete()
     }
 
+    override fun create(userEntity: UserEntity): Single<UserEntity> {
+        return Single.just(userEntity)
+    }
+
     override fun setCheckedIn(userId: String, checkedIn: Boolean): Single<UserEntity> {
         return Single.just(userEntity)
     }
 
-    override fun updatePhotoUrl(id: String): Completable {
+    override fun updatePhotoUrl(id: String, url: String): Completable {
         return Completable.complete()
     }
 

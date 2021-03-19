@@ -4,6 +4,7 @@ import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -13,8 +14,15 @@ import javax.inject.Inject
 
 class AuthFirebaseDataSource @Inject constructor(): AuthRepository {
 
-    private var TAG = "AuthRemoteDataSource"
-    private var auth = Firebase.auth
+    companion object {
+        val TAG = "AuthRemoteDataSource"
+        val EMULATOR = true
+    }
+    private val auth = Firebase.auth
+
+    init {
+        if (EMULATOR) auth.useEmulator("10.0.2.2", 9099)
+    }
 
     override fun getCurrentUser(): Single<AuthEntity> {
         return Single.create { emitter ->

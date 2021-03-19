@@ -8,7 +8,17 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
+
+    companion object {
+        private val TAG = "VisitFirebaseDataSource"
+        private val EMULATOR = true
+    }
+
     private val db = Firebase.firestore
+
+    init {
+        if (EMULATOR) db.useEmulator("10.0.2.2", 8080)
+    }
 
     override fun create(userId: String, buildingId: String): Single<VisitEntity> {
         TODO("Not yet implemented")

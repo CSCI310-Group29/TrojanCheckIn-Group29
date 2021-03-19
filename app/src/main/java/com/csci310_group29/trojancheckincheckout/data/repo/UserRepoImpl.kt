@@ -24,12 +24,16 @@ class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSour
         return remoteDataSource.delete(id)
     }
 
+    override fun create(userEntity: UserEntity): Single<UserEntity> {
+        return remoteDataSource.create(userEntity)
+    }
+
     override fun setCheckedIn(userId: String, checkedIn: Boolean): Single<UserEntity> {
         return remoteDataSource.setCheckedIn(userId, checkedIn)
     }
 
-    override fun updatePhotoUrl(id: String): Completable {
-        return remoteDataSource.updatePhotoUrl(id)
+    override fun updatePhotoUrl(id: String, url: String): Completable {
+        return remoteDataSource.updatePhotoUrl(id, url)
     }
 
     override fun queryCheckedInUsers(buildingName: String?, user: User): Single<List<User>> {
