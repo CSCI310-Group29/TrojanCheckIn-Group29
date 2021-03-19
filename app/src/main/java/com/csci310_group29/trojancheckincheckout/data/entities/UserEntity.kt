@@ -7,4 +7,5 @@ data class UserEntity(val id: String,
                       val lastName: String? = null,
                       val major: String? = null,
                       val isCheckedIn: Boolean = false,
-                      val studentId: String? = null)
+                      val studentId: String? = null,
+                      val photoUrl: String? = null)

@@ -22,6 +22,10 @@ class UserRepoImpl @Inject constructor(private val remoteDataSource: UserFirebas
         return remoteDataSource.updateProfile(firstName, lastName, major, studentId)
     }
 
+    override fun updatePhotoURL(url: String): Completable {
+        return remoteDataSource.updatePhotoURL(url)
+    }
+
     override fun updateProfilePicture(profilePicture: Bitmap): Completable {
         return remoteDataSource.updateProfilePicture(profilePicture)
     }

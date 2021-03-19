@@ -15,12 +15,9 @@ class AuthRepoImpl @Inject constructor(private val remoteDataSource: AuthFirebas
         return remoteDataSource.getCurrentUser()
     }
 
+
     override fun logoutCurrentUser(): Completable {
         return remoteDataSource.logoutCurrentUser()
-    }
-
-    override fun updatePhotoURL(url: String): Completable {
-        TODO("Not yet implemented")
     }
 
 
@@ -29,7 +26,7 @@ class AuthRepoImpl @Inject constructor(private val remoteDataSource: AuthFirebas
     }
 
     override fun loginUser(email: String, password: String): Completable {
-        TODO("Not yet implemented")
+        return remoteDataSource.loginUser(email, password)
     }
 
     override fun updateEmail(newEmail: String): Completable {

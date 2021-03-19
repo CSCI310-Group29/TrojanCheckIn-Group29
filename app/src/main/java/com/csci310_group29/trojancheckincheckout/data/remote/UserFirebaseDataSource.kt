@@ -20,6 +20,10 @@ class UserFirebaseDataSource: UserRepository {
         TODO("Not yet implemented")
     }
 
+    override fun updatePhotoURL(url: String): Completable {
+        TODO("Not yet implemented")
+    }
+
     override fun updateProfilePicture(profilePicture: Bitmap): Completable {
         TODO("Not yet implemented")
     }

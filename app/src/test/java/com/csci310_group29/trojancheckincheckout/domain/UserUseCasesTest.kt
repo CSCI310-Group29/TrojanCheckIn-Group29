@@ -9,8 +9,7 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import io.reactivex.Single
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,7 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner
 private val userEntity = UserEntity("12", false, "Tommy", "Trojan", "Computer Science", false, "123")
 private val user = User("12", false, "test@gmail.com", "Tommy", "Trojan", "Computer Science", false, "123")
 private val authEntity = AuthEntity("12",
-        "test@gmail.com", photoURL="exampleURL")
+        "test@gmail.com")
 
 @RunWith(MockitoJUnitRunner::class)
 class UserUseCasesTest {
@@ -49,7 +48,6 @@ class UserUseCasesTest {
             `when`(mockPictureRepo.getProfilePicture("exampleURL")).thenReturn(Single.just(profileByteArray))
         }
         `when`(mockUserRepo.getUser("12")).thenReturn(Single.just(userEntity))
-
     }
 
     @Test
@@ -57,9 +55,13 @@ class UserUseCasesTest {
         val userUseCase = UserUseCases(mockAuthRepo, mockUserRepo, mockPictureRepo)
         val observable = userUseCase.getCurrentlyLoggedInUser()
         observable.test().assertSubscribed().assertComplete()
-        observable.subscribe({ userN ->
+        observable.subscribe({ mUser ->
+            assertEquals(mUser.id, user.id)
+            assertEquals(mUser.email, user.email)
         }, { e ->
-
+            assertTrue(false)
         })
     }
+
+
 }

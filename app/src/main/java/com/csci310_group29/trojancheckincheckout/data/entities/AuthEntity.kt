@@ -6,5 +6,4 @@ import com.google.firebase.firestore.DocumentId
 data class AuthEntity(
         @DocumentId
         val id: String,
-        val email: String,
-        val photoURL: String)
+        val email: String?)

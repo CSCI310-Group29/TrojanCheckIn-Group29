@@ -13,6 +13,7 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import com.google.rpc.context.AttributeContext
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -26,16 +27,23 @@ class UserUseCases @Inject constructor(private val authRepo: AuthRepository,
                 .flatMap { authEntity ->
                     userRepo.getUser(authEntity.id)
                             .flatMap {userEntity ->
-                                    if (picture) {
-                                        pictureRepo.getProfilePicture(authEntity.photoURL)
+                                    if (picture && userEntity.photoUrl != null) {
+                                        pictureRepo.getProfilePicture(userEntity.photoUrl)
                                                 .flatMap { picture ->
-                                                    Single.just(buildUser(authEntity, userEntity, null, picture))
+                                                    Single.just(buildUser(authEntity, userEntity, picture))
                                                 }
                                     } else {
                                         Single.just(buildUser(authEntity, userEntity, null))
                                     }
                                 }
                             }
+    }
+
+    fun updateProfilePicture(picture: ByteArray): Completable {
+        return pictureRepo.updateProfilePicture(picture)
+                .flatMapCompletable {url ->
+                    userRepo.updatePhotoURL(url)
+                }
     }
 
     fun updateProfile(fields: HashMap<String, Any>): Completable {
@@ -47,7 +55,7 @@ class UserUseCases @Inject constructor(private val authRepo: AuthRepository,
     }
 
 
-    private fun buildUser(authEntity: AuthEntity, userEntity: UserEntity, visitEntity: VisitEntity?, picture: ByteArray? = null): User {
+    private fun buildUser(authEntity: AuthEntity, userEntity: UserEntity, picture: ByteArray? = null): User {
 
         return User(authEntity.id, userEntity.isStudent,
                 authEntity.email, userEntity.firstName,
