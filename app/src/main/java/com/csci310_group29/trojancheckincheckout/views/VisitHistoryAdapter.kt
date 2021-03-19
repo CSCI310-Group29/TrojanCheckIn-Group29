@@ -1,13 +1,13 @@
 
 package com.csci310_group29.trojancheckincheckout.views
-/*
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.data.models.Visit
+import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 
 class VisitHistoryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapter<VisitHistoryAdapter.ViewHolder>() {
 
@@ -35,7 +35,7 @@ class VisitHistoryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapt
         val visit: Visit = vHistory[position]
 
         val bText = holder.buildingText
-        bText.text = visit.buildingName
+        bText.text = visit.building!!.buildingName
 
         val checkIn = holder.checkInText
         checkIn.text = visit.checkIn.toString()
@@ -44,4 +44,4 @@ class VisitHistoryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapt
         checkOut.text = visit.checkOut.toString()
 
     }
-}*/
+}

@@ -1,7 +1,7 @@
 
 
 package com.csci310_group29.trojancheckincheckout.views
-/*
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,17 +11,22 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.viewmodels.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_login.*
+import javax.inject.Inject
 
 private const val TAG = "LoginActivity"
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-    private val loginViewModel = LoginViewModel()
-    private var user = User()
+
+    @Inject
+    lateinit var loginViewModel: LoginViewModel
+
     private var pb: ProgressBar? = null
 
     public fun getActivity(): LoginActivity {
@@ -102,4 +107,4 @@ class LoginActivity : AppCompatActivity() {
     }
 
 }
-*/
+

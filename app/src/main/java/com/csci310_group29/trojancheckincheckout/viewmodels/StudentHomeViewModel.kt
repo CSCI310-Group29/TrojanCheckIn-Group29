@@ -1,43 +1,36 @@
-/*
+
 package com.csci310_group29.trojancheckincheckout.viewmodels
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.models.Visit
-import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
-import com.csci310_group29.trojancheckincheckout.data.repo.VisitRepoImpl
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.models.Visit
+import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
+import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.common.InputImage
 import io.reactivex.CompletableObserver
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
-import java.net.URI
+import javax.inject.Inject
 
 
+class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCases,
+                                               private val visitDomain: VisitUseCases):ViewModel() {
 
-class StudentHomeViewModel:ViewModel() {
-
-    val authRepo = AuthRepoImpl(true)
-    val visitRepo = VisitRepoImpl()
     private val TAG = "LoginActivity"
     private val colRef = Firebase.firestore.collection("users")
     private var listener: ListenerRegistration? = null
 
-    val currUser: MutableLiveData<User> = getUserData()
+    val currUser: MutableLiveData<UserEntity> = getUserData()
 
 
-    fun getUserData(): MutableLiveData<User> {
-        return object: MutableLiveData<User>() {
+    fun getUserData(): MutableLiveData<UserEntity> {
+        return object: MutableLiveData<UserEntity>() {
             val data = this
             val docRef = colRef.document(Session.uid)
 
@@ -48,6 +41,7 @@ class StudentHomeViewModel:ViewModel() {
                         Log.e(TAG, "could not get user data from firestore ")
                         return@addSnapshotListener
                     }
+
                     if (snapshot != null && snapshot.exists()) {
                         val first = snapshot["firstName"] as String
                         val last = snapshot["lastName"] as String
@@ -56,7 +50,7 @@ class StudentHomeViewModel:ViewModel() {
                         val sid = snapshot["studentId"] as String
                         val uid = snapshot.id
 
-                        val newUser = User(uid, isStudent, first, last, major, null, sid)
+                        val newUser = UserEntity(uid, isStudent, first, last, major, null, sid)
                         currUser.setValue(newUser)
                     }
                 }
@@ -64,12 +58,11 @@ class StudentHomeViewModel:ViewModel() {
             }
         }
 
-
     }
 
 
     fun parseQR(context: Context, uri: Uri) {
-        val options = BarcodeScannerOptions.Builder()
+       /* val options = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
             .build()
         val image: InputImage
@@ -92,11 +85,11 @@ class StudentHomeViewModel:ViewModel() {
             }
         }.addOnFailureListener {
             throw Exception("could not parse QR code")
-        }
+        }*/
     }
 
     fun checkOutManual() {
-        val observable = visitRepo.checkOut(Session.uid!!)
+        val observable = visitDomain.checkOut()
         observable.subscribe(object: SingleObserver<Visit> {
             override fun onSuccess(t: Visit) {
             }
@@ -115,7 +108,7 @@ class StudentHomeViewModel:ViewModel() {
 
     fun logout() {
         lateinit var dis: Disposable
-        val observable = authRepo.logoutCurrentUser();
+        val observable = authDomain.logout();
         observable.subscribe(object:CompletableObserver {
             override fun onComplete() {
                 dis.dispose()
@@ -138,4 +131,4 @@ class StudentHomeViewModel:ViewModel() {
 
 
 }
-*/
+

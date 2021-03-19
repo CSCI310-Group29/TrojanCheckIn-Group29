@@ -1,21 +1,18 @@
-/*
+
 package com.csci310_group29.trojancheckincheckout.viewmodels
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.csci310_group29.trojancheckincheckout.data.fake.AuthFakeDataSource
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
+import javax.inject.Inject
 
 
-
-class RegisterViewModel: ViewModel() {
-    private var authRepo = AuthRepoImpl(false)
+class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases): ViewModel() {
     private val TAG = "RegisterViewModel"
-/
 
-    public fun register(email:String, password:String,) {
+
+    public fun register(email:String, password:String,user: UserEntity) {
         var success:Boolean = true
         var dis: Disposable? = null
         //Log.i(TAG, "register called successfully");
@@ -39,7 +36,7 @@ class RegisterViewModel: ViewModel() {
         }
 
 
-        val observable = authRepo.createUser(email,password,user);
+        val observable = authDomain.signup(email,password,user);
         observable.subscribe(object: CompletableObserver {
             override fun onComplete() {
                 dis!!.dispose()
@@ -67,4 +64,4 @@ class RegisterViewModel: ViewModel() {
         }
         return ""
     }
-}*/
+}

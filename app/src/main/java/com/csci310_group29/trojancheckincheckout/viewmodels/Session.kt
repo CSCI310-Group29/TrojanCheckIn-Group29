@@ -1,7 +1,8 @@
-/*
+
 package com.csci310_group29.trojancheckincheckout.viewmodels
 
-import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.domain.models.User
+
 
 class Session {
     companion object {
@@ -9,4 +10,4 @@ class Session {
         var user: User? = null
     }
 
-}*/
+}

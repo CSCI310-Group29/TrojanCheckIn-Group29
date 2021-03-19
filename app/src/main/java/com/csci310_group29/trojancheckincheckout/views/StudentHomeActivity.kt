@@ -1,6 +1,6 @@
 
 package com.csci310_group29.trojancheckincheckout.views
-/*
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -26,10 +26,9 @@ class StudentHomeActivity : AppCompatActivity() {
 
     }
 
-    */
-/*private fun observeViewModel() {
+    private fun observeViewModel() {
         TODO("add observers for views in ui")
-    }*//*
+    }
 
 
     fun onViewProfile(view: View) {
@@ -81,4 +80,4 @@ class StudentHomeActivity : AppCompatActivity() {
 
 
 
-}*/
+}

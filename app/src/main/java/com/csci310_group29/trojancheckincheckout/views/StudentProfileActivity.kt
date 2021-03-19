@@ -1,24 +1,27 @@
 
 package com.csci310_group29.trojancheckincheckout.views
-/*
+
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.data.models.User
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.viewmodels.StudentProfileViewModel
 import kotlinx.android.synthetic.main.activity_student_profile.*
 import java.io.File
+import javax.inject.Inject
 
 class StudentProfileActivity : AppCompatActivity() {
-    val viewModel: StudentProfileViewModel by viewModels()
+
+    @Inject
+    lateinit var viewModel: StudentProfileViewModel
+
     private val TAG = "StudentProfileActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +32,7 @@ class StudentProfileActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        val userObserver = Observer<User> {newUser ->
+        val userObserver = Observer<UserEntity> { newUser ->
             FirstName.text = newUser.firstName
             LastName.text = newUser.lastName
             Major.text = newUser.major
@@ -74,4 +77,4 @@ class StudentProfileActivity : AppCompatActivity() {
 
         takePicture.launch(uri)
     }
-}*/
+}

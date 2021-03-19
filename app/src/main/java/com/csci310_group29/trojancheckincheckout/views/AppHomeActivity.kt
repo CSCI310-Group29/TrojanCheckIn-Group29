@@ -1,6 +1,6 @@
 
 package com.csci310_group29.trojancheckincheckout.views
-/*
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -24,4 +24,4 @@ class AppHomeActivity : AppCompatActivity() {
         var intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
-}*/
+}
