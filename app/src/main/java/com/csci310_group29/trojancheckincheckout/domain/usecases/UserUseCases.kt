@@ -40,7 +40,7 @@ open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo:
                             }
     }
 
-    fun updateProfilePicture(picture: ByteArray): Completable {
+    fun updateProfilePicture(picture: ByteArray): Single<User> {
         return authRepo.getCurrentUser()
                 .flatMap { authEntity ->
                     userRepo.get(authEntity.id)
@@ -54,9 +54,11 @@ open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo:
                         pictureRepo.create(user.photoUrl!!, picture)
                     }
                 }
+            .toSingleDefault(false)
+            .flatMap { getCurrentlyLoggedInUser()}
     }
 
-    fun updateProfile(userEntity: UserEntity): Completable {
+    fun updateProfile(userEntity: UserEntity): Single<User> {
         return authRepo.getCurrentUser()
                 .flatMap { authEntity ->
                     userRepo.get(authEntity.id)
@@ -64,6 +66,8 @@ open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo:
                 .flatMapCompletable { user ->
                     userRepo.update(overwrite(user, userEntity))
                 }
+            .toSingleDefault(false)
+            .flatMap { getCurrentlyLoggedInUser() }
     }
 
     fun searchCheckedInUsers(): Single<List<User>> {
