@@ -13,15 +13,15 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
         return remoteDataSource.create(userId, buildingId)
     }
 
-    override fun get(visitId: String): Single<VisitEntity> {
-        return remoteDataSource.get(visitId)
+    override fun get(userId: String, visitId: String): Single<VisitEntity> {
+        return remoteDataSource.get(userId, visitId)
     }
 
     override fun getLatestVisit(userId: String): Single<VisitEntity> {
         return remoteDataSource.getLatestVisit(userId)
     }
 
-    override fun checkOutVisit(visitId: String): Single<VisitEntity> {
-        return remoteDataSource.checkOutVisit(visitId)
+    override fun checkOutVisit(userId: String, visitId: String): Single<VisitEntity> {
+        return remoteDataSource.checkOutVisit(userId, visitId)
     }
 }
