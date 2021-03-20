@@ -4,13 +4,16 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.d
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
+import com.csci310_group29.trojancheckincheckout.databinding.ActivityManagerHomeBinding
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_manager_home.view.*
 import kotlinx.android.synthetic.main.activity_student_home.*
 import java.lang.Exception
 import java.util.*
@@ -22,23 +25,47 @@ private const val TAG = "ManagerHomeActivity"
 @AndroidEntryPoint
 class ManagerHomeActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityManagerHomeBinding
+
     @Inject
     lateinit var viewModel: ManagerHomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_manager_home)
+//        setContentView(R.layout.activity_manager_home)
 
-        //observeViewModel()
+        binding = ActivityManagerHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+//        binding.checkBuilding
+
+        val products = listOf("Building", "car", "truck")
+        products.forEach{
+            d("buchi", "Product is: $it")
+            binding.buildingList.append("$it \n\n")
+        }
+
+
+
+
+
     }
 
-//    private fun observeViewModel() {
-//        val userObserver = Observer<User> { newUser ->
-//            Name.text = newUser.firstName
-//        }
-//
-//        viewModel.currUser.observe(this, userObserver)
-//    }
+    fun onGetBuildings(view: View) {
+
+        try {
+           val rees = viewModel.getBuildingInformation()
+            Log.i(TAG, "$rees")
+
+        } catch (e:Exception) {
+            Log.e(TAG, e.localizedMessage)
+            val toast = Toast.makeText(this, "Unable to get Building names", Toast.LENGTH_SHORT)
+            toast.show()
+        }
+
+
+    }
+
 
     fun onViewProfile(view: View) {
         startActivity(Intent(this, ManagerProfileActivity::class.java))
