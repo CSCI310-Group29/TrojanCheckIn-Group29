@@ -1,8 +1,5 @@
 package com.csci310_group29.trojancheckincheckout.di
 
-import com.csci310_group29.trojancheckincheckout.data.datasource.fake.BuildingFakeDataSource
-import com.csci310_group29.trojancheckincheckout.data.datasource.fake.PictureFakeDataSource
-import com.csci310_group29.trojancheckincheckout.data.datasource.fake.VisitFakeDataSource
 import com.csci310_group29.trojancheckincheckout.data.datasource.remote.*
 import com.csci310_group29.trojancheckincheckout.domain.repo.*
 import dagger.Binds

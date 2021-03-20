@@ -39,8 +39,8 @@ class ManagerProfileActivity : AppCompatActivity() {
         val userObserver = Observer<User> { newUser->
             MFirst.text = newUser.firstName
             MLast.text = newUser.lastName
-            toBitmap(newUser.profilePicture)
-            //MProfilePic.setImageBitmap()
+            val bitmap = toBitmap(newUser.profilePicture)
+            MProfilePic.setImageBitmap(bitmap)
         }
 
         viewModel.currUser.observe(this, userObserver)
