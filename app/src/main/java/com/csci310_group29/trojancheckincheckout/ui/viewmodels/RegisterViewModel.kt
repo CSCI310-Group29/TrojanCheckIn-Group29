@@ -1,5 +1,6 @@
 
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
@@ -15,7 +16,7 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
     public fun register(email:String, password:String,user: UserEntity) {
         var success:Boolean = true
         var dis: Disposable? = null
-        //Log.i(TAG, "register called successfully");
+        Log.i(TAG, "register called successfully");
         if(user.firstName == "") {
             //Log.e(TAG, "No first name passed to registerViewModel")
             throw Exception("Must enter first name")

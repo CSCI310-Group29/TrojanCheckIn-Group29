@@ -7,27 +7,40 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentHomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_student_home.*
 import java.io.File
+import javax.inject.Inject
 
 private const val TAG = "StudentHomeActivity"
 
+@AndroidEntryPoint
 class StudentHomeActivity : AppCompatActivity() {
 
-    private val viewModel: StudentHomeViewModel by viewModels()
+    @Inject
+    lateinit var viewModel: StudentHomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_home)
 
+        observeViewModel()
+
     }
 
     private fun observeViewModel() {
-        TODO("add observers for views in ui")
+        val userObserver = Observer<User> { newUser ->
+            Name.text = newUser.firstName
+
+        }
+
+        viewModel.currUser.observe(this, userObserver)
     }
 
 
