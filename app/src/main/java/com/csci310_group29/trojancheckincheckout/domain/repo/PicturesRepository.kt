@@ -7,9 +7,7 @@ import io.reactivex.Single
 interface PicturesRepository {
     fun get(url: String): Single<ByteArray>
 
-    fun create(picture: ByteArray): Single<String>
-
-    fun update(url: String, picture: ByteArray): Completable
+    fun create(url: String, picture: ByteArray): Completable
 
     fun delete(url: String): Completable
 }

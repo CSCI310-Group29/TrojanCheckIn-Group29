@@ -13,11 +13,11 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         BuildingRepository {
 
     override fun get(id: String): Single<BuildingEntity> {
-        TODO("Not yet implemented")
+        return remoteDataSource.get(id)
     }
 
     override fun getByName(buildingName: String): Single<BuildingEntity> {
-        TODO("Not yet implemented")
+        return remoteDataSource.getByName(buildingName)
     }
 
     override fun incrementNumStudents(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
@@ -25,6 +25,6 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
     }
 
     override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
-        TODO("Not yet implemented")
+        return remoteDataSource.updateCapacities(buildingCapacities)
     }
 }

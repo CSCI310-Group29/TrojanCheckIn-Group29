@@ -10,18 +10,18 @@ import javax.inject.Named
 class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: VisitRepository): VisitRepository {
 
     override fun create(userId: String, buildingId: String): Single<VisitEntity> {
-        TODO("Not yet implemented")
+        return remoteDataSource.create(userId, buildingId)
     }
 
     override fun get(visitId: String): Single<VisitEntity> {
-        TODO("Not yet implemented")
+        return remoteDataSource.get(visitId)
     }
 
     override fun getLatestVisit(userId: String): Single<VisitEntity> {
-        TODO("Not yet implemented")
+        return remoteDataSource.getLatestVisit(userId)
     }
 
     override fun checkOutVisit(visitId: String): Single<VisitEntity> {
-        TODO("Not yet implemented")
+        return remoteDataSource.checkOutVisit(visitId)
     }
 }

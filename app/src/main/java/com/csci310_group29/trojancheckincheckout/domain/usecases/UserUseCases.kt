@@ -47,12 +47,11 @@ open class UserUseCases @Inject constructor(@Named("Repo") private val authRepo:
                 }
                 .flatMapCompletable {user ->
                     if (user.photoUrl == null) {
-                        pictureRepo.create(picture)
-                                .flatMapCompletable { url ->
-                                    userRepo.updatePhotoUrl(user.id!!, url)
-                                }
+                        user.photoUrl = "profilePictures/" + user.id + ".jpg"
+                        userRepo.update(user).toSingleDefault(false)
+                            .flatMapCompletable { pictureRepo.create(user.photoUrl!!, picture)}
                     } else {
-                        pictureRepo.update(user.photoUrl!!, picture)
+                        pictureRepo.create(user.photoUrl!!, picture)
                     }
                 }
     }
