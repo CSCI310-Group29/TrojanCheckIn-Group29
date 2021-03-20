@@ -25,7 +25,10 @@ class PictureFirebaseDataSource @Inject constructor(): PicturesRepository {
                 .addOnSuccessListener { downloadTask ->
                     Log.d(TAG, "Successfully got image")
                     val bytesTransferred = downloadTask.bytesTransferred
-                    val picture = ByteArray(bytesTransferred.toInt())
+                    Log.d(TAG, "bytes transferred: $bytesTransferred")
+                    Log.d(TAG, "total bytes: ${downloadTask.totalByteCount}")
+
+                    val picture = ByteArray(downloadTask.totalByteCount.toInt())
                     downloadTask.stream.read(picture)
                     emitter.onSuccess(picture)
                 }
