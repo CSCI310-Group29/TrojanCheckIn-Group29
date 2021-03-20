@@ -44,7 +44,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                     if (user.isCheckedIn) {
                         visitRepo.getLatestVisit(user.id)
                                 .flatMap {visitEntity ->
-                                    Single.zip(visitRepo.checkOutVisit(visitEntity.id!!),
+                                    Single.zip(visitRepo.checkOutVisit(user.id, visitEntity.id!!),
                                     buildingRepo.incrementNumPeople(visitEntity.buildingId!!, -1),
                                             { newVisitEntity, buildingEntity ->
                                         buildVisitModel(user, buildingEntity, newVisitEntity)
