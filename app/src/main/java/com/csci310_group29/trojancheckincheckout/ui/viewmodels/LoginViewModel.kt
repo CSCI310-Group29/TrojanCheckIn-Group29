@@ -5,14 +5,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
-import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 
-class LoginViewModel @Inject constructor(private val authDomain: AuthUseCases, private val userDomain: UserUseCases) : ViewModel() {
+class LoginViewModel @Inject constructor(private val authDomain: AuthUseCases) : ViewModel() {
     private var user = null
     private val TAG = "LoginViewModel"
 
@@ -25,6 +24,8 @@ class LoginViewModel @Inject constructor(private val authDomain: AuthUseCases, p
             Log.e(TAG, "no email in login in LoginViewModel")
             throw Exception("Must enter a password")
         }
+
+        Log.i(TAG, email + password)
 
         return Single.create { emitter ->
 

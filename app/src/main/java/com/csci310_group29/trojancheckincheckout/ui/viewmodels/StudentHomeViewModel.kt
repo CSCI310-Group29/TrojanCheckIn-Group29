@@ -3,10 +3,9 @@ package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
@@ -26,10 +25,18 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
     private val colRef = Firebase.firestore.collection("users")
     private var listener: ListenerRegistration? = null
 
-    val currUser: MutableLiveData<UserEntity> = getUserData()
+    var currUser: MutableLiveData<User> = MutableLiveData<User>(Session.user)
 
 
-    fun getUserData(): MutableLiveData<UserEntity> {
+
+    fun getUserData(): MutableLiveData<User> {
+        return object: MutableLiveData<User>() {
+            init {
+                //observe changes in DB
+                //currUser.setValue(newUser)
+            }
+        }
+        /*
         return object: MutableLiveData<UserEntity>() {
             val data = this
             val docRef = colRef.document(Session.uid)
@@ -56,7 +63,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 }
 
             }
-        }
+        }*/
 
     }
 

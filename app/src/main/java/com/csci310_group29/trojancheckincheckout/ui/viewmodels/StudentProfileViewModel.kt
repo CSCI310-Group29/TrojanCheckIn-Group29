@@ -5,7 +5,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.google.firebase.firestore.ListenerRegistration
@@ -23,10 +23,16 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
     private var listener: ListenerRegistration? = null
 
 
-    val currUser: MutableLiveData<UserEntity> = getUserData()
+    val currUser: MutableLiveData<User> = MutableLiveData<User>(Session.user)
 
 
-    fun getUserData(): MutableLiveData<UserEntity> {
+    /*fun getUserData(): MutableLiveData<User> {
+        return object: MutableLiveData<User>() {
+            init {
+                currUser.setValue(Session.user)
+            }
+        }
+
         return object: MutableLiveData<UserEntity>() {
             val data = this
             val docRef = colRef.document(Session.uid)
@@ -55,7 +61,7 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
         }
 
 
-    }
+    }*/
 
     fun deleteAccount() {
         var error = false

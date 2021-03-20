@@ -60,6 +60,7 @@ class LoginActivity : AppCompatActivity() {
 
                 override fun onSuccess(t: User) {
                     Log.i(TAG, "success in activity")
+                    //Log.i(TAG, Session.user!!.firstName + Session.user!!.lastName)
                     loadingEnd()
                     loginNextActivity(t)
                     dis!!.dispose()

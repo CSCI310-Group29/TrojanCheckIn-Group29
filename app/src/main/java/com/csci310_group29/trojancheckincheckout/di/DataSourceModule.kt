@@ -1,6 +1,10 @@
 package com.csci310_group29.trojancheckincheckout.di
 
-import com.csci310_group29.trojancheckincheckout.data.datasource.fake.*
+import com.csci310_group29.trojancheckincheckout.data.datasource.fake.BuildingFakeDataSource
+import com.csci310_group29.trojancheckincheckout.data.datasource.fake.PictureFakeDataSource
+import com.csci310_group29.trojancheckincheckout.data.datasource.fake.VisitFakeDataSource
+import com.csci310_group29.trojancheckincheckout.data.datasource.remote.AuthFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.data.datasource.remote.UserFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.*
 import dagger.Binds
 import dagger.Module
@@ -16,12 +20,12 @@ abstract class ADataSourceModule {
     @Binds
     @Singleton
     @Named("Data")
-    abstract fun bindAuthDataSource(authRepo: AuthFakeDataSource): AuthRepository
+    abstract fun bindAuthDataSource(authRepo: AuthFirebaseDataSource): AuthRepository
 
     @Binds
     @Singleton
     @Named("Data")
-    abstract fun bindUserDataSource(userRepo: UserFakeDataSource): UserRepository
+    abstract fun bindUserDataSource(userRepo: UserFirebaseDataSource): UserRepository
 
     @Binds
     @Singleton

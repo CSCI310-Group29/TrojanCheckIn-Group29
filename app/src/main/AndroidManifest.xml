@@ -9,14 +9,18 @@
     <application
         android:name=".App"
         android:allowBackup="true"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TrojanCheckInCheckOut">
-        <activity android:name=".ui.views.ManagerProfileActivity"></activity>
-        <activity android:name=".ui.views.StudentHistoryActivity" />
-        <activity android:name=".ui.views.StudentProfileActivity" />
+        <activity android:name=".ui.views.ManagerProfileActivity"
+            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.ManagerHomeActivity"></activity>
+        <activity android:name=".ui.views.StudentHistoryActivity"
+            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.StudentProfileActivity" />
+        <activity android:name=".ui.views.StudentProfileActivity"
+            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.StudentHomeActivity"/>
         <activity android:name=".ui.views.ManagerHomeActivity" />
         <activity android:name=".ui.views.StudentHomeActivity" />
 
@@ -30,10 +34,13 @@
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
+        <activity android:name=".ui.views.RegisterActivity"
+            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.AppHomeActivity"></activity>
 
         <activity
             android:name=".ui.views.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.AppHomeActivity"/>
         <activity
             android:name=".ui.views.AppHomeActivity"
             android:label="@string/title_activity_app_home"

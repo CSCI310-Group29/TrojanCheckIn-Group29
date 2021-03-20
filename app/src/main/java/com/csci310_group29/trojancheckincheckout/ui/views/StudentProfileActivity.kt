@@ -11,12 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_student_profile.*
 import java.io.File
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class StudentProfileActivity : AppCompatActivity() {
 
     @Inject
@@ -32,7 +34,7 @@ class StudentProfileActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        val userObserver = Observer<UserEntity> { newUser ->
+        val userObserver = Observer<User> { newUser ->
             FirstName.text = newUser.firstName
             LastName.text = newUser.lastName
             Major.text = newUser.major
