@@ -23,7 +23,7 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
         } else if(user.lastName == "") {
             //Log.e(TAG, "No last name passed to registerViewModel")
             throw Exception("Must enter last name")
-        } else if(user.id == "" && !user.isStudent!!) {
+        } else if(user.id == null && user.isStudent!!) {
             //Log.e(TAG, "No student id passed to registerViewModel")
             throw Exception("Must enter student id if you are a student")
         } else if(password.isEmpty()) {
@@ -44,18 +44,18 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
             }
 
             override fun onSubscribe(d: Disposable) {
+                Log.i(TAG, "vm subscribed")
                 dis = d
             }
 
             override fun onError(e: Throwable) {
-                success = false
+                Log.i(TAG, e.localizedMessage)
+                throw(e)
                 dis!!.dispose()
             }
         })
 
-        if(!success) {
-            throw Exception("Unable to Register")
-        }
+
     }
 
     private fun getEmailDomain(email: String): String {

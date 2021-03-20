@@ -1,11 +1,11 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +20,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ManagerProfileActivity : AppCompatActivity() {
+
+    val TAG = "ManagerProfileActivity"
 
     @Inject
     lateinit var viewModel: ManagerProfileViewModel
@@ -51,6 +53,7 @@ class ManagerProfileActivity : AppCompatActivity() {
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             )
+            Log.i(TAG, " image pick activity start")
             startActivityForResult(i, SELECT_PHOTO)
         } catch(e: java.lang.Exception) {
             Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT).show()
@@ -59,12 +62,16 @@ class ManagerProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        Log.i(TAG, "image pick activity returned")
         when(requestCode) {
-            resultCode -> {
-                if(resultCode == Activity.RESULT_OK) {
+            SELECT_PHOTO -> {
+                if(resultCode == RESULT_OK) {
+                    val uri = data!!.data!!
+                    //Log.i(TAG, "uri: " + uri)
+                    //val bm = MediaStore.Images.Media.getBitmap(applicationContext.getContentResolver(),uri)
                     val stream = applicationContext.contentResolver.openInputStream(data!!.data!!)
                     val bitmap = BitmapFactory.decodeStream(stream)
+                    //MProfilePic.setImageBitmap(bitmap)
                     viewModel.updateProfilePic(bitmap)
                 } else {
                     Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT).show()
