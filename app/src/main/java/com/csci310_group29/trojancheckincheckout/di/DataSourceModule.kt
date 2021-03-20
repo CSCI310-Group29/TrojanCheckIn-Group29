@@ -36,7 +36,7 @@ abstract class ADataSourceModule {
     @Binds
     @Singleton
     @Named("Data")
-    abstract fun bindPicturesDataSource(picturesRepo: PictureFirebaseDataSource): PicturesRepository
+    abstract fun bindPicturesDataSource(picturesRepo: PictureFakeDataSource): PicturesRepository
 
     @Binds
     @Singleton
