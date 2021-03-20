@@ -24,7 +24,7 @@ class UserFirebaseDataSourceTest {
 
     @Test
     fun run() {
-        val single = dataSource.get("ecZ1I9BHMMYUBG4LKyap").blockingGet()
+//        val single = dataSource.get("ecZ1I9BHMMYUBG4LKyap").blockingGet()
         createAndGetTest()
     }
     fun createAndGetTest() {

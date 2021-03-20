@@ -21,7 +21,7 @@ import javax.inject.Named
 class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo: BuildingRepository,
                                         @Named("Repo") private val visitRepo: VisitRepository,
                                         @Named("Repo") private val userRepo: UserRepository,
-                                        @Named("Repo") private val userUserCases: UserUseCases) {
+                                        private val userUserCases: UserUseCases) {
 
     fun attemptCheckIn(buildingId: String): Single<Visit> {
         return buildingRepo.incrementNumStudents(buildingId, 1)
