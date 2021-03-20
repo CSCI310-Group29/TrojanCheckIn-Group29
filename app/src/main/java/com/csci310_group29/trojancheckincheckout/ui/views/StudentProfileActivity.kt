@@ -78,8 +78,8 @@ class StudentProfileActivity : AppCompatActivity() {
                     val uri = data!!.data!!
                     val stream = applicationContext.contentResolver.openInputStream(data!!.data!!)
                     val bitmap = BitmapFactory.decodeStream(stream)
-                    //MProfilePic.setImageBitmap(bitmap)
-                    viewModel.updateProfilePic(bitmap)
+                    SProfilePic.setImageBitmap(bitmap)
+                    //viewModel.updateProfilePic(bitmap)
                 } else {
                     Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT).show()
                 }
