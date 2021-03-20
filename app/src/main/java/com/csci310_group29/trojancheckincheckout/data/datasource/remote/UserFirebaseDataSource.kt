@@ -80,9 +80,11 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
             val userRef = db.collection("users").document(userId)
             userRef.update("isCheckedIn", checkedIn)
                 .addOnSuccessListener {
-                    get(userId)
-                        .doAfterSuccess { userEntity -> emitter.onSuccess(userEntity)}
-                        .doOnError { exception -> emitter.onError(exception) }
+                    userRef.get()
+                        .addOnSuccessListener { documentSnapshot ->
+                            emitter.onSuccess(documentSnapshot.toObject<UserEntity>()!!)
+                        }
+                        .addOnFailureListener { e -> emitter.onError(e)}
                 }
                 .addOnFailureListener { exception ->
                     emitter.onError(exception)
