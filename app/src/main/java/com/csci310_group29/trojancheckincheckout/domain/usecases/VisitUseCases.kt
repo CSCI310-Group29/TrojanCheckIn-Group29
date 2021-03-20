@@ -24,7 +24,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                                         private val userUserCases: UserUseCases) {
 
     fun attemptCheckIn(buildingId: String): Single<Visit> {
-        return buildingRepo.incrementNumStudents(buildingId, 1)
+        return buildingRepo.incrementNumPeople(buildingId, 1)
                 .flatMap { building ->
                     userUserCases.getCurrentlyLoggedInUser()
                             .flatMap {user ->
@@ -45,7 +45,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                         visitRepo.getLatestVisit(user.id)
                                 .flatMap {visitEntity ->
                                     Single.zip(visitRepo.checkOutVisit(visitEntity.id!!),
-                                    buildingRepo.incrementNumStudents(visitEntity.buildingId!!, -1),
+                                    buildingRepo.incrementNumPeople(visitEntity.buildingId!!, -1),
                                             { newVisitEntity, buildingEntity ->
                                         buildVisitModel(user, buildingEntity, newVisitEntity)
                                     })
