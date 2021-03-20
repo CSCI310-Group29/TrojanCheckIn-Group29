@@ -23,7 +23,7 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
         } else if(user.lastName == "") {
             //Log.e(TAG, "No last name passed to registerViewModel")
             throw Exception("Must enter last name")
-        } else if(user.id == null && user.isStudent!!) {
+        } else if(user.studentId == "" && user.isStudent!!) {
             //Log.e(TAG, "No student id passed to registerViewModel")
             throw Exception("Must enter student id if you are a student")
         } else if(password.isEmpty()) {
