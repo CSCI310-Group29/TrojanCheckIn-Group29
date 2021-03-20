@@ -1,6 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.di
 
 import com.csci310_group29.trojancheckincheckout.data.datasource.fake.*
+import com.csci310_group29.trojancheckincheckout.data.datasource.remote.PictureFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.*
 import dagger.Binds
 import dagger.Module
@@ -31,7 +32,7 @@ abstract class ADataSourceModule {
     @Binds
     @Singleton
     @Named("Data")
-    abstract fun bindPicturesDataSource(picturesRepo: PictureFakeDataSource): PicturesRepository
+    abstract fun bindPicturesDataSource(picturesRepo: PictureFirebaseDataSource): PicturesRepository
 
     @Binds
     @Singleton
