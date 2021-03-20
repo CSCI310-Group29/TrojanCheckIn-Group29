@@ -30,6 +30,8 @@ class AuthFirebaseDataSource @Inject constructor(): AuthRepository {
             if (currentUser != null) {
                 val uid = currentUser.uid
                 emitter.onSuccess(AuthEntity(uid, currentUser.email))
+            } else {
+                emitter.onError(Exception("not logged in"))
             }
         }
     }
