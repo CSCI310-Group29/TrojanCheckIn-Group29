@@ -29,33 +29,33 @@ class ManagerHomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manager_home)
 
-        observeViewModel()
+        //observeViewModel()
     }
 
-    private fun observeViewModel() {
-        val userObserver = Observer<User> { newUser ->
-            Name.text = newUser.firstName
-        }
-
-        viewModel.currUser.observe(this, userObserver)
-    }
+//    private fun observeViewModel() {
+//        val userObserver = Observer<User> { newUser ->
+//            Name.text = newUser.firstName
+//        }
+//
+//        viewModel.currUser.observe(this, userObserver)
+//    }
 
     fun onViewProfile(view: View) {
         startActivity(Intent(this, ManagerProfileActivity::class.java))
     }
 
-//    fun onLogout(view: View)  {
-//        try {
-//            viewModel.logout()
-//            startActivity(Intent(this, AppHomeActivity::class.java))
-//            finishAffinity()
-//        } catch (e:Exception) {
-//            Log.e(TAG, e.localizedMessage)
-//            val toast = Toast.makeText(this, "Unable to checkout. Try Again", Toast.LENGTH_SHORT)
-//            toast.show()
-//        }
-//
-//    }
+    fun onLogout(view: View)  {
+        try {
+            viewModel.logout()
+            startActivity(Intent(this, AppHomeActivity::class.java))
+            finishAffinity()
+        } catch (e:Exception) {
+            Log.e(TAG, e.localizedMessage)
+            val toast = Toast.makeText(this, "Unable to checkout. Try Again", Toast.LENGTH_SHORT)
+            toast.show()
+        }
+
+    }
 
 
 }
