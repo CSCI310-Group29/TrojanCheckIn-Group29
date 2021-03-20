@@ -81,6 +81,13 @@ class RegisterActivity : AppCompatActivity() {
 
         try {
             registerViewModel!!.register(email, pass, newUser)
+
+            firstNameText.text!!.clear()
+            lastNameText.text!!.clear()
+            emailText.text!!.clear()
+            passwordText.text!!.clear()
+            SIDText.text!!.clear()
+
             val toast = Toast.makeText(this, "Registered", Toast.LENGTH_SHORT)
             toast.show()
         } catch (e: Exception) {

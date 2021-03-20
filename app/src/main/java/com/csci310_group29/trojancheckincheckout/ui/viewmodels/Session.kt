@@ -8,6 +8,7 @@ class Session {
     companion object {
         var uid = ""
         var user: User? = null
+
     }
 
 }

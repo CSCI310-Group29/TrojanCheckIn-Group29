@@ -1,8 +1,7 @@
 
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
-import android.content.Context
-import android.net.Uri
+import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.models.User
@@ -68,7 +67,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
     }
 
 
-    fun parseQR(context: Context, uri: Uri) {
+    fun decodeQR(bitmap: Bitmap) {
        /* val options = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
             .build()
@@ -91,7 +90,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 }
             }
         }.addOnFailureListener {
-            throw Exception("could not parse QR code")
+            throw Exception("could not decode QR code")
         }*/
     }
 

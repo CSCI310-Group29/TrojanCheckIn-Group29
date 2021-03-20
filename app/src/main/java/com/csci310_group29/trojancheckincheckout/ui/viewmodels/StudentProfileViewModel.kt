@@ -1,8 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
-import android.content.ContentResolver
-import android.net.Uri
-import android.provider.MediaStore
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.csci310_group29.trojancheckincheckout.domain.models.User
@@ -85,9 +83,8 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
 
 
 
-    fun updateProfilePic(uri: Uri, cr: ContentResolver) {
+    fun updateProfilePic(bitmap: Bitmap) {
         try {
-            val bitmap = MediaStore.Images.Media.getBitmap(cr,uri)
             //userDomain.updateProfilePicture()
         }catch(e: Exception) {
             Log.e(TAG,"bitmap conversion failed or updateProfile repo failed")
