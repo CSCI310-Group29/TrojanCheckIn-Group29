@@ -26,6 +26,8 @@ class ManagerProfileViewModel @Inject constructor(private val userDomain: UserUs
             observable.subscribe(object: SingleObserver<User> {
                 override fun onSuccess(t: User) {
                     Log.i(TAG, "successful upload")
+                    Session.user = t
+                    currUser.postValue(t)
                 }
 
                 override fun onSubscribe(d: Disposable) {

@@ -67,8 +67,6 @@ class ManagerProfileActivity : AppCompatActivity() {
             SELECT_PHOTO -> {
                 if(resultCode == RESULT_OK) {
                     val uri = data!!.data!!
-                    //Log.i(TAG, "uri: " + uri)
-                    //val bm = MediaStore.Images.Media.getBitmap(applicationContext.getContentResolver(),uri)
                     val stream = applicationContext.contentResolver.openInputStream(data!!.data!!)
                     val bitmap = BitmapFactory.decodeStream(stream)
                     //MProfilePic.setImageBitmap(bitmap)
