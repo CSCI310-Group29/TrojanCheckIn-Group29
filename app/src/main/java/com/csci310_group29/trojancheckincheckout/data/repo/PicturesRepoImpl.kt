@@ -12,12 +12,8 @@ class PicturesRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.get(url)
     }
 
-    override fun create(picture: ByteArray): Single<String> {
-        return remoteDataSource.create(picture)
-    }
-
-    override fun update(url: String, picture: ByteArray): Completable {
-        return remoteDataSource.update(url, picture)
+    override fun create(url: String, picture: ByteArray): Completable {
+        return remoteDataSource.create(url, picture)
     }
 
     override fun delete(url: String): Completable {
