@@ -117,6 +117,8 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
         val observable = authDomain.logout();
         observable.subscribe(object:CompletableObserver {
             override fun onComplete() {
+                Session.uid = ""
+                Session.user = null
                 dis.dispose()
             }
 

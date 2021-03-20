@@ -10,7 +10,9 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import io.reactivex.CompletableObserver
+import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 
@@ -82,13 +84,42 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
     }
 
 
-
     fun updateProfilePic(bitmap: Bitmap) {
+        Log.i(TAG, "view model received bitmap")
+        val byteArray = toByteArray(bitmap)
         try {
-            //userDomain.updateProfilePicture()
-        }catch(e: Exception) {
-            Log.e(TAG,"bitmap conversion failed or updateProfile repo failed")
+            val observable = userDomain.updateProfilePicture(byteArray!!)
+            observable.subscribe(object: SingleObserver<User> {
+                override fun onSuccess(t: User) {
+                    Log.i(TAG, "successful upload")
+                    //Log.i(TAG, Session.user!!.profilePicture.toString())
+                    Session.user = t
+                    //Log.i(TAG, Session.user!!.profilePicture.toString())
+                    currUser.postValue(t)
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.i(TAG, e.localizedMessage)
+                }
+            })
+        } catch(e:Exception) {
+            Log.e(TAG, e.localizedMessage)
         }
+    }
+
+    private fun toByteArray(bitmap: Bitmap): ByteArray? {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+
+        return data
+
+
+
     }
 
 

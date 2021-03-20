@@ -94,7 +94,6 @@ class ManagerProfileActivity : AppCompatActivity() {
             return null;
         }
         try {
-            Log.i(TAG, "${bArray.size}")
             val bitmap = BitmapFactory.decodeByteArray(bArray, 0, bArray.size)
             if(bitmap == null) Log.i(TAG, "cannot decode byte array")
             return bitmap

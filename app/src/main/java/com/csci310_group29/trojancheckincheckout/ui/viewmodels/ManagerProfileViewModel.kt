@@ -68,7 +68,5 @@ class ManagerProfileViewModel @Inject constructor(private val userDomain: UserUs
 
         return data
 
-
-
     }
 }
