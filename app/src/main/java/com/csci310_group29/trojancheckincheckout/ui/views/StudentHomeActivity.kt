@@ -108,7 +108,7 @@ class StudentHomeActivity : AppCompatActivity() {
             REQUEST_IMAGE_CAPTURE -> {
                 if(resultCode == Activity.RESULT_OK) {
                     val imgBitmap = data!!.extras!!.get("data") as Bitmap
-                    viewModel.parseQR(imgBitmap)
+                    viewModel.decodeQR(imgBitmap)
                 }
             }
         }

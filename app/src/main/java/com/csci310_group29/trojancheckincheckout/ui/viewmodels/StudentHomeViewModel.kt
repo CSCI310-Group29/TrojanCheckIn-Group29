@@ -67,7 +67,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
     }
 
 
-    fun parseQR(bitmap: Bitmap) {
+    fun decodeQR(bitmap: Bitmap) {
        /* val options = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
             .build()
@@ -90,7 +90,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 }
             }
         }.addOnFailureListener {
-            throw Exception("could not parse QR code")
+            throw Exception("could not decode QR code")
         }*/
     }
 
