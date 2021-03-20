@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -15,11 +16,19 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Single.just(buildingEntity)
     }
 
+    override fun observe(id: String): Observable<BuildingEntity> {
+        return Observable.just(buildingEntity)
+    }
+
+    override fun observeByName(buildingName: String): Observable<BuildingEntity> {
+        return Observable.just(buildingEntity)
+    }
+
     override fun getByName(buildingName: String): Single<BuildingEntity> {
         return Single.just(buildingEntity)
     }
 
-    override fun incrementNumStudents(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
+    override fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
         return Single.just(buildingEntity)
     }
 
