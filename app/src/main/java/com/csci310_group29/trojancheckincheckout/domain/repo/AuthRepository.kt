@@ -37,7 +37,7 @@ interface AuthRepository {
         Completable that emits completion if the user was succesfully created, or an error if
             the user couldn't be created
      */
-    fun createUser(email: String, password: String): Completable
+    fun createUser(email: String, password: String): Single<AuthEntity>
 
     fun loginUser(email: String, password: String): Completable
 

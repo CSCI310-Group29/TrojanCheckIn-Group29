@@ -61,8 +61,7 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
 
     override fun create(userEntity: UserEntity): Single<UserEntity> {
         return Single.create { emitter ->
-            val userRef = db.collection("users").document()
-            userEntity.id = userRef.id
+            val userRef = db.collection("users").document(userEntity.id!!)
             userRef.set(userEntity)
                 .addOnSuccessListener {
                     Log.d(TAG, "successfully created user")

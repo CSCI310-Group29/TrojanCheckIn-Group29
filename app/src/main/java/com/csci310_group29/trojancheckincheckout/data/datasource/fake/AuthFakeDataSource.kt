@@ -16,8 +16,8 @@ class AuthFakeDataSource @Inject constructor(): AuthRepository {
         return Completable.complete()
     }
 
-    override fun createUser(email: String, password: String): Completable {
-        return Completable.complete()
+    override fun createUser(email: String, password: String): Single<AuthEntity> {
+        return Single.just(AuthEntity("123", "tommy@usc.edu"))
     }
 
     override fun loginUser(email: String, password: String): Completable {

@@ -22,7 +22,7 @@ class AuthRepoImpl @Inject constructor(@Named("Data") private val remoteDataSour
     }
 
 
-    override fun createUser(email: String, password: String) : Completable {
+    override fun createUser(email: String, password: String) : Single<AuthEntity> {
         return remoteDataSource.createUser(email, password)
     }
 

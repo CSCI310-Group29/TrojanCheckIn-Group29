@@ -58,12 +58,13 @@ class AuthFirebaseDataSource @Inject constructor(): AuthRepository {
         }
     }
 
-    override fun createUser(email: String, password: String) : Completable {
-        return Completable.create { emitter ->
+    override fun createUser(email: String, password: String) : Single<AuthEntity> {
+        return Single.create { emitter ->
             Log.d(TAG, "creating user")
             auth.createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener { documentReference ->
-                    emitter.onComplete()
+                .addOnSuccessListener { authResult ->
+                    val user = authResult.user!!
+                    emitter.onSuccess(AuthEntity(user.uid, user.email))
                 }
                 .addOnFailureListener { exception ->
                     Log.d(TAG, exception.message.toString())
