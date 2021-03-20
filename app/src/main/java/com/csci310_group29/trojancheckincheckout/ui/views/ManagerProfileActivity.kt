@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class ManagerProfileActivity : AppCompatActivity() {
 
     val TAG = "ManagerProfileActivity"
+    lateinit var pb: ProgressBar
 
     @Inject
     lateinit var viewModel: ManagerProfileViewModel
@@ -31,6 +33,7 @@ class ManagerProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manager_profile)
+        pb = findViewById(R.id.indeterminateBar)
 
         observeViewModel()
     }
@@ -41,11 +44,21 @@ class ManagerProfileActivity : AppCompatActivity() {
             MLast.text = newUser.lastName
             val bitmap = toBitmap(newUser.profilePicture)
             MProfilePic.setImageBitmap(bitmap)
+            loadingEnd()
+
         }
 
         viewModel.currUser.observe(this, userObserver)
 
 
+    }
+
+    fun loadingStart() {
+        pb!!.visibility = ProgressBar.VISIBLE
+    }
+
+    fun loadingEnd() {
+        pb!!.visibility = ProgressBar.INVISIBLE
     }
 
     fun onUpdateProfilePic(view: View) {
@@ -71,6 +84,7 @@ class ManagerProfileActivity : AppCompatActivity() {
                     val uri = data!!.data!!
                     val stream = applicationContext.contentResolver.openInputStream(data!!.data!!)
                     val bitmap = BitmapFactory.decodeStream(stream)
+                    loadingStart()
                     viewModel.updateProfilePic(bitmap)
                 } else {
                     Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT).show()

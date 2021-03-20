@@ -8,9 +8,9 @@ import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
-class AppHomeViewModel @Inject constructor(private val userDomain: UserUseCases) {
+class SplashScreenViewModel @Inject constructor(private val userDomain: UserUseCases) {
 
-    val TAG = "AppHomeViewModel"
+    val TAG = "SplashScreenViewModel"
     fun isLoggedIn(): Single<User> {
         return Single.create{ emitter ->
             val observable = userDomain.getCurrentlyLoggedInUser(true)
