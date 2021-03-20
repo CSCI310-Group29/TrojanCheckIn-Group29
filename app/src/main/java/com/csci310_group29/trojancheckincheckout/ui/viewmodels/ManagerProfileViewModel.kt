@@ -10,13 +10,14 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import io.reactivex.CompletableObserver
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
-import java.nio.ByteBuffer
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 class ManagerProfileViewModel @Inject constructor(private val userDomain: UserUseCases, private val authDomain: AuthUseCases): ViewModel() {
     val TAG = "ManagerProfileViewModel"
 
     val currUser:MutableLiveData<User> = MutableLiveData<User>(Session.user)
+
 
     fun updateProfilePic(bitmap: Bitmap) {
         Log.i(TAG, "view model received bitmap")
@@ -26,7 +27,9 @@ class ManagerProfileViewModel @Inject constructor(private val userDomain: UserUs
             observable.subscribe(object: SingleObserver<User> {
                 override fun onSuccess(t: User) {
                     Log.i(TAG, "successful upload")
+                    //Log.i(TAG, Session.user!!.profilePicture.toString())
                     Session.user = t
+                    //Log.i(TAG, Session.user!!.profilePicture.toString())
                     currUser.postValue(t)
                 }
 
@@ -58,20 +61,12 @@ class ManagerProfileViewModel @Inject constructor(private val userDomain: UserUs
         })
     }
 
-    private fun toByteArray(bitmap: Bitmap?): ByteArray? {
-        if(bitmap == null) return null
+    private fun toByteArray(bitmap: Bitmap): ByteArray? {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
 
-        val size = bitmap.byteCount
-
-        val buffer = ByteBuffer.allocate(size)
-        val bytes = ByteArray(size)
-
-        bitmap.copyPixelsToBuffer(buffer)
-        buffer.rewind()
-
-        buffer.get(bytes)
-
-        return bytes
+        return data
 
 
 

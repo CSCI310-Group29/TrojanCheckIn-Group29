@@ -2,6 +2,7 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
@@ -40,6 +41,7 @@ class StudentProfileActivity : AppCompatActivity() {
             LastName.text = newUser.lastName
             Major.text = newUser.major
             StudentId.text = newUser.studentId
+            SProfilePic.setImageBitmap(toBitmap(newUser.profilePicture))
 
         }
 
@@ -85,6 +87,13 @@ class StudentProfileActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun toBitmap(bArray: ByteArray?): Bitmap? {
+        if(bArray == null) {
+            return null;
+        }
+        return BitmapFactory.decodeByteArray(bArray,0, bArray.size)
     }
 
     /*fun onUpdateProfilePicture(view: View) {
