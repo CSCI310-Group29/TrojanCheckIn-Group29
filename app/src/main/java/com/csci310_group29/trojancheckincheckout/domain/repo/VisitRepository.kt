@@ -27,11 +27,11 @@ interface VisitRepository {
 
     fun create(userId: String, buildingId: String): Single<VisitEntity>
 
-    fun get(visitId: String): Single<VisitEntity>
+    fun get(userId: String, visitId: String): Single<VisitEntity>
 
     fun getLatestVisit(userId: String): Single<VisitEntity>
 
-    fun checkOutVisit(visitId: String): Single<VisitEntity>
+    fun checkOutVisit(userId: String, visitId: String): Single<VisitEntity>
 
     /*
     Given a userId of a user, checks if the user is currently checked into a building

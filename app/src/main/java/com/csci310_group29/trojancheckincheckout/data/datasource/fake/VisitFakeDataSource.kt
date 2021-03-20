@@ -14,7 +14,7 @@ class VisitFakeDataSource @Inject constructor(): VisitRepository {
         return Single.just(visitEntity)
     }
 
-    override fun get(visitId: String): Single<VisitEntity> {
+    override fun get(userId: String, visitId: String): Single<VisitEntity> {
         return Single.just(visitEntity)
     }
 
@@ -22,7 +22,7 @@ class VisitFakeDataSource @Inject constructor(): VisitRepository {
         return Single.just(visitEntity)
     }
 
-    override fun checkOutVisit(visitId: String): Single<VisitEntity> {
+    override fun checkOutVisit(userId: String, visitId: String): Single<VisitEntity> {
         return Single.just(visitEntity)
     }
 }
