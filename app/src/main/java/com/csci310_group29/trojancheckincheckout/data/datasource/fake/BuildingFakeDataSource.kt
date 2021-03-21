@@ -16,6 +16,10 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Single.just(buildingEntity)
     }
 
+    override fun getAll(): Single<List<BuildingEntity>> {
+        return Single.just(listOf(buildingEntity))
+    }
+
     override fun observe(id: String): Observable<BuildingEntity> {
         return Observable.just(buildingEntity)
     }
@@ -28,7 +32,7 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Single.just(buildingEntity)
     }
 
-    override fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
+    override fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity> {
         return Single.just(buildingEntity)
     }
 

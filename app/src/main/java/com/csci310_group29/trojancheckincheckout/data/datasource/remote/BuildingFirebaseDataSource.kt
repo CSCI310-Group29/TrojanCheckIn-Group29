@@ -41,6 +41,16 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
         }
     }
 
+    override fun getAll(): Single<List<BuildingEntity>> {
+        return Single.create { emitter ->
+            db.collection("buildings").get()
+                .addOnSuccessListener { snapshots ->
+                    emitter.onSuccess(snapshots.toObjects<BuildingEntity>())
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
     override fun observe(id: String): Observable<BuildingEntity> {
         return Observable.create { emitter ->
             val buildingRef = db.collection("buildings").document(id)
@@ -80,20 +90,26 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
         }
     }
 
-    override fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
+    override fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity> {
         return Single.create { emitter ->
-            var building: BuildingEntity? = null
             val buildingRef = db.collection("buildings").document(buildingId)
+            Log.d(TAG, "incrementing num people")
             db.runTransaction { transaction ->
                 val documentSnapshot = transaction.get(buildingRef)
-                if ((documentSnapshot.get("numPeople") as Long) < (documentSnapshot.get("capacity") as Long)) {
-                    transaction.update(buildingRef, "numPeople", FieldValue.increment(incrementCount.toDouble()))
-                    building = transaction.get(buildingRef).toObject<BuildingEntity>()!!
+                if ((documentSnapshot.getDouble("numPeople")!!) < (documentSnapshot.getDouble("capacity")!!)) {
+                    transaction.update(buildingRef, "numPeople", FieldValue.increment(incrementCount))
+                    Log.d(TAG,"transaction successfull")
                 } else {
                     throw FirebaseFirestoreException("capacity is full", FirebaseFirestoreException.Code.ABORTED)
                 }
             }
-                .addOnSuccessListener { emitter.onSuccess(building!!) }
+                .addOnSuccessListener {
+                    buildingRef.get()
+                        .addOnSuccessListener { snap ->
+                            emitter.onSuccess(snap.toObject<BuildingEntity>()!!)
+                        }
+                        .addOnFailureListener { e -> emitter.onError(e) }
+                }
                 .addOnFailureListener { e ->
                     Log.d(TAG, e.message.toString())
                     emitter.onError(e)

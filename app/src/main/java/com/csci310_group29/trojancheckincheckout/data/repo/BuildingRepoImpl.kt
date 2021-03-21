@@ -17,6 +17,10 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.get(id)
     }
 
+    override fun getAll(): Single<List<BuildingEntity>> {
+        return remoteDataSource.getAll()
+    }
+
     override fun observe(id: String): Observable<BuildingEntity> {
         return remoteDataSource.observe(id)
     }
@@ -29,7 +33,7 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.getByName(buildingName)
     }
 
-    override fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
+    override fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity> {
         return remoteDataSource.incrementNumPeople(buildingId, incrementCount)
     }
 

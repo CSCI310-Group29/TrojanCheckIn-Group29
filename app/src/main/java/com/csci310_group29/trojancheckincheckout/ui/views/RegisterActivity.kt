@@ -74,7 +74,7 @@ class RegisterActivity : AppCompatActivity() {
                 first,
                 last,
                 major,
-                false,
+                null,
                 id,
                 null
             )
