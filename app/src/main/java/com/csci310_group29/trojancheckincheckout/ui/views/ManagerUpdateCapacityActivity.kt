@@ -120,8 +120,8 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
         when(requestCode) {
             REQUEST_CSV -> {
                 if(resultCode == Activity.RESULT_OK) {
-                    val csvUri = data?.getDataString()
-                    val observable = viewModel.updateWithCSV(csvUri)
+                    val csvUri = data!!.getDataString()
+                    val observable = viewModel.updateWithCSV(csvUri!!)
                     observable.subscribe(
                         object: CompletableObserver {
                             override fun onComplete() {
