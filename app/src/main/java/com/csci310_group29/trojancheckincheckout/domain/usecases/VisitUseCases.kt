@@ -33,7 +33,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                 .flatMap { building ->
                     userUserCases.getCurrentlyLoggedInUser()
                             .flatMap {user ->
-                                userRepo.setCheckedIn(user.id, true)
+                                userRepo.setCheckedInBuilding(user.id, buildingId)
                                         .flatMap {visitRepo.create(user.id, building.id!!)
                                                     .flatMap { visit ->
                                                         Single.just(buildVisitModel(user, building, visit))
@@ -43,14 +43,14 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                         }
     }
 
-    fun checkOut(): Single<Visit> {
+    fun checkOut(buildingId: String): Single<Visit> {
         return userUserCases.getCurrentlyLoggedInUser()
                 .flatMap { user ->
                     Log.d(TAG, user.toString())
 
-                    if (user.isCheckedIn) {
+                    if (user.checkedInBuilding != null && user.checkedInBuilding.id == buildingId) {
                         Log.d(TAG, "user is checked in")
-                        userRepo.setCheckedIn(user.id, false)
+                        userRepo.setCheckedInBuilding(user.id, null)
                             .flatMap {  newUser ->
                                 visitRepo.getLatestVisit(newUser.id!!)
                                     .flatMap {visitEntity ->
@@ -65,7 +65,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                                     }
                             }
                     } else {
-                        throw Exception("hello")
+                        throw Exception("user is not checked in or is checkout of wrong building")
                     }
                 }
     }

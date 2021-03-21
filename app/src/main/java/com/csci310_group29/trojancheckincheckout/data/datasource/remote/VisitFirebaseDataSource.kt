@@ -1,6 +1,9 @@
 package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
+import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -90,5 +93,9 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }
+    }
+
+    override fun query(user: UserQuery, visit: VisitQuery): Single<List<VisitEntity>> {
+        TODO("Not yet implemented")
     }
 }

@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
+import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -79,10 +81,10 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
         }
     }
 
-    override fun setCheckedIn(userId: String, checkedIn: Boolean): Single<UserEntity> {
+    override fun setCheckedInBuilding(userId: String, buildingId: String?): Single<UserEntity> {
         return Single.create { emitter ->
             val userRef = db.collection("users").document(userId)
-            userRef.update("isCheckedIn", checkedIn)
+            userRef.update("checkedInBuildingId", buildingId)
                 .addOnSuccessListener {
                     userRef.get()
                         .addOnSuccessListener { documentSnapshot ->
@@ -105,7 +107,7 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
         }
     }
 
-    override fun queryCheckedInUsers(buildingName: String?, user: User): Single<List<User>> {
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<UserEntity>> {
         TODO("Not yet implemented")
     }
 

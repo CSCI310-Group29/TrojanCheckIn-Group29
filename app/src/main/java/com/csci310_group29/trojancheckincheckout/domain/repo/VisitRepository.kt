@@ -1,6 +1,8 @@
 package com.csci310_group29.trojancheckincheckout.domain.repo
 
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
+import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import io.reactivex.Single
 
 interface VisitRepository {
@@ -56,5 +58,5 @@ interface VisitRepository {
     Returns
         Single that emits a list of visit objects matching the specified query
      */
-//    fun queryVisits(user: User, visit: Visit): Single<List<Visit>>
+    fun query(user: UserQuery, visit: VisitQuery): Single<List<VisitEntity>>
 }

@@ -110,7 +110,11 @@ class StudentHomeActivity : AppCompatActivity() {
                     val observable = viewModel.decodeQR(imgBitmap)
                     observable.subscribe(object: SingleObserver<Visit> {
                         override fun onSuccess(t: Visit) {
-                            makeToast("Successfully checked into ${t.building!!.buildingName}")
+                            if(Session.isCheckedIn) {
+                                makeToast("Successfully checked into ${t.building!!.buildingName}")
+                            } else {
+                                makeToast("Successfully checked out of ${t.building!!.buildingName}")
+                            }
                         }
 
                         override fun onSubscribe(d: Disposable) {

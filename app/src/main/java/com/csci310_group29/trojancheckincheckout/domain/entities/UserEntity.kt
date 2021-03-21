@@ -7,7 +7,7 @@ data class UserEntity(var id: String? = null,
                       var lastName: String? = null,
                       var major: String? = null,
                       @field:JvmField
-                      var isCheckedIn: Boolean? = false,
+                      var checkedInBuildingId: String? = null,
                       var studentId: String? = null,
                       var photoUrl: String? = null) {
 
@@ -22,7 +22,7 @@ data class UserEntity(var id: String? = null,
         if (firstName != other.firstName) return false
         if (lastName != other.lastName) return false
         if (major != other.major) return false
-        if (isCheckedIn != other.isCheckedIn) return false
+        if (checkedInBuildingId != other.checkedInBuildingId) return false
         if (studentId != other.studentId) return false
         if (photoUrl != other.photoUrl) return false
 
@@ -35,10 +35,9 @@ data class UserEntity(var id: String? = null,
         result = 31 * result + (firstName?.hashCode() ?: 0)
         result = 31 * result + (lastName?.hashCode() ?: 0)
         result = 31 * result + (major?.hashCode() ?: 0)
-        result = 31 * result + (isCheckedIn?.hashCode() ?: 0)
+        result = 31 * result + (checkedInBuildingId?.hashCode() ?: 0)
         result = 31 * result + (studentId?.hashCode() ?: 0)
         result = 31 * result + (photoUrl?.hashCode() ?: 0)
         return result
     }
-
 }
