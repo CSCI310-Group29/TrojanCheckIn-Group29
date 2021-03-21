@@ -29,6 +29,7 @@ class VisitUseCases @Inject constructor(
     }
 
     fun attemptCheckIn(buildingId: String): Single<Visit> {
+        Log.d(TAG, "attempting to check in")
         return buildingRepo.incrementNumPeople(buildingId, 1.toDouble())
                 .flatMap { building ->
                     userUseCases.getCurrentlyLoggedInUser()
@@ -108,6 +109,7 @@ class VisitUseCases @Inject constructor(
     }
 
     fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<Visit>> {
+        Log.d(TAG, "domain get user visit history called")
         if (visitQuery.buildingName != null) {
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
                 .flatMap { building ->

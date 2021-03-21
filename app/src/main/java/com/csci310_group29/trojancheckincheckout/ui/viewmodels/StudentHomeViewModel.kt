@@ -97,8 +97,9 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 emitter.onError(Exception("Unable to get picture"))
             }
 
+
             val scanner = BarcodeScanning.getClient(options)
-            scanner.process(image).addOnSuccessListener {barcodes ->
+            scanner.process(image!!).addOnSuccessListener {barcodes ->
                 for(barcode in barcodes) {
                     val rawValue = barcode.rawValue as String
                     Log.i(TAG, "raw value: $rawValue")
