@@ -10,7 +10,7 @@ data class User(val id: String,
                 val firstName: String? = null,
                 val lastName: String? = null,
                 val major: String? = null,
-                val isCheckedIn: Boolean = false,
+                val checkedInBuilding: Building? = null,
                 val studentId: String? = null,
                 val profilePicture: ByteArray? = null) {
 
@@ -26,7 +26,7 @@ data class User(val id: String,
         if (firstName != other.firstName) return false
         if (lastName != other.lastName) return false
         if (major != other.major) return false
-        if (isCheckedIn != other.isCheckedIn) return false
+        if (checkedInBuilding != other.checkedInBuilding) return false
         if (studentId != other.studentId) return false
         if (profilePicture != null) {
             if (other.profilePicture == null) return false
@@ -43,10 +43,9 @@ data class User(val id: String,
         result = 31 * result + (firstName?.hashCode() ?: 0)
         result = 31 * result + (lastName?.hashCode() ?: 0)
         result = 31 * result + (major?.hashCode() ?: 0)
-        result = 31 * result + isCheckedIn.hashCode()
+        result = 31 * result + (checkedInBuilding?.hashCode() ?: 0)
         result = 31 * result + (studentId?.hashCode() ?: 0)
         result = 31 * result + (profilePicture?.contentHashCode() ?: 0)
         return result
     }
-
 }
