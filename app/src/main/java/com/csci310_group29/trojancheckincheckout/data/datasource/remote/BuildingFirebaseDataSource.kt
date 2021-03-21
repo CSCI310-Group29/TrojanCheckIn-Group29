@@ -1,6 +1,10 @@
 package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
+import android.graphics.Bitmap
+import android.os.Build
+import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
+import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -76,21 +80,30 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
         }
     }
 
-    override fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
+    override fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity> {
         return Single.create { emitter ->
-            var building: BuildingEntity? = null
             val buildingRef = db.collection("buildings").document(buildingId)
+            Log.d(TAG, "incrementing num people")
             db.runTransaction { transaction ->
                 val documentSnapshot = transaction.get(buildingRef)
-                if ((documentSnapshot.get("numPeople") as Int) < (documentSnapshot.get("capacity") as Int)) {
-                    transaction.update(buildingRef, "numPeople", FieldValue.increment(incrementCount as Double))
-                    building = transaction.get(buildingRef).toObject<BuildingEntity>()!!
+                if ((documentSnapshot.getDouble("numPeople")!!) < (documentSnapshot.getDouble("capacity")!!)) {
+                    transaction.update(buildingRef, "numPeople", FieldValue.increment(incrementCount))
+                    Log.d(TAG,"transaction successfull")
                 } else {
                     throw FirebaseFirestoreException("capacity is full", FirebaseFirestoreException.Code.ABORTED)
                 }
             }
-                .addOnSuccessListener { emitter.onSuccess(building!!) }
-                .addOnFailureListener { e -> emitter.onError(e)}
+                .addOnSuccessListener {
+                    buildingRef.get()
+                        .addOnSuccessListener { snap ->
+                            emitter.onSuccess(snap.toObject<BuildingEntity>()!!)
+                        }
+                        .addOnFailureListener { e -> emitter.onError(e) }
+                }
+                .addOnFailureListener { e ->
+                    Log.d(TAG, e.message.toString())
+                    emitter.onError(e)
+                }
         }
     }
 
