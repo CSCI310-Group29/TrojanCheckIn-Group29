@@ -47,6 +47,7 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
                 .addOnSuccessListener { snapshots ->
                     emitter.onSuccess(snapshots.toObjects<BuildingEntity>())
                 }
+                .addOnFailureListener { e -> emitter.onError(e) }
         }
     }
 
