@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.SplashScreenViewModel
-import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -30,8 +29,6 @@ class SplashScreenActivity : AppCompatActivity() {
         observable.subscribe(object: SingleObserver<User> {
             override fun onSuccess(t: User) {
                 Log.i(TAG,"user logged in: $t")
-                Session.uid = t.id
-                Session.user = t
                 loggedInNext(t)
             }
 

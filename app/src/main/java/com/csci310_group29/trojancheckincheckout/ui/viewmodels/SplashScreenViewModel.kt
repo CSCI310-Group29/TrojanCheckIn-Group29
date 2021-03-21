@@ -17,6 +17,9 @@ class SplashScreenViewModel @Inject constructor(private val userDomain: UserUseC
             observable.subscribe(object: SingleObserver<User> {
                 override fun onSuccess(t: User) {
                     Log.i(TAG, "user returned from domain")
+                    Session.uid = t.id
+                    Session.user = t
+                    Session.checkedInBuilding = t.checkedInBuilding
                     emitter.onSuccess(t)
                 }
 
