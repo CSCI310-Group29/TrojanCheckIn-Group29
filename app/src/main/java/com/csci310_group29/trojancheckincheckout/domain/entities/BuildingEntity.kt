@@ -3,12 +3,12 @@ package com.csci310_group29.trojancheckincheckout.domain.entities
 import com.google.firebase.firestore.DocumentId
 
 data class BuildingEntity(@DocumentId
-                          val id: String,
-                          val buildingName: String,
+                          val id: String? = null,
+                          val buildingName: String? = null,
                           val address: String? = null,
-                          val capacity: Int,
-                          val numPeople: Int,
-                          val qrCodeRef: String) {
+                          val capacity: Int? = null,
+                          val numPeople: Int? = null,
+                          val qrCodeRef: String? = null) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -26,12 +26,12 @@ data class BuildingEntity(@DocumentId
     }
 
     override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + buildingName.hashCode()
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + (buildingName?.hashCode() ?: 0)
         result = 31 * result + (address?.hashCode() ?: 0)
-        result = 31 * result + capacity
-        result = 31 * result + numPeople
-        result = 31 * result + qrCodeRef.hashCode()
+        result = 31 * result + (capacity ?: 0)
+        result = 31 * result + (numPeople ?: 0)
+        result = 31 * result + (qrCodeRef?.hashCode() ?: 0)
         return result
     }
 }

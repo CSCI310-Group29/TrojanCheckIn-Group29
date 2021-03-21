@@ -74,7 +74,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
         return Single.create{emitter ->
             if(!(Session.isCheckedIn)) {
                 Log.i(TAG,"checking in")
-                attemptCheckInEmit(emitter,"F6kIidgyQVFzSuINJ6HH")
+                attemptCheckInEmit(emitter,"hcNavd762QBHh2FCVJ6s")
             } else {
                 Log.i(TAG,"checking out")
                 attemptCheckOutEmit(emitter)

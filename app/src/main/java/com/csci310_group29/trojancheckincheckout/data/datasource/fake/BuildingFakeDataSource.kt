@@ -28,7 +28,7 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Single.just(buildingEntity)
     }
 
-    override fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
+    override fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity> {
         return Single.just(buildingEntity)
     }
 

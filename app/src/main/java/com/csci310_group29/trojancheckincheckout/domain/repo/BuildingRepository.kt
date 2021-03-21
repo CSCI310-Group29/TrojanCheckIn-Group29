@@ -16,7 +16,7 @@ interface BuildingRepository {
 
     fun getByName(buildingName: String): Single<BuildingEntity>
 
-    fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity>
+    fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity>
 
     fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable
 }

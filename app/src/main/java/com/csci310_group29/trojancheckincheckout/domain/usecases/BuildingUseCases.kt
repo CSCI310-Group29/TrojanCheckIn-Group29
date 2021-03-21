@@ -33,6 +33,6 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
     }
 
     private fun buildModel(building: BuildingEntity): Building {
-        return Building(building.id, building.buildingName, building.address, building.capacity, building.numPeople, building.qrCodeRef)
+        return Building(building.id!!, building.buildingName!!, building.address, building.capacity!!, building.numPeople!!, building.qrCodeRef!!)
     }
 }

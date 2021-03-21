@@ -29,7 +29,7 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.getByName(buildingName)
     }
 
-    override fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
+    override fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity> {
         return remoteDataSource.incrementNumPeople(buildingId, incrementCount)
     }
 
