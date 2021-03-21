@@ -94,15 +94,15 @@
     <EditText
         android:id="@+id/NewCapacityInput"
         android:layout_width="79dp"
-        android:layout_height="36dp"
+        android:layout_height="56dp"
         android:ems="10"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.707"
+        app:layout_constraintHorizontal_bias="0.703"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.426" />
+        app:layout_constraintVertical_bias="0.434" />
 
     <Spinner
         android:id="@+id/BuildingInput"

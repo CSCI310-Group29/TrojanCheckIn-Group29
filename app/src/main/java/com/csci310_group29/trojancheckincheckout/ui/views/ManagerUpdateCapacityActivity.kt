@@ -10,13 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isEmpty
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerUpdateCapacityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_manager_update_capacity.*
 import javax.inject.Inject
 
 
-
+@AndroidEntryPoint
 class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
     @Inject
@@ -57,13 +58,15 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
         val bSpinner = findViewById<Spinner>(R.id.BuildingInput)
         val buildingCode = bSpinner.selectedItem.toString()
         val newCap = findViewById<EditText>(R.id.NewCapacityInput)
-        val newCapacity = Integer.parseInt(newCap.text.toString())
+        val newCapacity = newCap.text.toString().toDouble()
         // Check if fields are populated
 //        if(NewCapacityInput.isEmpty || BuildingInput.isEmpty()) {
 //            makeToast( "Need to enter Building and New Capacity")
 //            // EXIT FUNCTION
 //            startActivity(Intent(this, ManagerUpdateCapacityActivity.class)))
 //        }
+        val str = "Attempting to update Building " + buildingCode + " with Cap " + newCapacity
+        Log.i(TAG, str)
 
         val observable = viewModel.updateWithUI(buildingCode, newCapacity)
         observable.subscribe(

@@ -27,7 +27,7 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 //    var currUser: MutableLiveData<User> = MutableLiveData<User>(Session.user)
 //    var currBuilding: MutableLiveData<Building> = MutableLiveData<Building>(currUser.)
 
-    fun updateWithUI(buildingId: String, newCapacity: Int): Completable {
+    fun updateWithUI(buildingId: String, newCapacity: Double): Completable {
         return Completable.create { emitter ->
             val observe = buildingDomain.updateSingleBuildingCapacity(buildingId, newCapacity)
             observe.subscribe(object: CompletableObserver {
