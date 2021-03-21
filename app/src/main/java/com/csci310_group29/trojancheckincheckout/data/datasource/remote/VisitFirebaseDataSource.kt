@@ -5,6 +5,7 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
@@ -90,6 +91,30 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
                             emitter.onSuccess(documentSnapshot.toObject<VisitEntity>()!!)
                         }
                         .addOnFailureListener { e -> emitter.onError(e) }
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
+    override fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        var query = db.collection("users")
+            .document(userId)
+            .collection("visits")
+            .orderBy("checkOut", Query.Direction.DESCENDING)
+        if (visitQuery.startCheckIn != null) query =
+            query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
+        if (visitQuery.endCheckIn != null) query =
+            query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
+        if (visitQuery.startCheckOut != null) query =
+            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.startCheckOut!!)
+        if (visitQuery.endCheckOut != null) query =
+            query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut!!)
+        if (visitQuery.buildingId != null) query =
+            query.whereEqualTo("buildingId", visitQuery.buildingId)
+        return Single.create { emitter ->
+            query.get()
+                .addOnSuccessListener { snapshots ->
+                    emitter.onSuccess(snapshots.toObjects<VisitEntity>())
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }

@@ -37,7 +37,7 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.incrementNumPeople(buildingId, incrementCount)
     }
 
-    override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
+    override fun updateCapacities(buildingCapacities: HashMap<String, Double>): Completable {
         return remoteDataSource.updateCapacities(buildingCapacities)
     }
 

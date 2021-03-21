@@ -27,6 +27,10 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
         return remoteDataSource.checkOutVisit(userId, visitId)
     }
 
+    override fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        return remoteDataSource.getUserVisitHistory(userId, visitQuery)
+    }
+
     override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>> {
         return remoteDataSource.query(userQuery, visitQuery)
     }
