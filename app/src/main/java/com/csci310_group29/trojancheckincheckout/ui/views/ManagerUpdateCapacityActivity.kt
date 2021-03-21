@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_manager_update_capacity.*
+import java.net.URI
 import javax.inject.Inject
 
 
@@ -125,8 +126,9 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
         when(requestCode) {
             REQUEST_CSV -> {
                 if(resultCode == Activity.RESULT_OK) {
-                    val csvUri = data!!.getDataString()
-                    val observable = viewModel.updateWithCSV(csvUri!!)
+                    val csvUri = data!!.data!!
+                    val observable = viewModel.updateWithCSV(csvUri)
+                    Log.i(TAG, "CSV URI: " + csvUri)
                     observable.subscribe(
                         object: CompletableObserver {
                             override fun onComplete() {
@@ -144,6 +146,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
                         }
                     )
                 }
+                startActivity(Intent(this, ManagerUpdateCapacityActivity::class.java))
             }
         }
     }

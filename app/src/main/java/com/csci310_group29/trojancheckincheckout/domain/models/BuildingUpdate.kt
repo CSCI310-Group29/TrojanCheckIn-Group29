@@ -8,10 +8,10 @@ class BuildingUpdate {
     var buildingName: String = ""
 
     @CsvBindByName
-    var newCapacity: Int = 0
+    var newCapacity: Double = 0.0
 
     constructor() {}
-    constructor(buildingName: String, newCapacity: Int) {
+    constructor(buildingName: String, newCapacity: Double) {
         this.buildingName = buildingName
         this.newCapacity = newCapacity
     }
@@ -20,7 +20,7 @@ class BuildingUpdate {
         return this.buildingName
     }
 
-    fun getCap(): Int {
+    fun getCap(): Double {
         return this.newCapacity
     }
 

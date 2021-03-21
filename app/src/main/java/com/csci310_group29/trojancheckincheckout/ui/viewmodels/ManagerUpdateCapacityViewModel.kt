@@ -1,5 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
@@ -46,14 +47,20 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 
     }
 
-    fun updateWithCSV(uri: String): Completable {
+    fun updateWithCSV(uri: Uri): Completable {
         return Completable.create { emitter ->
-            var buildingMap: HashMap<String, Int> = HashMap()
+            var buildingMap: HashMap<String, Double> = HashMap()
+            var buildings: List<BuildingUpdate> = emptyList()
             var fileReader: BufferedReader? = null
             var csvToBean: CsvToBean<BuildingUpdate>
 
             try {
-                fileReader = BufferedReader(FileReader(uri))
+                Log.i(TAG, "Inside ViewModel. CSV URI: " + uri)
+//                val parsedUri = uri.replace("content://","")
+//                Log.i(TAG, "Inside ViewModel. Parsed URI: " + parsedUri)
+//                fileReader = BufferedReader(FileReader(parsedUri))
+                fileReader = BufferedReader(FileReader(uri.toString()))
+                Log.i(TAG, "Successfully opened file")
                 csvToBean = CsvToBeanBuilder<BuildingUpdate>(fileReader)
                     .withType(BuildingUpdate::class.java)
                     .withIgnoreLeadingWhiteSpace(true)
@@ -62,9 +69,8 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 //                val buildings = csvToBean.parse()
 //                val csvcontents = csvReader().readAll(uri)
 //                val buildings = grass<BuildingUpdate>().harvest(csvcontents)
-//                for (b in buildings) {
-//                    buildingMap.put(b.getName(), b.getCap())
-//                }
+                val buildings = csvToBean.parse()
+                Log.i(TAG, "Successfully processed file")
 
             } catch(e: Exception) {
                 Log.e(TAG,"Cannot read file")
@@ -72,12 +78,16 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
             } finally {
                 try {
                     fileReader!!.close()
+                    Log.i(TAG, "Successfully read and closed file")
                 } catch(e: Exception) {
                     Log.e(TAG, "Cannot close file")
                     emitter.onError(e)
                 }
             }
 
+            for (b in buildings) {
+                buildingMap.put(b.getName(), b.getCap())
+            }
 
             val observe = buildingDomain.updateMultipleBuildingCapacities(buildingMap)
 
