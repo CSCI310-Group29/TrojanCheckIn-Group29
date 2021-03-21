@@ -22,7 +22,7 @@ class BuildingInfoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_building_info)
 
 
-        val rv = findViewById<View>(R.id.visitHistory) as RecyclerView
+        val rv = findViewById<View>(R.id.buildingInfo) as RecyclerView
 //
         val buildingInfo: List<BuildingEntity>
         try {
