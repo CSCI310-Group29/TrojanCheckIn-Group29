@@ -40,4 +40,8 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
     override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
         return remoteDataSource.updateCapacities(buildingCapacities)
     }
+
+    override fun updateSingleCapacity(buildingId: String, capacity: Double): Completable {
+        return remoteDataSource.updateSingleCapacity(buildingId, capacity)
+    }
 }

@@ -28,7 +28,7 @@ class VisitFakeDataSource @Inject constructor(): VisitRepository {
         return Single.just(visitEntity)
     }
 
-    override fun query(user: UserQuery, visit: VisitQuery): Single<List<VisitEntity>> {
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>> {
         return Single.just(listOf(visitEntity))
     }
 }

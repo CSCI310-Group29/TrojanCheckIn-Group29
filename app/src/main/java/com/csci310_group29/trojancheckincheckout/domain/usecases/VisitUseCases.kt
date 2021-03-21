@@ -10,6 +10,8 @@ import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.BuildingRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.UserRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.VisitRepoImpl
+import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
+import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
@@ -19,10 +21,12 @@ import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
-class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo: BuildingRepository,
-                                        @Named("Repo") private val visitRepo: VisitRepository,
-                                        @Named("Repo") private val userRepo: UserRepository,
-                                        private val userUserCases: UserUseCases) {
+class VisitUseCases @Inject constructor(
+    @Named("Repo") private val buildingRepo: BuildingRepository,
+    @Named("Repo") private val visitRepo: VisitRepository,
+    @Named("Repo") private val userRepo: UserRepository,
+    private val userUserCases: UserUseCases
+) {
 
     companion object {
         private val TAG = "VisitUseCases"
@@ -36,7 +40,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                                 userRepo.setCheckedInBuilding(user.id, buildingId)
                                         .flatMap {visitRepo.create(user.id, building.id!!)
                                                     .flatMap { visit ->
-                                                        Single.just(buildVisitModel(user, building, visit))
+                                                        Single.just(buildVisitModel(user, building, null, visit))
                                                     }
                                         }
                             }
@@ -60,7 +64,7 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                                                 (-1).toDouble()
                                             ),
                                             { newVisitEntity, buildingEntity ->
-                                                buildVisitModel(user, buildingEntity, newVisitEntity)
+                                                buildVisitModel(user, buildingEntity, null, newVisitEntity)
                                             })
                                     }
                             }
@@ -70,25 +74,69 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                 }
     }
 
-    fun searchVisits(): Single<List<Visit>> {
-        TODO("Not yet implemented")
+    fun searchVisits(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<Visit>> {
+        TODO("not yet implemented")
+//        if (visitQuery.buildingName != null) {
+//            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
+//                .flatMap { building ->
+//                    visitQuery.buildingId = building.id
+//                    visitRepo.query(userQuery, visitQuery)
+//                        .flatMap { visitEntities ->
+//                            val visits: MutableList<Visit> = mutableListOf()
+//                            visitEntities.forEach { visitEntity ->
+//                                userUserCases.getUser(visitEntity.userId!!)
+//                                    .doAfterSuccess { user ->  visits.add(buildVisitModel(user, null, building, visitEntity))}
+//                                    .doOnError { e -> throw e}
+//                            }
+//                            Single.just(visits)
+//                        }
+//                }
+//        } else {
+//            return visitRepo.query(userQuery, visitQuery)
+//                .flatMap { visitEntities ->
+//
+//                    val visits: MutableList<Visit> = mutableListOf()
+//                    visitEntities.forEach { visitEntity ->
+//                        buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!)
+//                            .flatMap { building ->
+//                                userUserCases.getUser(visitEntity.userId!!)
+//                                    .doAfterSuccess { user ->
+//                                        visits.add(buildVisitModel(user, null, building, visitEntity))
+//                                    }
+//                                    .doOnError { e -> throw e}
+//                            }
+//
+//                    }
+//                    Single.just(visits)
+//                }
+//        }
     }
 
-    private fun buildVisitModel(user: User, buildingEntity: BuildingEntity, visitEntity: VisitEntity): Visit {
-        val building = Building(
-                id = buildingEntity.id!!,
+    private fun buildVisitModel(user: User, buildingEntity: BuildingEntity?, building: Building?, visitEntity: VisitEntity): Visit {
+        if (building != null) {
+            return Visit(
+                user = user,
+                building = building,
+                checkIn = visitEntity.checkIn,
+                checkOut = visitEntity.checkOut
+            )
+        } else {
+            val newBuilding = Building(
+                id = buildingEntity?.id!!,
                 buildingName = buildingEntity.buildingName!!,
                 address = buildingEntity.address,
                 capacity = buildingEntity.capacity!!,
                 numPeople = buildingEntity.numPeople!!,
                 qrCodeRef = buildingEntity.qrCodeRef!!
-        )
-        return Visit(
+            )
+            return Visit(
                 user = user,
-                building = building,
+                building = newBuilding,
                 checkIn = visitEntity.checkIn,
                 checkOut = visitEntity.checkOut
-        )
+            )
+        }
+
     }
 
 

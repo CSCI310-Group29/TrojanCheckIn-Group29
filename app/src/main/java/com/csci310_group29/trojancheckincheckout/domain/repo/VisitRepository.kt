@@ -58,5 +58,5 @@ interface VisitRepository {
     Returns
         Single that emits a list of visit objects matching the specified query
      */
-    fun query(user: UserQuery, visit: VisitQuery): Single<List<VisitEntity>>
+    fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>>
 }
