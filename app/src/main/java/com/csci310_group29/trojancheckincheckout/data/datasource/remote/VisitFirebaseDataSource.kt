@@ -14,7 +14,7 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
 
     companion object {
         private val TAG = "VisitFirebaseDataSource"
-        private val EMULATOR = true
+        private val EMULATOR = false
     }
 
     private val db = Firebase.firestore

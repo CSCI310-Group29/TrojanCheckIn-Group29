@@ -1,9 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
-import android.graphics.Bitmap
-import android.os.Build
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
-import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -20,7 +17,7 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
 
     companion object {
         private val TAG = "BuildingFirebaseDataSource"
-        private val EMULATOR = true
+        private val EMULATOR = false
     }
 
     private val db = Firebase.firestore
