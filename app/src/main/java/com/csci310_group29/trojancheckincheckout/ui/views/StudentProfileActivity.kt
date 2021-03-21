@@ -16,6 +16,8 @@ import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.CompletableObserver
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_student_profile.*
 import javax.inject.Inject
 
@@ -54,7 +56,32 @@ class StudentProfileActivity : AppCompatActivity() {
     }
 
     fun onDelete(view: View) {
-        viewModel.deleteAccount()
+
+        val observable = viewModel.deleteAccount()
+        observable.subscribe(
+            object: CompletableObserver {
+                override fun onComplete() {
+                    goToStarter();
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    makeToast("Unable to delete Account")
+                }
+            }
+
+        )
+
+    }
+
+    fun makeToast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    fun goToStarter() {
         startActivity(Intent(this, AppHomeActivity::class.java))
         finishAffinity()
     }

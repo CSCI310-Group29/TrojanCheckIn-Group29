@@ -1,5 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.domain.usecases
 
+import android.os.Build
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
@@ -17,6 +18,18 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
                 .flatMap {building -> Single.just(buildModel(building))}
     }
 
+    fun getBuildingInfoById(buildingId: String): Single<Building> {
+        return buildingRepo.get(buildingId)
+            .flatMap { building -> Single.just(buildModel(building)) }
+    }
+
+    fun getAllBuildings(): Single<List<Building>> {
+        return buildingRepo.getAll()
+            .flatMap { buildings ->
+                buildModels(buildings)
+            }
+    }
+
     fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Int): Completable {
         return buildingRepo.updateCapacities(hashMapOf(buildingName to newCapacity))
     }
@@ -32,7 +45,13 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
                 }
     }
 
+    private fun buildModels(buildings: List<BuildingEntity>): Single<List<Building>> {
+        return Single.just(buildings.map { buildingEntity ->
+            buildModel(buildingEntity)
+        })
+    }
+
     private fun buildModel(building: BuildingEntity): Building {
-        return Building(building.id, building.buildingName, building.address, building.capacity, building.numPeople, building.qrCodeRef)
+        return Building(building.id!!, building.buildingName!!, building.address, building.capacity!!, building.numPeople!!, building.qrCodeRef!!)
     }
 }

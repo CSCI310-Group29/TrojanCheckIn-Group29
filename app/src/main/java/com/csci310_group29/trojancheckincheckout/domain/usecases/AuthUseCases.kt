@@ -43,6 +43,10 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
     }
 
     fun deleteAccount(): Completable {
-        return authRepo.deleteCurrentUser()
+        return userUseCases.getCurrentlyLoggedInUser()
+            .flatMapCompletable { user ->
+                userRepo.delete(user.id)
+            }
+            .andThen(authRepo.deleteCurrentUser())
     }
 }

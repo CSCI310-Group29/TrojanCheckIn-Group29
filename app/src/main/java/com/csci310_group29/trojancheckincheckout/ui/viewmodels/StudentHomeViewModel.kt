@@ -12,6 +12,10 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.common.InputImage
 import io.reactivex.CompletableObserver
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
@@ -72,16 +76,10 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
 
     fun decodeQR(bitmap: Bitmap?): Single<Visit> {
         return Single.create{emitter ->
-            if(!(Session.isCheckedIn)) {
-                Log.i(TAG,"checking in")
-                attemptCheckInEmit(emitter,"F6kIidgyQVFzSuINJ6HH")
-            } else {
-                Log.i(TAG,"checking out")
-                attemptCheckOutEmit(emitter)
-            }
-            /*val options = BarcodeScannerOptions.Builder()
+            val options = BarcodeScannerOptions.Builder()
                 .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                 .build()
+            Log.i(TAG, "In studentHomeviewmodel");
 
             var image: InputImage? = null
             try {
@@ -96,27 +94,28 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 for(barcode in barcodes) {
                     val rawValue = barcode.rawValue as String
                     Log.i(TAG, "raw value: $rawValue")
-                    if(!(Session.isCheckedIn)) {
+                    if(Session.checkedInBuilding == null) {
                         Log.i(TAG,"checking in")
                         attemptCheckInEmit(emitter,rawValue)
                     } else {
                         Log.i(TAG,"checking out")
-                        attemptCheckOutEmit(emitter)
+                        attemptCheckOutEmit(emitter, rawValue)
                     }
                 }
-            }.addOnFailureListener {
+            }.addOnFailureListener {e ->
+                Log.i(TAG, e.localizedMessage)
                 emitter.onError(Exception("could not decode QR code"))
-            }*/
+            }
         }
 
     }
 
-    private fun attemptCheckOutEmit(emitter:SingleEmitter<Visit>) {
-        val observable = visitDomain.checkOut()
+    private fun attemptCheckOutEmit(emitter:SingleEmitter<Visit>, buildingId: String) {
+        val observable = visitDomain.checkOut(buildingId)
         observable.subscribe(object: SingleObserver<Visit>{
             override fun onSuccess(t: Visit) {
                 Log.i(TAG, "success domain check out")
-                Session.isCheckedIn = false
+                Session.checkedInBuilding = null
                 emitter.onSuccess(t)
             }
 
@@ -127,7 +126,12 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             override fun onError(e: Throwable) {
                 Log.i(TAG, e.localizedMessage)
                 Log.i(TAG, "error domain check out")
-                emitter.onError(Exception("Could not check out of the building"))
+                val wrongBuilding = Exception("Check out before you can check into another building")
+                if(Session.checkedInBuilding!!.id != buildingId) {
+                    emitter.onError(wrongBuilding)
+                } else {
+                    emitter.onError(Exception("Could not check out of the building"))
+                }
             }
         })
     }
@@ -137,7 +141,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
         observable.subscribe(object: SingleObserver<Visit>{
             override fun onSuccess(t: Visit) {
                 Log.i(TAG, "success domain check in")
-                Session.isCheckedIn = true
+                Session.checkedInBuilding = t.building
                 emitter.onSuccess(t)
             }
 
@@ -146,27 +150,31 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             }
 
             override fun onError(e: Throwable) {
-                Log.i(TAG, e.localizedMessage)
+                //Log.i(TAG, e.localizedMessage)
                 Log.i(TAG, "error domain check in")
                 emitter.onError(Exception("Could not check into the building"))
             }
         })
     }
 
-    fun checkOutManual() {
-        val observable = visitDomain.checkOut()
-        observable.subscribe(object: SingleObserver<Visit> {
-            override fun onSuccess(t: Visit) {
-                Session.isCheckedIn = false
-            }
+    fun checkOutManual(): Single<Visit> {
+        return Single.create{ emitter ->
+            if(Session.checkedInBuilding == null) emitter.onError(Exception("Not Checked In"))
+            val observable = visitDomain.checkOut(Session.checkedInBuilding!!.id)
+            observable.subscribe(object : SingleObserver<Visit> {
+                override fun onSuccess(t: Visit) {
+                    Session.checkedInBuilding = null
+                    emitter.onSuccess(t)
+                }
 
-            override fun onSubscribe(d: Disposable) {
-            }
+                override fun onSubscribe(d: Disposable) {
+                }
 
-            override fun onError(e: Throwable) {
-                throw Exception("unable to check out")
-            }
-        })
+                override fun onError(e: Throwable) {
+                    emitter.onError(e)
+                }
+            })
+        }
 
 
 

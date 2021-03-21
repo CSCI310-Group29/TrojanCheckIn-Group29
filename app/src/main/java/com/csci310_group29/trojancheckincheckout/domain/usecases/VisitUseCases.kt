@@ -1,5 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.domain.usecases
 
+import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
@@ -23,13 +24,17 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                                         @Named("Repo") private val userRepo: UserRepository,
                                         private val userUserCases: UserUseCases) {
 
+    companion object {
+        private val TAG = "VisitUseCases"
+    }
+
     fun attemptCheckIn(buildingId: String): Single<Visit> {
-        return buildingRepo.incrementNumPeople(buildingId, 1)
+        return buildingRepo.incrementNumPeople(buildingId, 1.toDouble())
                 .flatMap { building ->
                     userUserCases.getCurrentlyLoggedInUser()
                             .flatMap {user ->
-                                userRepo.setCheckedIn(user.id, true)
-                                        .flatMap {visitRepo.create(user.id, building.id)
+                                userRepo.setCheckedInBuilding(user.id, buildingId)
+                                        .flatMap {visitRepo.create(user.id, building.id!!)
                                                     .flatMap { visit ->
                                                         Single.just(buildVisitModel(user, building, visit))
                                                     }
@@ -38,20 +43,29 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                         }
     }
 
-    fun checkOut(): Single<Visit> {
+    fun checkOut(buildingId: String): Single<Visit> {
         return userUserCases.getCurrentlyLoggedInUser()
                 .flatMap { user ->
-                    if (user.isCheckedIn) {
-                        visitRepo.getLatestVisit(user.id)
-                                .flatMap {visitEntity ->
-                                    Single.zip(visitRepo.checkOutVisit(user.id, visitEntity.id!!),
-                                    buildingRepo.incrementNumPeople(visitEntity.buildingId!!, -1),
+                    Log.d(TAG, user.toString())
+
+                    if (user.checkedInBuilding != null && user.checkedInBuilding.id == buildingId) {
+                        Log.d(TAG, "user is checked in")
+                        userRepo.setCheckedInBuilding(user.id, null)
+                            .flatMap {  newUser ->
+                                visitRepo.getLatestVisit(newUser.id!!)
+                                    .flatMap {visitEntity ->
+                                        Log.d(TAG, visitEntity.toString())
+                                        Single.zip(visitRepo.checkOutVisit(newUser.id!!, visitEntity.id!!),
+                                            buildingRepo.incrementNumPeople(visitEntity.buildingId!!,
+                                                (-1).toDouble()
+                                            ),
                                             { newVisitEntity, buildingEntity ->
-                                        buildVisitModel(user, buildingEntity, newVisitEntity)
-                                    })
-                                }
+                                                buildVisitModel(user, buildingEntity, newVisitEntity)
+                                            })
+                                    }
+                            }
                     } else {
-                        throw Exception("hello")
+                        throw Exception("user is not checked in or is checkout of wrong building")
                     }
                 }
     }
@@ -62,12 +76,12 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
 
     private fun buildVisitModel(user: User, buildingEntity: BuildingEntity, visitEntity: VisitEntity): Visit {
         val building = Building(
-                id = buildingEntity.id,
-                buildingName = buildingEntity.buildingName,
+                id = buildingEntity.id!!,
+                buildingName = buildingEntity.buildingName!!,
                 address = buildingEntity.address,
-                capacity = buildingEntity.capacity,
-                numPeople = buildingEntity.numPeople,
-                qrCodeRef = buildingEntity.qrCodeRef
+                capacity = buildingEntity.capacity!!,
+                numPeople = buildingEntity.numPeople!!,
+                qrCodeRef = buildingEntity.qrCodeRef!!
         )
         return Visit(
                 user = user,

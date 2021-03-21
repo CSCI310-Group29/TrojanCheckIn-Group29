@@ -18,14 +18,122 @@
     <string name="title_activity_register">RegisterActivity</string>
 
     <string-array name="majors_array">
-        <item>Computer Science</item>
-        <item>Biology</item>
-        <item>Computer Engineering</item>
-        <item>Dance</item>
-        <item>Chemistry</item>
-        <item>Business Administration</item>
-        <item>Architecture</item>
-        <item>Film</item>
+        <item> Accounting </item>
+        <item> Aerospace Engineering </item>
+        <item> American Popular Culture </item>
+        <item> American Studies and Ethnicity </item>
+        <item> Animation and Digital Arts </item>
+        <item> Anthropology </item>
+        <item> Applied Mechanics </item>
+        <item> Applied and Computational Mathematics </item>
+        <item> Archaeology </item>
+        <item> Architectural Studies </item>
+        <item> Architecture </item>
+        <item> Art </item>
+        <item> Art History </item>
+        <item> Arts </item>
+        <item> Astronautical Engineering </item>
+        <item> Astronomy </item>
+        <item> Biochemistry </item>
+        <item> Biological Sciences </item>
+        <item> Biomedical Engineering </item>
+        <item> Biophysics </item>
+        <item> Business Administration </item>
+        <item> Central European Studies </item>
+        <item> Chemical Engineering </item>
+        <item> Chemistry </item>
+        <item> Choral Music </item>
+        <item> Cinema and Media Studies </item>
+        <item> Cinematic Arts </item>
+        <item> Civil Engineering </item>
+        <item> Classics </item>
+        <item> Cognitive Science </item>
+        <item> Communication </item>
+        <item> Comparative Literature </item>
+        <item> Composition </item>
+        <item> Computational Linguistics </item>
+        <item> Computational Neuroscience </item>
+        <item> Computer Engineering and Computer Science </item>
+        <item> Computer Science </item>
+        <item> Dance </item>
+        <item> Data Science </item>
+        <item> Dental Hygiene </item>
+        <item> Design </item>
+        <item> Earth Sciences </item>
+        <item> East Asian Area Studies </item>
+        <item> East Asian Languages and Cultures </item>
+        <item> Economics </item>
+        <item> Electrical and Computer Engineering </item>
+        <item> English </item>
+        <item> Environmental Engineering </item>
+        <item> Environmental Science and Health </item>
+        <item> Environmental Studies </item>
+        <item> Fine Arts </item>
+        <item> French </item>
+        <item> Gender and Sexuality Studies </item>
+        <item> GeoDesign </item>
+        <item> Geological Sciences </item>
+        <item> Global Geodesign </item>
+        <item> Global Health Studies </item>
+        <item> Global Studies </item>
+        <item> Health Promotion and Disease Prevention Studies </item>
+        <item> Health and Human Sciences </item>
+        <item> Health and Humanity </item>
+        <item> History </item>
+        <item> History and Social Science Education </item>
+        <item> Human Biology </item>
+        <item> Human Development and Aging </item>
+        <item> Human Security and Geospatial Intelligence </item>
+        <item> Industrial and Systems Engineering </item>
+        <item> Informatics </item>
+        <item> Intelligence and Cyber Operations </item>
+        <item> Interactive Entertainment </item>
+        <item> International Relations </item>
+        <item> International Relations and the Global Economy </item>
+        <item> Italian </item>
+        <item> Jazz Studies </item>
+        <item> Jewish Studies </item>
+        <item> Journalism </item>
+        <item> Law </item>
+        <item> Lifespan Health </item>
+        <item> Linguistics </item>
+        <item> Linguistics and Cognitive Science </item>
+        <item> Linguistics and East Asian Languages and Cultures </item>
+        <item> Linguistics and Philosophy </item>
+        <item> Mathematics </item>
+        <item> Mechanical Engineering </item>
+        <item> Media Arts and Practice </item>
+        <item> Middle East Studies </item>
+        <item> Music </item>
+        <item> Music Industry </item>
+        <item> Music Production </item>
+        <item> Musical Theatre </item>
+        <item> Narrative Studies </item>
+        <item> Neuroscience </item>
+        <item> Non </item>
+        <item> Occupational Therapy </item>
+        <item> Performance </item>
+        <item> Pharmacology and Drug Development </item>
+        <item> Philosophy </item>
+        <item> Philosophy and Physics </item>
+        <item> Physical Sciences </item>
+        <item> Physics </item>
+        <item> Political Economy </item>
+        <item> Political Science </item>
+        <item> Psychology </item>
+        <item> Public Policy </item>
+        <item> Public Relations </item>
+        <item> Quantitative Biology </item>
+        <item> Real Estate Development </item>
+        <item> Religion </item>
+        <item> Russian </item>
+        <item> Social Sciences </item>
+        <item> Sociology </item>
+        <item> Spanish </item>
+        <item> Theatre </item>
+        <item> Urban Studies and Planning </item>
+        <item> Visual and Performing Arts Studies </item>
+        <item> Writing for Screen and Television </item>
     </string-array>
 
     <string-array name="account_type">
