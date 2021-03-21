@@ -133,7 +133,27 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
         }
     }
 
+
+
     override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
         TODO("Not yet implemented")
+    }
+
+    override fun updateSingleCapacity(buildingId: String, capacity: Double): Completable {
+        return Completable.create { emitter ->
+            val buildingRef = db.collection("buildings").document(buildingId)
+            db.runTransaction { transaction ->
+                val snap = transaction.get(buildingRef)
+                if (capacity >= snap.getDouble("numPeople")!!) {
+                    transaction.update(buildingRef, "capacity", capacity)
+                } else {
+                    throw FirebaseFirestoreException("capacity is too low", FirebaseFirestoreException.Code.ABORTED)
+                }
+            }
+                .addOnSuccessListener { transaction ->
+                    emitter.onComplete()
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
     }
 }

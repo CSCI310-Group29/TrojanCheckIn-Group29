@@ -39,4 +39,9 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
     override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
         return Completable.complete()
     }
+
+    override fun updateSingleCapacity(buildingId: String, capacity: Double): Completable {
+        return Completable.complete()
+    }
+
 }

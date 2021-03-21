@@ -27,7 +27,7 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
         return remoteDataSource.checkOutVisit(userId, visitId)
     }
 
-    override fun query(user: UserQuery, visit: VisitQuery): Single<List<VisitEntity>> {
-        TODO("Not yet implemented")
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        return remoteDataSource.query(userQuery, visitQuery)
     }
 }

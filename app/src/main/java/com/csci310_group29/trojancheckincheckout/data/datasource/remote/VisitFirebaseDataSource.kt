@@ -95,7 +95,53 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
         }
     }
 
-    override fun query(user: UserQuery, visit: VisitQuery): Single<List<VisitEntity>> {
-        TODO("Not yet implemented")
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        var query = db.collectionGroup("visits")
+        if (visitQuery.startCheckIn != null) query =
+            query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
+        if (visitQuery.endCheckIn != null) query =
+            query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
+        if (visitQuery.startCheckOut != null) query =
+            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.startCheckOut!!)
+        if (visitQuery.endCheckOut != null) query =
+            query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut!!)
+        if (visitQuery.buildingId != null) query =
+            query.whereEqualTo("buildingId", visitQuery.buildingId)
+        return Single.create { emitter ->
+            query.get()
+                .addOnSuccessListener { snapshots ->
+                    val visitsList: MutableList<VisitEntity> = mutableListOf()
+                    snapshots.forEach { snap ->
+                        val userRef = snap.reference.parent
+                        userRef.get()
+                            .addOnSuccessListener checkingUser@{ userSnap ->
+                                val userEntities = userSnap.toObjects<UserEntity>()
+                                if (userEntities.isEmpty()) {
+                                    val userEntity = userEntities[0]
+                                    if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
+                                        return@checkingUser
+                                    if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
+                                        return@checkingUser
+                                    if (userQuery.isCheckedIn != null) {
+                                        if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+                                            return@checkingUser
+                                        if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+                                            return@checkingUser
+                                    }
+                                    if (userQuery.major != null && userQuery.major == userEntity.major)
+                                        return@checkingUser
+                                    if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
+                                        return@checkingUser
+                                    if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
+                                        return@checkingUser
+                                    visitsList.add(snap.toObject<VisitEntity>())
+                                }
+                            }
+                            .addOnFailureListener { e -> emitter.onError(e) }
+                    }
+                    emitter.onSuccess(visitsList)
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
     }
 }

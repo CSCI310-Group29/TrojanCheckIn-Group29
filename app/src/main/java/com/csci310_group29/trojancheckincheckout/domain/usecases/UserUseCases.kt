@@ -31,17 +31,7 @@ open class UserUseCases @Inject constructor(
     fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
         return authRepo.getCurrentUser()
             .flatMap { authEntity ->
-                userRepo.get(authEntity.id)
-                    .flatMap { userEntity ->
-                        if (userEntity.checkedInBuildingId != null) {
-                            buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!)
-                                .flatMap { building ->
-                                    getPictureAndUser(picture, authEntity, building, userEntity)
-                                }
-                        } else {
-                            getPictureAndUser(picture, authEntity, null, userEntity)
-                        }
-                    }
+                getUser(authEntity.id, picture)
             }
     }
 
@@ -73,6 +63,20 @@ open class UserUseCases @Inject constructor(
                 }
             .toSingleDefault(false)
             .flatMap { getCurrentlyLoggedInUser() }
+    }
+
+    fun getUser(userId: String, picture: Boolean = false): Single<User> {
+        return userRepo.get(userId)
+            .flatMap { userEntity ->
+                if (userEntity.checkedInBuildingId != null) {
+                    buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!)
+                        .flatMap { building ->
+                            getPictureAndUser(picture, null, building, userEntity)
+                        }
+                } else {
+                    getPictureAndUser(picture, null, null, userEntity)
+                }
+            }
     }
 
     fun searchUsers(userQuery: UserQuery, visitQuery: VisitQuery, picture: Boolean = true): Single<List<User>> {

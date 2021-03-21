@@ -45,11 +45,12 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
             }
     }
 
-    fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Int): Completable {
-        return buildingRepo.updateCapacities(hashMapOf(buildingName to newCapacity))
+    fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Double): Completable {
+        return buildingRepo.updateSingleCapacity(buildingName, newCapacity)
     }
 
     fun updateMultipleBuildingCapacities(buildings: HashMap<String, Int>): Completable {
+        TODO("Not yet implemented")
         return buildingRepo.updateCapacities(buildings)
     }
 

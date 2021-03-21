@@ -22,4 +22,6 @@ interface BuildingRepository {
     fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity>
 
     fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable
+
+    fun updateSingleCapacity(buildingId: String, capacity: Double): Completable
 }
