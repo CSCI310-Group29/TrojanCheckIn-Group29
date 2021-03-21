@@ -41,6 +41,15 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
         }
     }
 
+    override fun getAll(): Single<List<BuildingEntity>> {
+        return Single.create { emitter ->
+            db.collection("buildings").get()
+                .addOnSuccessListener { snapshots ->
+                    emitter.onSuccess(snapshots.toObjects<BuildingEntity>())
+                }
+        }
+    }
+
     override fun observe(id: String): Observable<BuildingEntity> {
         return Observable.create { emitter ->
             val buildingRef = db.collection("buildings").document(id)

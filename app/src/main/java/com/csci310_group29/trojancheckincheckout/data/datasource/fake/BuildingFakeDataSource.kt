@@ -16,6 +16,10 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Single.just(buildingEntity)
     }
 
+    override fun getAll(): Single<List<BuildingEntity>> {
+        return Single.just(listOf(buildingEntity))
+    }
+
     override fun observe(id: String): Observable<BuildingEntity> {
         return Observable.just(buildingEntity)
     }
