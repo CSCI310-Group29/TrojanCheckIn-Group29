@@ -79,6 +79,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             val options = BarcodeScannerOptions.Builder()
                 .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                 .build()
+            Log.i(TAG, "In studentHomeviewmodel");
 
             var image: InputImage? = null
             try {
@@ -149,7 +150,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             }
 
             override fun onError(e: Throwable) {
-                Log.i(TAG, e.localizedMessage)
+                //Log.i(TAG, e.localizedMessage)
                 Log.i(TAG, "error domain check in")
                 emitter.onError(Exception("Could not check into the building"))
             }
