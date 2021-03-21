@@ -85,6 +85,7 @@ class StudentHomeActivity : AppCompatActivity() {
         }
 
 
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -95,7 +96,7 @@ class StudentHomeActivity : AppCompatActivity() {
                 if(resultCode == Activity.RESULT_OK) {
                     val imgBitmap = data!!.extras!!.get("data") as Bitmap
                     val observable = viewModel.decodeQR(imgBitmap)
-                    observable.subscribe(object: SingleObserver<Visit>{
+                    observable.subscribe(object: SingleObserver<Visit> {
                         override fun onSuccess(t: Visit) {
                             makeToast("Successfully checked into ${t.building!!.buildingName}")
                         }

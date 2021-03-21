@@ -12,10 +12,6 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.common.InputImage
 import io.reactivex.CompletableObserver
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
@@ -74,9 +70,16 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
     }
 
 
-    fun decodeQR(bitmap: Bitmap): Single<Visit> {
+    fun decodeQR(bitmap: Bitmap?): Single<Visit> {
         return Single.create{emitter ->
-            val options = BarcodeScannerOptions.Builder()
+            if(!(Session.isCheckedIn)) {
+                Log.i(TAG,"checking in")
+                attemptCheckInEmit(emitter,"F6kIidgyQVFzSuINJ6HH")
+            } else {
+                Log.i(TAG,"checking out")
+                attemptCheckOutEmit(emitter)
+            }
+            /*val options = BarcodeScannerOptions.Builder()
                 .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                 .build()
 
@@ -103,7 +106,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 }
             }.addOnFailureListener {
                 emitter.onError(Exception("could not decode QR code"))
-            }
+            }*/
         }
 
     }
@@ -134,9 +137,6 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
         observable.subscribe(object: SingleObserver<Visit>{
             override fun onSuccess(t: Visit) {
                 Log.i(TAG, "success domain check in")
-                /*val newUser = User(Session.uid, Session.user!!.isStudent!!, Session.user!!.email,
-                    Session.user!!.firstName, Session.user!!.lastName, Session.user!!.major, !(Session.user!!.isCheckedIn!!),
-                    Session.user!!.studentId, Session.user!!.profilePicture)*/
                 Session.isCheckedIn = true
                 emitter.onSuccess(t)
             }
