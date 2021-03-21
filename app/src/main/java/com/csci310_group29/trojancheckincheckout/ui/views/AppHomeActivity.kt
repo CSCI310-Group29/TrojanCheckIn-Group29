@@ -7,11 +7,15 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.csci310_group29.trojancheckincheckout.R
 
+
 class AppHomeActivity : AppCompatActivity() {
+
+    val TAG = "AppHomeActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_home)
+
     }
 
     fun onLogin(view: View) {

@@ -14,7 +14,7 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
 
     companion object {
         private val TAG = "VisitFirebaseDataSource"
-        private val EMULATOR = true
+        private val EMULATOR = false
     }
 
     private val db = Firebase.firestore
@@ -25,7 +25,10 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
 
     override fun create(userId: String, buildingId: String): Single<VisitEntity> {
         return Single.create { emitter ->
-            val visitRef = db.collection("visits").document()
+            val visitRef = db.collection("users")
+                .document(userId)
+                .collection("visits")
+                .document()
             val visitEntity = VisitEntity(visitRef.id, userId, buildingId, Date(), null)
             visitRef.set(visitEntity)
                 .addOnSuccessListener {
@@ -40,9 +43,12 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
         }
     }
 
-    override fun get(visitId: String): Single<VisitEntity> {
+    override fun get(userId: String, visitId: String): Single<VisitEntity> {
         return Single.create { emitter ->
-            val visitRef = db.collection("visits").document(visitId)
+            val visitRef = db.collection("users")
+                .document(userId)
+                .collection("visits")
+                .document(visitId)
             visitRef.get()
                 .addOnSuccessListener { documentSnapshot ->
                     emitter.onSuccess(documentSnapshot.toObject<VisitEntity>()!!)
@@ -53,7 +59,11 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
 
     override fun getLatestVisit(userId: String): Single<VisitEntity> {
         return Single.create { emitter ->
-            val visitRef = db.collection("visits").orderBy("checkIn").limitToLast(1)
+            val visitRef = db.collection("users")
+                .document(userId)
+                .collection("visits")
+                .orderBy("checkIn")
+                .limitToLast(1)
             visitRef.get()
                 .addOnSuccessListener { documentSnapshot ->
                     val visitEntities = documentSnapshot.toObjects<VisitEntity>()
@@ -64,9 +74,12 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
         }
     }
 
-    override fun checkOutVisit(visitId: String): Single<VisitEntity> {
+    override fun checkOutVisit(userId: String, visitId: String): Single<VisitEntity> {
         return Single.create { emitter ->
-            val visitRef = db.collection("visits").document(visitId)
+            val visitRef = db.collection("users")
+                .document(userId)
+                .collection("visits")
+                .document(visitId)
             visitRef.update("checkOut", Date())
                 .addOnSuccessListener {
                     visitRef.get()

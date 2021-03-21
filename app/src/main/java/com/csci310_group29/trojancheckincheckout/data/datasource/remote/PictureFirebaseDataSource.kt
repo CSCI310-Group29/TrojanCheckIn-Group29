@@ -21,12 +21,11 @@ class PictureFirebaseDataSource @Inject constructor(): PicturesRepository {
         return Single.create { emitter ->
             val storageRef = storage.reference
             val pictureRef = storageRef.child(url)
-            pictureRef.stream
-                .addOnSuccessListener { downloadTask ->
+            val ONE_MEGABYTE: Long = 1024 * 1024 * 5
+            pictureRef.getBytes(ONE_MEGABYTE)
+                .addOnSuccessListener { picture ->
                     Log.d(TAG, "Successfully got image")
-                    val bytesTransferred = downloadTask.bytesTransferred
-                    val picture = ByteArray(bytesTransferred.toInt())
-                    downloadTask.stream.read(picture)
+                    Log.d(TAG, "total bytes: ${picture.size}")
                     emitter.onSuccess(picture)
                 }
                 .addOnFailureListener { e ->

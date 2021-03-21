@@ -13,8 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.SingleObserver
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_student_home.*
 import javax.inject.Inject
 
@@ -73,23 +76,6 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun onScan(view: View) {
-        /*val file = File(filesDir, "cameraPic")
-        val uri = FileProvider.getUriForFile(this, "file_provider",file)
-
-
-        val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if(success) {
-                Log.i(TAG,"got image")
-                viewModel.parseQR(applicationContext,uri)
-            } else {
-                Log.e(TAG, "unable to take picture")
-                val toast = Toast.makeText(this, "Unable to checkout. Try again",Toast.LENGTH_SHORT)
-                toast.show()
-            }
-
-        }
-
-        takePicture.launch(uri)*/
 
         val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
@@ -97,6 +83,7 @@ class StudentHomeActivity : AppCompatActivity() {
         } catch(e: Exception) {
             Toast.makeText(this, "unable to open camera", Toast.LENGTH_SHORT).show()
         }
+
 
 
     }
@@ -108,10 +95,27 @@ class StudentHomeActivity : AppCompatActivity() {
             REQUEST_IMAGE_CAPTURE -> {
                 if(resultCode == Activity.RESULT_OK) {
                     val imgBitmap = data!!.extras!!.get("data") as Bitmap
-                    viewModel.decodeQR(imgBitmap)
+                    val observable = viewModel.decodeQR(imgBitmap)
+                    observable.subscribe(object: SingleObserver<Visit> {
+                        override fun onSuccess(t: Visit) {
+                            makeToast("Successfully checked into ${t.building!!.buildingName}")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+
+                        }
+
+                        override fun onError(e: Throwable) {
+                            makeToast(e.localizedMessage)
+                        }
+                    })
                 }
             }
         }
+    }
+
+    fun makeToast(msg: String) {
+        Toast.makeText(this,msg,Toast.LENGTH_SHORT)
     }
 
 

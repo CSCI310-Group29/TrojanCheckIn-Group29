@@ -2,11 +2,13 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -26,11 +28,14 @@ class StudentProfileActivity : AppCompatActivity() {
     lateinit var viewModel: StudentProfileViewModel
 
     private val TAG = "StudentProfileActivity"
+    lateinit var pb: ProgressBar;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_profile)
 
+        pb = findViewById(R.id.indeterminateBar)
+        loadingEnd()
         observeViewModel()
     }
 
@@ -40,6 +45,8 @@ class StudentProfileActivity : AppCompatActivity() {
             LastName.text = newUser.lastName
             Major.text = newUser.major
             StudentId.text = newUser.studentId
+            SProfilePic.setImageBitmap(toBitmap(newUser.profilePicture))
+            loadingEnd()
 
         }
 
@@ -78,8 +85,8 @@ class StudentProfileActivity : AppCompatActivity() {
                     val uri = data!!.data!!
                     val stream = applicationContext.contentResolver.openInputStream(data!!.data!!)
                     val bitmap = BitmapFactory.decodeStream(stream)
-                    SProfilePic.setImageBitmap(bitmap)
-                    //viewModel.updateProfilePic(bitmap)
+                    loadingStart()
+                    viewModel.updateProfilePic(bitmap)
                 } else {
                     Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT).show()
                 }
@@ -87,28 +94,19 @@ class StudentProfileActivity : AppCompatActivity() {
         }
     }
 
-    /*fun onUpdateProfilePicture(view: View) {
-        val file = File(filesDir, "cameraPic")
-        val uri = FileProvider.getUriForFile(this, "file_provider",file)
+    fun loadingStart() {
+        pb!!.visibility = ProgressBar.VISIBLE
+    }
 
+    fun loadingEnd() {
+        pb!!.visibility = ProgressBar.INVISIBLE
+    }
 
-        val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if(success) {
-                Log.i(TAG,"got image")
-                try {
-                    viewModel.updateProfilePic(uri, this.contentResolver)
-                } catch(e:Exception) {
-                    val toast = Toast.makeText(this, "Unable to update profile picture. Try again", Toast.LENGTH_SHORT)
-                    toast.show()
-                }
-            } else {
-                Log.e(TAG, "unable to take picture")
-                val toast = Toast.makeText(this, "Unable to checkout. Try again", Toast.LENGTH_SHORT)
-                toast.show()
-            }
-
+    private fun toBitmap(bArray: ByteArray?): Bitmap? {
+        if(bArray == null) {
+            return null;
         }
+        return BitmapFactory.decodeByteArray(bArray,0, bArray.size)
+    }
 
-        takePicture.launch(uri)
-    }*/
 }

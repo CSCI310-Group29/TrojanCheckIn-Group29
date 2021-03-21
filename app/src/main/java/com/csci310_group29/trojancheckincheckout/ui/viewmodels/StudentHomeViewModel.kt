@@ -2,6 +2,7 @@
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.models.User
@@ -12,6 +13,8 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import io.reactivex.CompletableObserver
+import io.reactivex.Single
+import io.reactivex.SingleEmitter
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
@@ -20,7 +23,7 @@ import javax.inject.Inject
 class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCases,
                                                private val visitDomain: VisitUseCases):ViewModel() {
 
-    private val TAG = "LoginActivity"
+    private val TAG = "StudentHomeViewModel"
     private val colRef = Firebase.firestore.collection("users")
     private var listener: ListenerRegistration? = null
 
@@ -67,37 +70,94 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
     }
 
 
-    fun decodeQR(bitmap: Bitmap) {
-       /* val options = BarcodeScannerOptions.Builder()
-            .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
-            .build()
-        val image: InputImage
-        try {
-            image = InputImage.fromFilePath(context,uri)
-        } catch(e: Exception) {
-            Log.e(TAG,e.localizedMessage)
-            throw Exception("unable to get picture")
+    fun decodeQR(bitmap: Bitmap?): Single<Visit> {
+        return Single.create{emitter ->
+            if(!(Session.isCheckedIn)) {
+                Log.i(TAG,"checking in")
+                attemptCheckInEmit(emitter,"F6kIidgyQVFzSuINJ6HH")
+            } else {
+                Log.i(TAG,"checking out")
+                attemptCheckOutEmit(emitter)
+            }
+            /*val options = BarcodeScannerOptions.Builder()
+                .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+                .build()
+
+            var image: InputImage? = null
+            try {
+                image = InputImage.fromBitmap(bitmap,0)
+            } catch(e: Exception) {
+                Log.e(TAG,e.localizedMessage)
+                emitter.onError(Exception("Unable to get picture"))
+            }
+
+            val scanner = BarcodeScanning.getClient(options)
+            scanner.process(image).addOnSuccessListener {barcodes ->
+                for(barcode in barcodes) {
+                    val rawValue = barcode.rawValue as String
+                    Log.i(TAG, "raw value: $rawValue")
+                    if(!(Session.isCheckedIn)) {
+                        Log.i(TAG,"checking in")
+                        attemptCheckInEmit(emitter,rawValue)
+                    } else {
+                        Log.i(TAG,"checking out")
+                        attemptCheckOutEmit(emitter)
+                    }
+                }
+            }.addOnFailureListener {
+                emitter.onError(Exception("could not decode QR code"))
+            }*/
         }
 
-        val scanner = BarcodeScanning.getClient()
-        val result = scanner.process(image).addOnSuccessListener {barcodes ->
-            for(barcode in barcodes) {
-                val rawValue = barcode.rawValue;
-                if(currUser.value!!.isCheckedIn != null) {
-                    visitRepo.attemptCheckIn(currUser.value!!.id!!, rawValue)
-                } else {
-                    visitRepo.checkOut(Session.uid!!)
-                }
+    }
+
+    private fun attemptCheckOutEmit(emitter:SingleEmitter<Visit>) {
+        val observable = visitDomain.checkOut()
+        observable.subscribe(object: SingleObserver<Visit>{
+            override fun onSuccess(t: Visit) {
+                Log.i(TAG, "success domain check out")
+                Session.isCheckedIn = false
+                emitter.onSuccess(t)
             }
-        }.addOnFailureListener {
-            throw Exception("could not decode QR code")
-        }*/
+
+            override fun onSubscribe(d: Disposable) {
+                Log.i(TAG, "view model subscribed checkout")
+            }
+
+            override fun onError(e: Throwable) {
+                Log.i(TAG, e.localizedMessage)
+                Log.i(TAG, "error domain check out")
+                emitter.onError(Exception("Could not check out of the building"))
+            }
+        })
+    }
+
+    private fun attemptCheckInEmit(emitter: SingleEmitter<Visit>, buildingId: String) {
+        val observable = visitDomain.attemptCheckIn(buildingId)
+        observable.subscribe(object: SingleObserver<Visit>{
+            override fun onSuccess(t: Visit) {
+                Log.i(TAG, "success domain check in")
+                Session.isCheckedIn = true
+                emitter.onSuccess(t)
+            }
+
+            override fun onSubscribe(d: Disposable) {
+                Log.i(TAG, "view model subscribed checkin")
+            }
+
+            override fun onError(e: Throwable) {
+                Log.i(TAG, e.localizedMessage)
+                Log.i(TAG, "error domain check in")
+                emitter.onError(Exception("Could not check into the building"))
+            }
+        })
     }
 
     fun checkOutManual() {
         val observable = visitDomain.checkOut()
         observable.subscribe(object: SingleObserver<Visit> {
             override fun onSuccess(t: Visit) {
+                Session.isCheckedIn = false
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -117,6 +177,8 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
         val observable = authDomain.logout();
         observable.subscribe(object:CompletableObserver {
             override fun onComplete() {
+                Session.uid = ""
+                Session.user = null
                 dis.dispose()
             }
 

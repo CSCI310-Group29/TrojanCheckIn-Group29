@@ -5,25 +5,38 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.type.watch" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-feature android:name="android.hardware.camera"
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TrojanCheckInCheckOut">
-        <activity android:name=".ui.views.ManagerProfileActivity"
-            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.ManagerHomeActivity"></activity>
-        <activity android:name=".ui.views.StudentHistoryActivity"
-            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.StudentProfileActivity" />
-        <activity android:name=".ui.views.StudentProfileActivity"
-            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.StudentHomeActivity"/>
+        android:theme="@style/Theme.TrojanCheckInCheckOut"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".ui.views.SplashScreenActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.views.ManagerProfileActivity"
+            android:parentActivityName=".ui.views.ManagerHomeActivity" />
+        <activity
+            android:name=".ui.views.StudentHistoryActivity"
+            android:parentActivityName=".ui.views.StudentProfileActivity" />
+        <activity
+            android:name=".ui.views.StudentProfileActivity"
+            android:parentActivityName=".ui.views.StudentHomeActivity" />
         <activity android:name=".ui.views.ManagerHomeActivity" />
         <activity android:name=".ui.views.StudentHomeActivity" />
 
@@ -37,22 +50,18 @@
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
-        <activity android:name=".ui.views.RegisterActivity"
-            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.AppHomeActivity"></activity>
 
+        <activity
+            android:name=".ui.views.RegisterActivity"
+            android:parentActivityName=".ui.views.AppHomeActivity" />
         <activity
             android:name=".ui.views.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName="com.csci310_group29.trojancheckincheckout.ui.views.AppHomeActivity"/>
+            android:parentActivityName=".ui.views.AppHomeActivity" />
         <activity
             android:name=".ui.views.AppHomeActivity"
             android:label="@string/title_activity_app_home"
             android:theme="@style/Theme.TrojanCheckInCheckOut.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
