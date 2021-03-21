@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
@@ -56,26 +57,43 @@ class StudentProfileActivity : AppCompatActivity() {
     }
 
     fun onDelete(view: View) {
+        val yn = arrayOf("Yes", "No")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Are you sure you want to delete your account?")
+        builder.setItems(yn) { dialog, which ->
+            when(which) {
+                0 -> {
+                    val observable = viewModel.deleteAccount()
+                    observable.subscribe(
+                        object: CompletableObserver {
+                            override fun onComplete() {
+                                goToStarter();
+                            }
 
-        val observable = viewModel.deleteAccount()
-        observable.subscribe(
-            object: CompletableObserver {
-                override fun onComplete() {
-                    goToStarter();
+                            override fun onSubscribe(d: Disposable) {
+
+                            }
+
+                            override fun onError(e: Throwable) {
+                                makeToast("Unable to delete Account")
+                            }
+                        }
+
+                    )
+
                 }
-
-                override fun onSubscribe(d: Disposable) {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    makeToast("Unable to delete Account")
+                1-> {
+                    dialog!!.cancel()
                 }
             }
+        }
+        builder.show()
 
-        )
+
 
     }
+
+
 
     fun makeToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()

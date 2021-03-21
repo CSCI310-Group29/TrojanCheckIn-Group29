@@ -9,12 +9,15 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.CompletableObserver
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_manager_profile.*
 import javax.inject.Inject
 
@@ -94,13 +97,48 @@ class ManagerProfileActivity : AppCompatActivity() {
     }
 
     fun onDeleteAccount(view: View) {
-        try {
-            viewModel.deleteAccount()
-            startActivity(Intent(this, AppHomeActivity::class.java))
-            finishAffinity()
-        } catch(e: Exception){
-            Toast.makeText(this, "Unable to delete Account", Toast.LENGTH_SHORT).show()
+        val yn = arrayOf("Yes", "No")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Are you sure you want to delete your account?")
+        builder.setItems(yn) { dialog, which ->
+            when(which) {
+                0 -> {
+                    val observable = viewModel.deleteAccount()
+                    observable.subscribe(
+                        object: CompletableObserver {
+                            override fun onComplete() {
+                                goToStarter();
+                            }
+
+                            override fun onSubscribe(d: Disposable) {
+
+                            }
+
+                            override fun onError(e: Throwable) {
+                                makeToast("Unable to delete Account")
+                            }
+                        }
+
+                    )
+
+                }
+                1-> {
+                    dialog!!.cancel()
+                }
+            }
         }
+        builder.show()
+
+    }
+
+    fun makeToast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
+
+    fun goToStarter() {
+        startActivity(Intent(this, AppHomeActivity::class.java))
+        finishAffinity()
     }
 
     fun toBitmap(bArray: ByteArray?): Bitmap? {
