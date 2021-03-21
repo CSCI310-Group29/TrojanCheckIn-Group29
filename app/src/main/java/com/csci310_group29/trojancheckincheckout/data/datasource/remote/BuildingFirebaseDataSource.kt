@@ -6,6 +6,7 @@ import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
@@ -135,8 +136,28 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
 
 
 
-    override fun updateCapacities(buildingCapacities: HashMap<String, Int>): Completable {
-        TODO("Not yet implemented")
+    override fun updateCapacities(buildingCapacities: HashMap<String, Double>): Completable {
+        return Completable.create { emitter ->
+            db.runTransaction { transaction ->
+                val snapshots: HashMap<DocumentSnapshot, Double> = hashMapOf()
+                buildingCapacities.forEach { (buildingId, capacity) ->
+                    val buildingRef = db.collection("buildings").document(buildingId)
+                    val snapshot = transaction.get(buildingRef)
+                    snapshots[snapshot] = capacity
+                }
+                snapshots.forEach { (snapshot, capacity) ->
+                    val ref = snapshot.reference
+                    if (snapshot.getDouble("numPeople")!! > capacity) {
+                        throw FirebaseFirestoreException("capacity is too low", FirebaseFirestoreException.Code.ABORTED)
+                    }
+                    transaction.update(ref, "capaacity", capacity)
+                }
+            }
+                .addOnSuccessListener { transaction ->
+                    emitter.onComplete()
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
     }
 
     override fun updateSingleCapacity(buildingId: String, capacity: Double): Completable {

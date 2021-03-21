@@ -107,6 +107,39 @@ class VisitUseCases @Inject constructor(
         }
     }
 
+    fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<Visit>> {
+        if (visitQuery.buildingName != null) {
+            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
+                .flatMap { building ->
+                    visitQuery.buildingId = building.id
+                    visitRepo.getUserVisitHistory(userId, visitQuery)
+                        .flatMap { visitEntities ->
+                            val visits: MutableList<Visit> = mutableListOf()
+                            visitEntities.forEach { visitEntity ->
+                                userUseCases.getUser(visitEntity.userId!!)
+                                    .doAfterSuccess { user ->  visits.add(buildVisitModel(user, null, building, visitEntity))}
+                                    .doOnError { e -> throw e}
+                            }
+                            Single.just(visits)
+                        }
+                }
+        } else {
+            return visitRepo.getUserVisitHistory(userId, visitQuery)
+                .flatMap { visitEntities ->
+                    val visits: MutableList<Visit> = mutableListOf()
+                    visitEntities.forEach { visitEntity ->
+                        buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!)
+                            .flatMap { building ->
+                                userUseCases.getUser(visitEntity.userId!!)
+                                    .doAfterSuccess { user ->  visits.add(buildVisitModel(user, null, building, visitEntity))}
+                                    .doOnError { e -> throw e}
+                            }
+                    }
+                    Single.just(visits)
+                }
+        }
+    }
+
     private fun buildVisitModel(user: User, buildingEntity: BuildingEntity?, building: Building?, visitEntity: VisitEntity): Visit {
         if (building != null) {
             return Visit(
