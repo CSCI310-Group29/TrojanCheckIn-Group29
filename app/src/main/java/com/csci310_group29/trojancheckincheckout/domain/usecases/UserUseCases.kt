@@ -99,28 +99,23 @@ open class UserUseCases @Inject constructor(
                 .flatMap { building ->
                     visitQuery.buildingId = building.id
                     userRepo.query(userQuery, visitQuery)
-                        .flatMap { userEntities ->
-                            Observable.fromIterable(userEntities)
-                                .flatMap { userEntity ->
-                                    getPictureAndUser(picture, null, building, userEntity).toObservable()
-                                }.toList()
+                        .flatMap { userEntity ->
+                            getPictureAndUser(picture, null, building, userEntity).toObservable()
                         }
+                        .toList()
                 }
         } else {
             return userRepo.query(userQuery, visitQuery)
-                    .flatMap { userEntities ->
-                        Observable.fromIterable(userEntities)
-                            .flatMap { userEntity ->
-                                if (userEntity.checkedInBuildingId != null) {
-                                    buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!).toObservable()
-                                        .flatMap { building ->
-                                            getPictureAndUser(picture, null, building, userEntity).toObservable()
-                                        }
-                                } else {
-                                    getPictureAndUser(picture, null, null, userEntity).toObservable()
+                    .flatMap { userEntity ->
+                        if (userEntity.checkedInBuildingId != null) {
+                            buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!).toObservable()
+                                .flatMap { building ->
+                                    getPictureAndUser(picture, null, building, userEntity).toObservable()
                                 }
-                            }.toList()
-                    }
+                        } else {
+                            getPictureAndUser(picture, null, null, userEntity).toObservable()
+                        }
+                    }.toList()
             }
     }
 

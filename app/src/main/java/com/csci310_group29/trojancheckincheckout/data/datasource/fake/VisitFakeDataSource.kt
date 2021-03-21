@@ -4,6 +4,7 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
@@ -32,7 +33,7 @@ class VisitFakeDataSource @Inject constructor(): VisitRepository {
         return Single.just(listOf(visitEntity))
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>> {
-        return Single.just(listOf(visitEntity))
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<VisitEntity> {
+        return Observable.just(visitEntity)
     }
 }

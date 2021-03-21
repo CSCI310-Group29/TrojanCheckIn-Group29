@@ -8,6 +8,7 @@ import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
@@ -38,7 +39,7 @@ class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSour
         return remoteDataSource.updatePhotoUrl(id, url)
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<UserEntity>> {
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<UserEntity> {
         return remoteDataSource.query(userQuery, visitQuery)
     }
 }

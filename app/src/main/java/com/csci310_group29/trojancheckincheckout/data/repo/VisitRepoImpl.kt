@@ -5,6 +5,7 @@ import com.csci310_group29.trojancheckincheckout.data.datasource.remote.VisitFir
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
@@ -31,7 +32,7 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
         return remoteDataSource.getUserVisitHistory(userId, visitQuery)
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<VisitEntity> {
         return remoteDataSource.query(userQuery, visitQuery)
     }
 }

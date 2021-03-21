@@ -78,39 +78,24 @@ class VisitUseCases @Inject constructor(
                 .flatMap { building ->
                     visitQuery.buildingId = building.id
                     visitRepo.query(userQuery, visitQuery)
-                        .flatMap { visitEntities ->
-                            Observable.fromIterable(visitEntities)
-                                .concatMap { visitEntity ->
-                                    userUseCases.getUser(visitEntity.userId!!).toObservable()
-                                        .concatMap { user -> Observable.just(buildVisitModel(user, null, building, visitEntity))}
-                                }.toList()
-                        }
+                        .concatMap { visitEntity ->
+                            userUseCases.getUser(visitEntity.userId!!).toObservable()
+                                .concatMap { user ->
+                                    Observable.just(buildVisitModel(user, null, building, visitEntity))
+                                }
+                        }.toList()
                 }
         } else {
             return visitRepo.query(userQuery, visitQuery)
-                .flatMap { visitEntities ->
-                    Observable.fromIterable(visitEntities)
-                        .concatMap { visitEntity ->
-                            Observable.zip(userUseCases.getUser(visitEntity.userId!!).toObservable(),
-                            buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!).toObservable(), { user, building ->
-                                    Observable.just(buildVisitModel(user, null, building, visitEntity))
-                                })
+                .concatMap { visitEntity ->
+                    Observable.zip(userUseCases.getUser(visitEntity.userId!!).toObservable(),
+                        buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!).toObservable(), { user, building ->
+                            buildVisitModel(user, null, building, visitEntity)
+                        })
                         }.toList()
-                    val visits: MutableList<Visit> = mutableListOf()
-                    visitEntities.forEach { visitEntity ->
-                        buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!)
-                            .flatMap { building ->
-                                userUseCases.getUser(visitEntity.userId!!)
-                                    .doAfterSuccess { user ->
-                                        visits.add(buildVisitModel(user, null, building, visitEntity))
-                                    }
-                                    .doOnError { e -> throw e}
-                            }
-                    }
-                    Single.just(visits)
                 }
         }
-    }
+
 
     fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<Visit>> {
         Log.d(TAG, "domain get user visit history called")
