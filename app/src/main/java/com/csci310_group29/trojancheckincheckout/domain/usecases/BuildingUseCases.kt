@@ -50,9 +50,10 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
             .flatMapCompletable { building -> buildingRepo.updateSingleCapacity(building.id, newCapacity) }
     }
 
-    fun updateMultipleBuildingCapacities(buildings: HashMap<String, Int>): Completable {
-        TODO("Not yet implemented")
-        return buildingRepo.updateCapacities(buildings)
+    fun updateMultipleBuildingCapacities(buildings: HashMap<String, Double>): Completable {
+        val completables: MutableList<Completable> = mutableListOf()
+        buildings.forEach { (buildingName, capacity) -> completables.add(updateSingleBuildingCapacity(buildingName, capacity)) }
+        return Completable.merge(completables)
     }
 
     fun getQrCode(buildingName: String): Single<ByteArray> {
