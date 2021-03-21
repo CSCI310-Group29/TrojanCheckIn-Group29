@@ -17,6 +17,10 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.get(id)
     }
 
+    override fun getAll(): Single<List<BuildingEntity>> {
+        return remoteDataSource.getAll()
+    }
+
     override fun observe(id: String): Observable<BuildingEntity> {
         return remoteDataSource.observe(id)
     }

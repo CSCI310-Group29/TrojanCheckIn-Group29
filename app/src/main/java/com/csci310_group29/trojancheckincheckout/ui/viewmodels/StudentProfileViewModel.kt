@@ -71,7 +71,8 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
                 override fun onComplete() {
                     Session.uid = ""
                     Session.user = null
-                    Session.isCheckedIn = false
+                    //check out of building before delete
+                    Session.checkedInBuilding = null
                     emitter.onComplete()
                 }
 
