@@ -9,6 +9,7 @@ import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -109,6 +110,34 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
 
     override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<UserEntity>> {
         TODO("Not yet implemented")
-    }
+        var query = db.collectionGroup("visits")
+        if (visitQuery.startCheckIn != null) query =
+            query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn)
+        if (visitQuery.endCheckIn != null) query =
+            query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn)
+        if (visitQuery.startCheckOut != null) query =
+            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.startCheckOut)
+        if (visitQuery.endCheckOut != null) query =
+            query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut)
+        if (visitQuery.buildingId != null) query =
+            query.whereEqualTo("buildingId", visitQuery.buildingId)
+        return Single.create { emitter ->
+            query.get()
+                .addOnSuccessListener { snapshots ->
+                    snapshots.forEach { snap ->
+                        val userRef = snap.reference.parent
+                        userRef.get()
+                            .addOnSuccessListener { userSnap ->
+                                val userEntities = userSnap.toObjects<UserEntity>()
+                                if (userEntities.isEmpty()) {
+                                    val userEntity = userEntities[0]
+                                    if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName) {
 
+                                    }
+                                }
+                            }
+                    }
+                }
+        }
+    }
 }
