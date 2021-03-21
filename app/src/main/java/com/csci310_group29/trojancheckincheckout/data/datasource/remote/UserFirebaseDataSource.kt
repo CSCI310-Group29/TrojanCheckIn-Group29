@@ -140,12 +140,17 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
                                             emitter2.onComplete()
                                         }
                                     }
-                                    .addOnFailureListener { e -> emitter2.onError(e) }
+                                    .addOnFailureListener { e -> emitter.onError(e) }
                             }
                         }
                         .filter { userEntity ->
                             checkUser(userEntity, userQuery)
                         }
+                        .flatMapCompletable { userEntity ->
+                            emitter.onNext(userEntity)
+                            Completable.complete()
+                        }.doOnComplete { emitter.onComplete() }
+                        .doOnError { e -> emitter.onError(e) }
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }

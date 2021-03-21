@@ -12,6 +12,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.Single
@@ -161,15 +162,18 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
                                             emitter2.onComplete()
                                         }
                                     }
-                                    .addOnFailureListener { e -> emitter2.onError(e) }
+                                    .addOnFailureListener { e -> emitter.onError(e) }
                             }
                         }
                         .filter { pair ->
                              checkUser(pair.second, userQuery)
                         }
-                        .concatMap { pair ->
-                            Observable.just(pair.first)
+                        .flatMapCompletable { pair ->
+                            emitter.onNext(pair.first)
+                            Completable.complete()
                         }
+                        .doOnComplete { emitter.onComplete() }
+                        .doOnError { e -> emitter.onError(e) }
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }
