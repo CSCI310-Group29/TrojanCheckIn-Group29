@@ -1,9 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
-import android.graphics.Bitmap
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
-import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
@@ -13,6 +11,7 @@ import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import io.reactivex.Completable
 import io.reactivex.Single
+import java.util.*
 import javax.inject.Inject
 
 class UserFirebaseDataSource @Inject constructor(): UserRepository {
@@ -109,35 +108,52 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
     }
 
     override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<UserEntity>> {
-        TODO("Not yet implemented")
         var query = db.collectionGroup("visits")
         if (visitQuery.startCheckIn != null) query =
-            query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn)
+            query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
         if (visitQuery.endCheckIn != null) query =
-            query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn)
+            query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
         if (visitQuery.startCheckOut != null) query =
-            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.startCheckOut)
+            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.startCheckOut!!)
         if (visitQuery.endCheckOut != null) query =
-            query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut)
+            query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut!!)
         if (visitQuery.buildingId != null) query =
             query.whereEqualTo("buildingId", visitQuery.buildingId)
         return Single.create { emitter ->
             query.get()
                 .addOnSuccessListener { snapshots ->
+                    val usersList: MutableList<UserEntity> = mutableListOf()
                     snapshots.forEach { snap ->
                         val userRef = snap.reference.parent
                         userRef.get()
-                            .addOnSuccessListener { userSnap ->
+                            .addOnSuccessListener checkingUser@ { userSnap ->
                                 val userEntities = userSnap.toObjects<UserEntity>()
                                 if (userEntities.isEmpty()) {
                                     val userEntity = userEntities[0]
-                                    if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName) {
-
+                                    if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
+                                        return@checkingUser
+                                    if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
+                                        return@checkingUser
+                                    if (userQuery.isCheckedIn != null) {
+                                        if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+                                            return@checkingUser
+                                        if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+                                            return@checkingUser
                                     }
+                                    if (userQuery.major != null && userQuery.major == userEntity.major)
+                                        return@checkingUser
+                                    if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
+                                        return@checkingUser
+                                    if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
+                                        return@checkingUser
+                                    usersList.add(userEntity)
                                 }
                             }
+                            .addOnFailureListener { e -> emitter.onError(e) }
                     }
+                    emitter.onSuccess(usersList)
                 }
+                .addOnFailureListener { e -> emitter.onError(e)}
         }
     }
 }

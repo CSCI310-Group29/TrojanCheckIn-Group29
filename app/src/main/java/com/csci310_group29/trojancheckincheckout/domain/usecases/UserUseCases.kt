@@ -10,6 +10,8 @@ import com.csci310_group29.trojancheckincheckout.data.repo.PicturesRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.UserRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.VisitRepoImpl
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
+import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
@@ -73,8 +75,15 @@ open class UserUseCases @Inject constructor(
             .flatMap { getCurrentlyLoggedInUser() }
     }
 
-    fun searchCheckedInUsers(): Single<List<User>> {
+    fun searchUsers(userQuery: UserQuery, visitQuery: VisitQuery, picture: Boolean = true): Single<List<User>> {
         TODO("Not yet implemented")
+//        if (visitQuery.buildingName != null) {
+//            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
+//                .flatMap { building ->
+//                    visitQuery.buildingId = building.id
+//                    userRepo.query(userQuery, visitQuery)
+//                }
+//        }
     }
 
     private fun getPictureAndUser(picture: Boolean, authEntity: AuthEntity, building: Building?, userEntity: UserEntity): Single<User> {

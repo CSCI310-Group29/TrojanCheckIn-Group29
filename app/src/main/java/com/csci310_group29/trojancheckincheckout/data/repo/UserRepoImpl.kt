@@ -39,6 +39,6 @@ class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSour
     }
 
     override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<UserEntity>> {
-        TODO("Not yet implemented")
+        return remoteDataSource.query(userQuery, visitQuery)
     }
 }

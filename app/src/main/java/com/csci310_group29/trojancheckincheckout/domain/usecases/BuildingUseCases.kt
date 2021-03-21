@@ -6,6 +6,7 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
@@ -27,6 +28,20 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
         return buildingRepo.getAll()
             .flatMap { buildings ->
                 buildModels(buildings)
+            }
+    }
+
+    fun observeBuilding(buildingName: String): Observable<Building> {
+        return buildingRepo.observeByName(buildingName)
+            .flatMap { buildingEntity ->
+                Observable.just(buildModel(buildingEntity))
+            }
+    }
+
+    fun observeBuildingById(buildingId: String): Observable<Building> {
+        return buildingRepo.observe(buildingId)
+            .flatMap { buildingEntity ->
+                Observable.just(buildModel(buildingEntity))
             }
     }
 

@@ -69,7 +69,23 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
     }
 
     override fun observeByName(buildingName: String): Observable<BuildingEntity> {
-        TODO("Not yet implemented")
+        return Observable.create { emitter ->
+            val buildingRef = db.collection("buildings").whereEqualTo("buildingName", buildingName)
+            buildingRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    emitter.onError(e)
+                } else {
+                    if (snapshot != null) {
+                        val buildingEntities = snapshot.toObjects<BuildingEntity>()
+                        if (buildingEntities.isEmpty()) {
+                            emitter.onError(Exception("no such building exists"))
+                        }
+                        val buildingEntity = buildingEntities[0]
+                        emitter.onNext(buildingEntity)
+                    }
+                }
+            }
+        }
     }
 
     override fun getByName(buildingName: String): Single<BuildingEntity> {
