@@ -46,7 +46,8 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
     }
 
     fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Double): Completable {
-        return buildingRepo.updateSingleCapacity(buildingName, newCapacity)
+        return getBuildingInfo(buildingName)
+            .flatMapCompletable { building -> buildingRepo.updateSingleCapacity(building.id, newCapacity) }
     }
 
     fun updateMultipleBuildingCapacities(buildings: HashMap<String, Int>): Completable {

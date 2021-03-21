@@ -26,7 +26,8 @@ open class UserUseCases @Inject constructor(
     @Named("Repo") private val authRepo: AuthRepository,
     @Named("Repo") private val userRepo: UserRepository,
     @Named("Repo") private val pictureRepo: PicturesRepository,
-    private val buildingUseCases: BuildingUseCases) {
+    private val buildingUseCases: BuildingUseCases
+    ) {
 
     fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
         return authRepo.getCurrentUser()

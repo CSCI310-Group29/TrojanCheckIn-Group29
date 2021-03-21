@@ -6,13 +6,8 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
-import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
-import com.csci310_group29.trojancheckincheckout.data.repo.BuildingRepoImpl
-import com.csci310_group29.trojancheckincheckout.data.repo.UserRepoImpl
-import com.csci310_group29.trojancheckincheckout.data.repo.VisitRepoImpl
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
-import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
@@ -25,7 +20,8 @@ class VisitUseCases @Inject constructor(
     @Named("Repo") private val buildingRepo: BuildingRepository,
     @Named("Repo") private val visitRepo: VisitRepository,
     @Named("Repo") private val userRepo: UserRepository,
-    private val userUserCases: UserUseCases
+    private val userUseCases: UserUseCases,
+    private val buildingUseCases: BuildingUseCases
 ) {
 
     companion object {
@@ -35,7 +31,7 @@ class VisitUseCases @Inject constructor(
     fun attemptCheckIn(buildingId: String): Single<Visit> {
         return buildingRepo.incrementNumPeople(buildingId, 1.toDouble())
                 .flatMap { building ->
-                    userUserCases.getCurrentlyLoggedInUser()
+                    userUseCases.getCurrentlyLoggedInUser()
                             .flatMap {user ->
                                 userRepo.setCheckedInBuilding(user.id, buildingId)
                                         .flatMap {visitRepo.create(user.id, building.id!!)
@@ -48,7 +44,7 @@ class VisitUseCases @Inject constructor(
     }
 
     fun checkOut(buildingId: String): Single<Visit> {
-        return userUserCases.getCurrentlyLoggedInUser()
+        return userUseCases.getCurrentlyLoggedInUser()
                 .flatMap { user ->
                     Log.d(TAG, user.toString())
 
@@ -75,41 +71,40 @@ class VisitUseCases @Inject constructor(
     }
 
     fun searchVisits(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<Visit>> {
-        TODO("not yet implemented")
-//        if (visitQuery.buildingName != null) {
-//            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
-//                .flatMap { building ->
-//                    visitQuery.buildingId = building.id
-//                    visitRepo.query(userQuery, visitQuery)
-//                        .flatMap { visitEntities ->
-//                            val visits: MutableList<Visit> = mutableListOf()
-//                            visitEntities.forEach { visitEntity ->
-//                                userUserCases.getUser(visitEntity.userId!!)
-//                                    .doAfterSuccess { user ->  visits.add(buildVisitModel(user, null, building, visitEntity))}
-//                                    .doOnError { e -> throw e}
-//                            }
-//                            Single.just(visits)
-//                        }
-//                }
-//        } else {
-//            return visitRepo.query(userQuery, visitQuery)
-//                .flatMap { visitEntities ->
-//
-//                    val visits: MutableList<Visit> = mutableListOf()
-//                    visitEntities.forEach { visitEntity ->
-//                        buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!)
-//                            .flatMap { building ->
-//                                userUserCases.getUser(visitEntity.userId!!)
-//                                    .doAfterSuccess { user ->
-//                                        visits.add(buildVisitModel(user, null, building, visitEntity))
-//                                    }
-//                                    .doOnError { e -> throw e}
-//                            }
-//
-//                    }
-//                    Single.just(visits)
-//                }
-//        }
+        if (visitQuery.buildingName != null) {
+            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
+                .flatMap { building ->
+                    visitQuery.buildingId = building.id
+                    visitRepo.query(userQuery, visitQuery)
+                        .flatMap { visitEntities ->
+                            val visits: MutableList<Visit> = mutableListOf()
+                            visitEntities.forEach { visitEntity ->
+                                userUseCases.getUser(visitEntity.userId!!)
+                                    .doAfterSuccess { user ->  visits.add(buildVisitModel(user, null, building, visitEntity))}
+                                    .doOnError { e -> throw e}
+                            }
+                            Single.just(visits)
+                        }
+                }
+        } else {
+            return visitRepo.query(userQuery, visitQuery)
+                .flatMap { visitEntities ->
+
+                    val visits: MutableList<Visit> = mutableListOf()
+                    visitEntities.forEach { visitEntity ->
+                        buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!)
+                            .flatMap { building ->
+                                userUseCases.getUser(visitEntity.userId!!)
+                                    .doAfterSuccess { user ->
+                                        visits.add(buildVisitModel(user, null, building, visitEntity))
+                                    }
+                                    .doOnError { e -> throw e}
+                            }
+
+                    }
+                    Single.just(visits)
+                }
+        }
     }
 
     private fun buildVisitModel(user: User, buildingEntity: BuildingEntity?, building: Building?, visitEntity: VisitEntity): Visit {
