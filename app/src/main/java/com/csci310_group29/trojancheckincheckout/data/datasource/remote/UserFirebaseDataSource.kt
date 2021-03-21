@@ -47,7 +47,10 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
             val userRef = db.collection("users").document(userEntity.id!!)
             userRef.set(userEntity)
                 .addOnSuccessListener { emitter.onComplete() }
-                .addOnFailureListener { exception -> emitter.onError(exception)}
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, exception.localizedMessage!!)
+                    emitter.onError(exception)
+                }
         }
     }
 
