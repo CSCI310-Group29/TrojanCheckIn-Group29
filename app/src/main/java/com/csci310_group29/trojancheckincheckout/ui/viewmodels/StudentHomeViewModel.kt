@@ -110,7 +110,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
     }
 
     private fun attemptCheckOutEmit(emitter:SingleEmitter<Visit>) {
-        val observable = visitDomain.checkOut()
+        val observable = visitDomain.checkOut("put a building id here")
         observable.subscribe(object: SingleObserver<Visit>{
             override fun onSuccess(t: Visit) {
                 Log.i(TAG, "success domain check out")
@@ -153,7 +153,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
 
     fun checkOutManual(): Single<Visit> {
         return Single.create{ emitter ->
-            val observable = visitDomain.checkOut()
+            val observable = visitDomain.checkOut("put a building id here")
             observable.subscribe(object : SingleObserver<Visit> {
                 override fun onSuccess(t: Visit) {
                     Session.isCheckedIn = false

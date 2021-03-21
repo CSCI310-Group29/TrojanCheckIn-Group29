@@ -17,6 +17,11 @@ class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRe
                 .flatMap {building -> Single.just(buildModel(building))}
     }
 
+    fun getBuildingInfoById(buildingId: String): Single<Building> {
+        return buildingRepo.get(buildingId)
+            .flatMap { building -> Single.just(buildModel(building)) }
+    }
+
     fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Int): Completable {
         return buildingRepo.updateCapacities(hashMapOf(buildingName to newCapacity))
     }
