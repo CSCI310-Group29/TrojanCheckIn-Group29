@@ -44,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
         Log.i(TAG, "oncreate registeractivity")
     }
 
-    fun onRegister(view: View?) {
+    fun onRegister(view: View) {
         try {
             val imm =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

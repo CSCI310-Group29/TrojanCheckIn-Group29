@@ -44,6 +44,7 @@ class StudentProfileActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         val userObserver = Observer<User> { newUser ->
+            Log.i(TAG, "in profile view")
             FirstName.text = newUser.firstName
             LastName.text = newUser.lastName
             Major.text = newUser.major

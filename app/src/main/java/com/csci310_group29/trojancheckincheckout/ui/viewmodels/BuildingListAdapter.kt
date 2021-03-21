@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.ui.views
+package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -12,6 +12,7 @@ import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.models.MutableBuilding
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
+import com.csci310_group29.trojancheckincheckout.ui.views.QrCodeActivity
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
@@ -31,7 +32,7 @@ class BuildingListAdapter @Inject constructor(private val buildingDomain: Buildi
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BuildingListAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
 
@@ -41,7 +42,7 @@ class BuildingListAdapter @Inject constructor(private val buildingDomain: Buildi
     }
 
     // Involves populating data into the item through holder
-    override fun onBindViewHolder(buildingHolding: BuildingListAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(buildingHolding: ViewHolder, position: Int) {
 
         val building: MutableBuilding = bList.get(position)
 

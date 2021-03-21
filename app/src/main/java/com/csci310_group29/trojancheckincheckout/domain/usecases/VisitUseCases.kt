@@ -105,8 +105,7 @@ class VisitUseCases @Inject constructor(
                                         visits.add(buildVisitModel(user, null, building, visitEntity))
                                     }
                                     .doOnError { e -> throw e}
-                            }
-                    }
+                            } }
                     Single.just(visits)
                 }
         }
