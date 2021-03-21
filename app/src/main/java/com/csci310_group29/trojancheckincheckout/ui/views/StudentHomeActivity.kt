@@ -73,23 +73,6 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun onScan(view: View) {
-        /*val file = File(filesDir, "cameraPic")
-        val uri = FileProvider.getUriForFile(this, "file_provider",file)
-
-
-        val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if(success) {
-                Log.i(TAG,"got image")
-                viewModel.parseQR(applicationContext,uri)
-            } else {
-                Log.e(TAG, "unable to take picture")
-                val toast = Toast.makeText(this, "Unable to checkout. Try again",Toast.LENGTH_SHORT)
-                toast.show()
-            }
-
-        }
-
-        takePicture.launch(uri)*/
 
         val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {

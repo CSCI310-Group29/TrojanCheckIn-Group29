@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
-import com.csci310_group29.trojancheckincheckout.ui.viewmodels.AppHomeViewModel
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.SplashScreenViewModel
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.SingleObserver
@@ -19,7 +19,7 @@ class SplashScreenActivity : AppCompatActivity() {
     val TAG = "SplashScreenActivity"
 
     @Inject
-    lateinit var viewModel: AppHomeViewModel
+    lateinit var viewModel: SplashScreenViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

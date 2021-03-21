@@ -2,6 +2,7 @@
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.models.User
@@ -11,6 +12,10 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.common.InputImage
 import io.reactivex.CompletableObserver
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -68,30 +73,32 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
 
 
     fun decodeQR(bitmap: Bitmap) {
-       /* val options = BarcodeScannerOptions.Builder()
+       val options = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
             .build()
+
         val image: InputImage
         try {
-            image = InputImage.fromFilePath(context,uri)
+            image = InputImage.fromBitmap(bitmap,0)
         } catch(e: Exception) {
             Log.e(TAG,e.localizedMessage)
             throw Exception("unable to get picture")
         }
 
-        val scanner = BarcodeScanning.getClient()
+        val scanner = BarcodeScanning.getClient(options)
         val result = scanner.process(image).addOnSuccessListener {barcodes ->
             for(barcode in barcodes) {
-                val rawValue = barcode.rawValue;
-                if(currUser.value!!.isCheckedIn != null) {
-                    visitRepo.attemptCheckIn(currUser.value!!.id!!, rawValue)
+                val rawValue = barcode.rawValue as String
+                Log.i(TAG, "raw value: $rawValue")
+                /*if(!(currUser.value!!.isCheckedIn)) {
+                    visitDomain.attemptCheckIn(rawValue)
                 } else {
-                    visitRepo.checkOut(Session.uid!!)
-                }
+                    visitDomain.checkOut()
+                }*/
             }
         }.addOnFailureListener {
             throw Exception("could not decode QR code")
-        }*/
+        }
     }
 
     fun checkOutManual() {
