@@ -3,6 +3,7 @@ package com.csci310_group29.trojancheckincheckout.domain.repo
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
+import io.reactivex.Observable
 import io.reactivex.Single
 
 interface VisitRepository {
@@ -61,5 +62,5 @@ interface VisitRepository {
 
     fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<VisitEntity>>
 
-    fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>>
+    fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<VisitEntity>
 }

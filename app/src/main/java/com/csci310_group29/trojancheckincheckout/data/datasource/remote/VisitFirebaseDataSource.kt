@@ -6,11 +6,15 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
@@ -128,7 +132,7 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
         }
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<VisitEntity> {
         var query = db.collectionGroup("visits")
         if (visitQuery.startCheckIn != null) query =
             query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
@@ -140,41 +144,58 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
             query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut!!)
         if (visitQuery.buildingId != null) query =
             query.whereEqualTo("buildingId", visitQuery.buildingId)
-        return Single.create { emitter ->
+        return Observable.create { emitter ->
             query.get()
                 .addOnSuccessListener { snapshots ->
-                    val visitsList: MutableList<VisitEntity> = mutableListOf()
-                    snapshots.forEach { snap ->
-                        val userRef = snap.reference.parent
-                        userRef.get()
-                            .addOnSuccessListener checkingUser@{ userSnap ->
-                                val userEntities = userSnap.toObjects<UserEntity>()
-                                if (userEntities.isEmpty()) {
-                                    val userEntity = userEntities[0]
-                                    if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
-                                        return@checkingUser
-                                    if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
-                                        return@checkingUser
-                                    if (userQuery.isCheckedIn != null) {
-                                        if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
-                                            return@checkingUser
-                                        if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
-                                            return@checkingUser
+                    Observable.fromIterable(snapshots)
+                        .concatMap { visitSnap ->
+                            val userRef = visitSnap.reference.parent
+                            val visitEntity = visitSnap.toObject<VisitEntity>()
+                            Observable.create { emitter2: ObservableEmitter<Pair<VisitEntity, UserEntity>> ->
+                                userRef.get()
+                                    .addOnSuccessListener { userSnap ->
+
+                                        val userEntities = userSnap.toObjects<UserEntity>()
+                                        if (userEntities.isNotEmpty()) {
+                                            val userEntity = userSnap.toObjects<UserEntity>()[0]
+                                            emitter2.onNext(Pair(visitEntity, userEntity))
+                                            emitter2.onComplete()
+                                        }
                                     }
-                                    if (userQuery.major != null && userQuery.major == userEntity.major)
-                                        return@checkingUser
-                                    if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
-                                        return@checkingUser
-                                    if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
-                                        return@checkingUser
-                                    visitsList.add(snap.toObject<VisitEntity>())
-                                }
+                                    .addOnFailureListener { e -> emitter.onError(e) }
                             }
-                            .addOnFailureListener { e -> emitter.onError(e) }
-                    }
-                    emitter.onSuccess(visitsList)
+                        }
+                        .filter { pair ->
+                             checkUser(pair.second, userQuery)
+                        }
+                        .flatMapCompletable { pair ->
+                            emitter.onNext(pair.first)
+                            Completable.complete()
+                        }
+                        .doOnComplete { emitter.onComplete() }
+                        .doOnError { e -> emitter.onError(e) }
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }
+    }
+
+    private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
+        if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
+            return false
+        if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
+            return false
+        if (userQuery.isCheckedIn != null) {
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+                return false
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+                return false
+        }
+        if (userQuery.major != null && userQuery.major == userEntity.major)
+            return false
+        if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
+            return false
+        if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
+            return false
+        return true
     }
 }
