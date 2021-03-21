@@ -153,20 +153,23 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
         })
     }
 
-    fun checkOutManual() {
-        val observable = visitDomain.checkOut()
-        observable.subscribe(object: SingleObserver<Visit> {
-            override fun onSuccess(t: Visit) {
-                Session.isCheckedIn = false
-            }
+    fun checkOutManual(): Single<Visit> {
+        return Single.create{ emitter ->
+            val observable = visitDomain.checkOut()
+            observable.subscribe(object : SingleObserver<Visit> {
+                override fun onSuccess(t: Visit) {
+                    Session.isCheckedIn = false
+                    emitter.onSuccess(t)
+                }
 
-            override fun onSubscribe(d: Disposable) {
-            }
+                override fun onSubscribe(d: Disposable) {
+                }
 
-            override fun onError(e: Throwable) {
-                throw Exception("unable to check out")
-            }
-        })
+                override fun onError(e: Throwable) {
+                    emitter.onError(e)
+                }
+            })
+        }
 
 
 

@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.SingleObserver
@@ -66,13 +67,26 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun onManualCheckout(view: View) {
-        try {
-            viewModel.checkOutManual();
-        } catch(e: Exception) {
-            Log.e(TAG, e.localizedMessage)
-            val toast = Toast.makeText(this, "Unable to checkout. Try again",Toast.LENGTH_SHORT)
-            toast.show()
-        }
+        val observable = viewModel.checkOutManual()
+        observable.subscribe(
+            object: SingleObserver<Visit> {
+                override fun onSuccess(t: Visit) {
+                    makeToast("Checked out of ${t.building!!.buildingName}")
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.i(TAG,e.localizedMessage)
+                    if(Session.isCheckedIn) {
+                        makeToast("Unable to Checkout. Try again")
+                    } else {
+                        makeToast("Must check into building before checking out")
+                    }
+                }
+            }
+        )
     }
 
     fun onScan(view: View) {
@@ -81,10 +95,8 @@ class StudentHomeActivity : AppCompatActivity() {
         try {
             startActivityForResult(takePicture,REQUEST_IMAGE_CAPTURE)
         } catch(e: Exception) {
-            Toast.makeText(this, "unable to open camera", Toast.LENGTH_SHORT).show()
+            makeToast("Unable to open camera")
         }
-
-
 
     }
 
@@ -106,6 +118,7 @@ class StudentHomeActivity : AppCompatActivity() {
                         }
 
                         override fun onError(e: Throwable) {
+                            Log.i(TAG,"Error return check in/out activity")
                             makeToast(e.localizedMessage)
                         }
                     })
@@ -115,7 +128,7 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun makeToast(msg: String) {
-        Toast.makeText(this,msg,Toast.LENGTH_SHORT)
+        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show()
     }
 
 
