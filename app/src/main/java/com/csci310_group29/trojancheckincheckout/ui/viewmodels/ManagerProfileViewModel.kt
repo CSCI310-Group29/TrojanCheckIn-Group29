@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
+import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -46,19 +47,26 @@ class ManagerProfileViewModel @Inject constructor(private val userDomain: UserUs
         }
     }
 
-    fun deleteAccount() {
-        val observe = authDomain.deleteAccount()
-        observe.subscribe(object: CompletableObserver {
-            override fun onComplete() {
-            }
+    fun deleteAccount(): Completable {
+        return Completable.create { emitter ->
+            val observe = authDomain.deleteAccount()
+            observe.subscribe(object: CompletableObserver {
+                override fun onComplete() {
+                    Session.uid = ""
+                    Session.user = null
+                    //check out of building before delete
+                    Session.checkedInBuilding = null
+                    emitter.onComplete()
+                }
 
-            override fun onSubscribe(d: Disposable) {
-            }
+                override fun onSubscribe(d: Disposable) {
+                }
 
-            override fun onError(e: Throwable) {
-                throw Exception("problem with deleting user")
-            }
-        })
+                override fun onError(e: Throwable) {
+                    emitter.onError(e)
+                }
+            })
+        }
     }
 
     private fun toByteArray(bitmap: Bitmap): ByteArray? {

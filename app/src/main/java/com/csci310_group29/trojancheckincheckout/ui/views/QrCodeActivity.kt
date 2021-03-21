@@ -3,6 +3,8 @@ package com.csci310_group29.trojancheckincheckout.ui.views
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.csci310_group29.trojancheckincheckout.R
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class QrCodeActivity : AppCompatActivity() {
+    val TAG = "QRCodeActivity"
 
     @Inject
     lateinit var buildingDomain:BuildingUseCases
@@ -30,6 +33,7 @@ class QrCodeActivity : AppCompatActivity() {
         val observable = buildingDomain.getQrCode(id!!)
         observable.subscribe(object: SingleObserver<ByteArray> {
             override fun onSuccess(t: ByteArray) {
+                qrCode.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 qrCode.setImageBitmap(toBitmap(t))
             }
 
@@ -53,6 +57,7 @@ class QrCodeActivity : AppCompatActivity() {
         if(bArray == null) {
             return null;
         }
+        Log.i(TAG,"${bArray.size}")
         return BitmapFactory.decodeByteArray(bArray,0, bArray.size)
     }
 }

@@ -36,6 +36,7 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
             val buildingRef = db.collection("buildings").document(id)
             buildingRef.get()
                 .addOnSuccessListener { documentSnapshot ->
+                    Log.d(TAG, "building info id success")
                     emitter.onSuccess(documentSnapshot.toObject<BuildingEntity>()!!)
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }

@@ -28,9 +28,10 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
     }
 
     override fun get(id: String): Single<UserEntity> {
+        Log.d(TAG, "user firebase remote data source: $id")
         return Single.create { emitter ->
-            val userRef = db.collection("users").document(id)
             Log.d(TAG, "getting user")
+            val userRef = db.collection("users").document(id)
             userRef.get()
                 .addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "successfully read user")
@@ -39,6 +40,7 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
                     emitter.onSuccess(userEntity!!)
                 }
                 .addOnFailureListener { exception ->
+                    Log.d(TAG, exception.localizedMessage!!)
                     emitter.onError(exception)
                 }
         }

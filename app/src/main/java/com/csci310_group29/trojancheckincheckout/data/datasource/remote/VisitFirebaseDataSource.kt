@@ -1,5 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
+import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
@@ -28,6 +29,7 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
     }
 
     override fun create(userId: String, buildingId: String): Single<VisitEntity> {
+        Log.d(TAG, "create visit called")
         return Single.create { emitter ->
             val visitRef = db.collection("users")
                 .document(userId)
@@ -38,6 +40,7 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
                 .addOnSuccessListener {
                     visitRef.get()
                         .addOnSuccessListener { documentSnapshot ->
+                            Log.d(TAG, "successfully created visit")
                             emitter.onSuccess(documentSnapshot.toObject<VisitEntity>()!!)
                         }
                 }
@@ -97,6 +100,7 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
     }
 
     override fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        Log.d(TAG, "getting user visit history")
         var query = db.collection("users")
             .document(userId)
             .collection("visits")
@@ -114,6 +118,10 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
         return Single.create { emitter ->
             query.get()
                 .addOnSuccessListener { snapshots ->
+                    Log.d(TAG, "visit history success")
+                    val visitEntities = snapshots.toObjects<VisitEntity>()
+                    Log.d(TAG, "data returned: ${visitEntities.size}")
+                    Log.d(TAG, "$visitEntities")
                     emitter.onSuccess(snapshots.toObjects<VisitEntity>())
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
