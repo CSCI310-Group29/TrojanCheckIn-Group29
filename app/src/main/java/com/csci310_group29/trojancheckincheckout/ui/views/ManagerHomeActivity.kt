@@ -46,7 +46,7 @@ class ManagerHomeActivity : AppCompatActivity() {
     }
 
     fun onGetBuildings(view: View) {
-        //startActivity(Intent(this, BuildingInfoActivity::class.java))
+        startActivity(Intent(this, BuildingInfoActivity::class.java))
 
 
 //        try {

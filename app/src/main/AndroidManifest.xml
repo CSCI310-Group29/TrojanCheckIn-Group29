@@ -41,7 +41,8 @@
             android:parentActivityName=".ui.views.StudentHomeActivity" />
         <activity android:name=".ui.views.ManagerHomeActivity" />
         <activity android:name=".ui.views.StudentHomeActivity" />
-        <activity android:name=".ui.views.BuildingInfoActivity" />
+        <activity android:name=".ui.views.BuildingInfoActivity"
+            android:parentActivityName=".ui.views.BuildingInfoActivity"/>
 
         <uses-library
             android:name="com.google.android.wearable"
