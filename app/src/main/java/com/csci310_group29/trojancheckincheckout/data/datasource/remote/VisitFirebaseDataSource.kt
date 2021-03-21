@@ -119,6 +119,9 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
             query.get()
                 .addOnSuccessListener { snapshots ->
                     Log.d(TAG, "visit history success")
+                    val visitEntities = snapshots.toObjects<VisitEntity>()
+                    Log.d(TAG, "data returned: ${visitEntities.size}")
+                    Log.d(TAG, "$visitEntities")
                     emitter.onSuccess(snapshots.toObjects<VisitEntity>())
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
