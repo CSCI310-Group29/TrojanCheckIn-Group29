@@ -92,9 +92,11 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
     }
 
     fun onUpdateWithCSV(view: View) {
+        val mimetypes = arrayOf("text/csv", "text/comma-separated-values", "application/csv")
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "text/csv"
+            putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
         }
 
         try {

@@ -42,6 +42,9 @@
         <activity android:name=".ui.views.ManagerHomeActivity" />
         <activity android:name=".ui.views.StudentHomeActivity" />
         <activity android:name=".ui.views.BuildingInfoActivity" />
+        <activity
+            android:name=".ui.views.ManagerUpdateCapacityActivity"
+            android:parentActivityName=".ui.views.ManagerHomeActivity" />
 
         <uses-library
             android:name="com.google.android.wearable"
