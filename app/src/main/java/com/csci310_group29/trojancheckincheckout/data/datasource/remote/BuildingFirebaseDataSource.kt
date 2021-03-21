@@ -81,7 +81,7 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
 
     override fun incrementNumPeople(buildingId: String, incrementCount: Int): Single<BuildingEntity> {
         return Single.create { emitter ->
-            var building: BuildingEntity
+            var building: BuildingEntity? = null
             val buildingRef = db.collection("buildings").document(buildingId)
             db.runTransaction { transaction ->
                 val documentSnapshot = transaction.get(buildingRef)
@@ -92,6 +92,8 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
                     throw FirebaseFirestoreException("capacity is full", FirebaseFirestoreException.Code.ABORTED)
                 }
             }
+                .addOnSuccessListener { emitter.onSuccess(building!!) }
+                .addOnFailureListener { e -> emitter.onError(e)}
         }
     }
 
