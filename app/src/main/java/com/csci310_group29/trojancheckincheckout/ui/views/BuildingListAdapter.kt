@@ -1,24 +1,26 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
-import com.csci310_group29.trojancheckincheckout.domain.models.Building
+
 
 //class BuildingListAdapter(private val bList: List<Building>): RecyclerView.Adapter<BuildingListAdapter.ViewHolder>() {
 
 class BuildingListAdapter(private val bList: List<BuildingEntity>): RecyclerView.Adapter<BuildingListAdapter.ViewHolder>() {
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView){
-        val buildingNameText = itemView.findViewById<TextView>(R.id.building)
+        val buildingNameText = itemView.findViewById<TextView>(R.id.buildingName)
         val numOfPeopleText = itemView.findViewById<TextView>(R.id.numOfPeople)
         val numOfCapacityText = itemView.findViewById<TextView>(R.id.numOfCapacity)
-        val qrCodeText = itemView.findViewById<Button>(R.id.qr_code)
+        val qrCodeButton = itemView.findViewById<Button>(R.id.qr_code)
 
     }
 
@@ -45,7 +47,16 @@ class BuildingListAdapter(private val bList: List<BuildingEntity>): RecyclerView
         val numOfCap = buildingHolding.numOfCapacityText
         numOfCap.setText(building.capacity.toString())
 
-        val button = buildingHolding.qrCodeText
+        val button = buildingHolding.qrCodeButton
+        button.text = "Qr Code"
+
+        button.setOnClickListener(View.OnClickListener {v ->
+            val i = Intent(v.context, QrCodeActivity::class.java)
+            i.putExtra("buildingName", building.buildingName)
+            startActivity(v.context,i,null)
+            //Toast.makeText(v.context,"Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
+        })
+
     }
 
     // Returns the total count of items in the list

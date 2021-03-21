@@ -7,11 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
-import com.csci310_group29.trojancheckincheckout.data.datasource.fake.VisitFakeDataSource
 import com.csci310_group29.trojancheckincheckout.data.datasource.remote.BuildingFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
-import com.csci310_group29.trojancheckincheckout.domain.models.Building
-import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 
