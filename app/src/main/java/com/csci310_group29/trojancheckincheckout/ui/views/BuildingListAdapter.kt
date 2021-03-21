@@ -7,9 +7,12 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
+import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 
-class BuildingListAdapter(private val bList: List<Building>): RecyclerView.Adapter<BuildingListAdapter.ViewHolder>() {
+//class BuildingListAdapter(private val bList: List<Building>): RecyclerView.Adapter<BuildingListAdapter.ViewHolder>() {
+
+class BuildingListAdapter(private val bList: List<BuildingEntity>): RecyclerView.Adapter<BuildingListAdapter.ViewHolder>() {
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView){
         val buildingNameText = itemView.findViewById<TextView>(R.id.building)
@@ -31,7 +34,7 @@ class BuildingListAdapter(private val bList: List<Building>): RecyclerView.Adapt
     // Involves populating data into the item through holder
     override fun onBindViewHolder(buildingHolding: BuildingListAdapter.ViewHolder, position: Int) {
 
-        val building: Building = bList.get(position)
+        val building: BuildingEntity = bList.get(position)
 
         val bText = buildingHolding.buildingNameText
         bText.setText(building.buildingName)
