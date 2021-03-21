@@ -21,6 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrojanCheckInCheckOut"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.views.QrCodeActivity"
+            android:parentActivityName=".ui.views.BuildingInfoActivity"></activity>
         <activity android:name=".ui.views.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +41,7 @@
             android:parentActivityName=".ui.views.StudentHomeActivity" />
         <activity android:name=".ui.views.ManagerHomeActivity" />
         <activity android:name=".ui.views.StudentHomeActivity" />
+        <activity android:name=".ui.views.BuildingInfoActivity" />
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -61,8 +64,7 @@
         <activity
             android:name=".ui.views.AppHomeActivity"
             android:label="@string/title_activity_app_home"
-            android:theme="@style/Theme.TrojanCheckInCheckOut.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.TrojanCheckInCheckOut.NoActionBar"></activity>
     </application>
 
 </manifest>
