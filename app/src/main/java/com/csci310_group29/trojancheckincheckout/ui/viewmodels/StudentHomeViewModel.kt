@@ -122,6 +122,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             }
 
             override fun onError(e: Throwable) {
+                Log.i(TAG, e.localizedMessage)
                 Log.i(TAG, "error domain check out")
                 emitter.onError(Exception("Could not check out of the building"))
             }
@@ -145,6 +146,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             }
 
             override fun onError(e: Throwable) {
+                Log.i(TAG, e.localizedMessage)
                 Log.i(TAG, "error domain check in")
                 emitter.onError(Exception("Could not check into the building"))
             }
