@@ -26,15 +26,15 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 //        observeViewModel()
     }
 
-    private fun observeViewModel() {
-        val buildingObserver = Observer<Building> { newBuilding ->
-            BuildingCode.text = newBuilding.id
-            CurrentCapacity.text = newBuilding.numPeople
-            MaxCapacity.text = newBuilding.capacity
-        }
-
-        viewModel.currBuilding.observe(this, buildingObserver)
-    }
+//    private fun observeViewModel() {
+//        val buildingObserver = Observer<Building> { newBuilding ->
+//            BuildingCode.text = newBuilding.id
+//            CurrentCapacity.text = newBuilding.numPeople
+//            MaxCapacity.text = newBuilding.capacity
+//        }
+//
+//        viewModel.currBuilding.observe(this, buildingObserver)
+//    }
 
     fun onUpdateWithUI(view: View) {
         try {
