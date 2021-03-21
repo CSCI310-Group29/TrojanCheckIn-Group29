@@ -24,18 +24,18 @@ class ManagerHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
         observable.subscribe(object: SingleObserver<Building> {
 
             override fun onSuccess(t: Building) {
-                TODO("Not yet implemented")
                 d("manHome", "$t")
+                d("manHome1", "${t.buildingName}")
+                d("manHome1", "${t.capacity}")
+                d("manHome1", "${t.numPeople}")
             }
 
             override fun onSubscribe(d: Disposable) {
-                TODO("Not yet implemented")
                 d("manSub", "$d")
             }
 
 
             override fun onError(e: Throwable) {
-                TODO("Not yet implemented")
                 d("manErr", "$e")
             }
         })

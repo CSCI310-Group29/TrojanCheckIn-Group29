@@ -55,7 +55,8 @@ class ManagerHomeActivity : AppCompatActivity() {
 
         try {
            val rees = viewModel.getBuildingInformation()
-            Log.i(TAG, "$rees")
+            Log.i(TAG, "$rees.")
+            binding.buildingList.apply {  }
 
         } catch (e:Exception) {
             Log.e(TAG, e.localizedMessage)
