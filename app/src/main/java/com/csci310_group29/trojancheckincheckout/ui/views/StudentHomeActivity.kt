@@ -79,7 +79,7 @@ class StudentHomeActivity : AppCompatActivity() {
 
                 override fun onError(e: Throwable) {
                     Log.i(TAG,e.localizedMessage)
-                    if(Session.isCheckedIn) {
+                    if(Session.checkedInBuilding != null) {
                         makeToast("Unable to Checkout. Try again")
                     } else {
                         makeToast("Must check into building before checking out")
@@ -110,7 +110,7 @@ class StudentHomeActivity : AppCompatActivity() {
                     val observable = viewModel.decodeQR(imgBitmap)
                     observable.subscribe(object: SingleObserver<Visit> {
                         override fun onSuccess(t: Visit) {
-                            if(Session.isCheckedIn) {
+                            if(Session.checkedInBuilding != null) {
                                 makeToast("Successfully checked into ${t.building!!.buildingName}")
                             } else {
                                 makeToast("Successfully checked out of ${t.building!!.buildingName}")
