@@ -41,7 +41,7 @@ class BuildingInfoActivity : AppCompatActivity() {
                 override fun onSuccess(t: List<Building>) {
                     buildingInfo = initializeList(t)
                     initializeHashmap(t)
-                    adapter = BuildingListAdapter(buildingInfo)
+                    adapter = BuildingListAdapter(buildingDomain,buildingInfo)
                     rv.adapter = adapter
                 }
 

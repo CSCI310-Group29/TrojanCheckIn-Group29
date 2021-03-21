@@ -9,12 +9,19 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
+import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.models.MutableBuilding
+import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import javax.inject.Inject
 
 
 //class BuildingListAdapter(private val bList: List<Building>): RecyclerView.Adapter<BuildingListAdapter.ViewHolder>() {
 
-class BuildingListAdapter(private val bList: List<MutableBuilding>): RecyclerView.Adapter<BuildingListAdapter.ViewHolder>() {
+
+class BuildingListAdapter @Inject constructor(private val buildingDomain: BuildingUseCases, private val bList: List<MutableBuilding>): RecyclerView.Adapter<BuildingListAdapter.ViewHolder>() {
+
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView){
         val buildingNameText = itemView.findViewById<TextView>(R.id.buildingName)
@@ -56,6 +63,29 @@ class BuildingListAdapter(private val bList: List<MutableBuilding>): RecyclerVie
             i.putExtra("buildingName", building.buildingName)
             startActivity(v.context,i,null)
             //Toast.makeText(v.context,"Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
+        })
+
+        val observable = buildingDomain.observeBuildingById(building.id)
+        observable.subscribe(object: Observer<Building> {
+            override fun onComplete() {
+
+            }
+
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onNext(t: Building) {
+                val elem = building
+                elem.numPeople = t.numPeople
+                elem.capacity = t.capacity
+                notifyItemChanged(position)
+
+            }
+
+            override fun onError(e: Throwable) {
+
+            }
         })
 
     }
