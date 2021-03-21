@@ -33,6 +33,7 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
                 .addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "successfully read user")
                     val userEntity = documentSnapshot.toObject<UserEntity>()
+                    Log.d(TAG, userEntity.toString())
                     emitter.onSuccess(userEntity!!)
                 }
                 .addOnFailureListener { exception ->

@@ -1,5 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.domain.usecases
 
+import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
@@ -23,6 +24,10 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
                                         @Named("Repo") private val userRepo: UserRepository,
                                         private val userUserCases: UserUseCases) {
 
+    companion object {
+        private val TAG = "VisitUseCases"
+    }
+
     fun attemptCheckIn(buildingId: String): Single<Visit> {
         return buildingRepo.incrementNumPeople(buildingId, 1.toDouble())
                 .flatMap { building ->
@@ -41,17 +46,24 @@ class VisitUseCases @Inject constructor(@Named("Repo") private val buildingRepo:
     fun checkOut(): Single<Visit> {
         return userUserCases.getCurrentlyLoggedInUser()
                 .flatMap { user ->
+                    Log.d(TAG, user.toString())
+
                     if (user.isCheckedIn) {
-                        visitRepo.getLatestVisit(user.id)
-                                .flatMap {visitEntity ->
-                                    Single.zip(visitRepo.checkOutVisit(user.id, visitEntity.id!!),
-                                    buildingRepo.incrementNumPeople(visitEntity.buildingId!!,
-                                        (-1).toDouble()
-                                    ),
+                        Log.d(TAG, "user is checked in")
+                        userRepo.setCheckedIn(user.id, false)
+                            .flatMap {  newUser ->
+                                visitRepo.getLatestVisit(newUser.id!!)
+                                    .flatMap {visitEntity ->
+                                        Log.d(TAG, visitEntity.toString())
+                                        Single.zip(visitRepo.checkOutVisit(newUser.id!!, visitEntity.id!!),
+                                            buildingRepo.incrementNumPeople(visitEntity.buildingId!!,
+                                                (-1).toDouble()
+                                            ),
                                             { newVisitEntity, buildingEntity ->
-                                        buildVisitModel(user, buildingEntity, newVisitEntity)
-                                    })
-                                }
+                                                buildVisitModel(user, buildingEntity, newVisitEntity)
+                                            })
+                                    }
+                            }
                     } else {
                         throw Exception("hello")
                     }
