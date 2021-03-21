@@ -76,17 +76,36 @@ open class UserUseCases @Inject constructor(
     }
 
     fun searchUsers(userQuery: UserQuery, visitQuery: VisitQuery, picture: Boolean = true): Single<List<User>> {
-        TODO("Not yet implemented")
-//        if (visitQuery.buildingName != null) {
-//            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
-//                .flatMap { building ->
-//                    visitQuery.buildingId = building.id
-//                    userRepo.query(userQuery, visitQuery)
-//                }
-//        }
+        if (visitQuery.buildingName != null) {
+            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
+                .flatMap { building ->
+                    visitQuery.buildingId = building.id
+                    userRepo.query(userQuery, visitQuery)
+                        .flatMap { userEntities ->
+                            val users: MutableList<User> = mutableListOf()
+                            userEntities.forEach { userEntity ->
+                                getPictureAndUser(picture, null, building, userEntity)
+                                    .doAfterSuccess { user -> users.add(user)}
+                                    .doOnError { e -> throw e }
+                            }
+                            Single.just(users)
+                        }
+                }
+        } else {
+            return userRepo.query(userQuery, visitQuery)
+                    .flatMap { userEntities ->
+                        val users: MutableList<User> = mutableListOf()
+                        userEntities.forEach { userEntity ->
+                            getPictureAndUser(picture, null, null, userEntity)
+                                .doAfterSuccess { user -> users.add(user)}
+                                .doOnError { e -> throw e }
+                        }
+                        Single.just(users)
+                    }
+            }
     }
 
-    private fun getPictureAndUser(picture: Boolean, authEntity: AuthEntity, building: Building?, userEntity: UserEntity): Single<User> {
+    private fun getPictureAndUser(picture: Boolean, authEntity: AuthEntity?, building: Building?, userEntity: UserEntity): Single<User> {
         return if (picture && userEntity.photoUrl != null) {
             pictureRepo.get(userEntity.photoUrl!!)
                 .flatMap { pictureByteArray ->
@@ -97,12 +116,19 @@ open class UserUseCases @Inject constructor(
         }
     }
 
-    private fun buildUser(authEntity: AuthEntity, userEntity: UserEntity, building: Building?, picture: ByteArray? = null): User {
+    private fun buildUser(authEntity: AuthEntity?, userEntity: UserEntity, building: Building?, picture: ByteArray? = null): User {
 
-        return User(authEntity.id, userEntity.isStudent,
+        if (authEntity != null) {
+            return User(userEntity.id!!, userEntity.isStudent,
                 authEntity.email, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
-            building, userEntity.studentId, picture)
+                building, userEntity.studentId, picture)
+        } else {
+            return User(userEntity.id!!, userEntity.isStudent,
+                null, userEntity.firstName,
+                userEntity.lastName, userEntity.major,
+                building, userEntity.studentId, picture)
+        }
     }
 
     private fun overwrite(curr: UserEntity, truth: UserEntity): UserEntity {
