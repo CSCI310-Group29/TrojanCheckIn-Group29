@@ -16,7 +16,7 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
 
     companion object {
         private val TAG = "UserFirebaseDataSource"
-        private val EMULATOR = true
+        private val EMULATOR = false
     }
 
     private val db = Firebase.firestore

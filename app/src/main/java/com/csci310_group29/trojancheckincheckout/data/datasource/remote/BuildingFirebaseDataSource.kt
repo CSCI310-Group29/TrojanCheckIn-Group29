@@ -2,6 +2,7 @@ package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
 import android.graphics.Bitmap
 import android.os.Build
+import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
@@ -20,7 +21,7 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
 
     companion object {
         private val TAG = "BuildingFirebaseDataSource"
-        private val EMULATOR = true
+        private val EMULATOR = false
     }
 
     private val db = Firebase.firestore
@@ -85,15 +86,18 @@ class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
             val buildingRef = db.collection("buildings").document(buildingId)
             db.runTransaction { transaction ->
                 val documentSnapshot = transaction.get(buildingRef)
-                if ((documentSnapshot.get("numPeople") as Int) < (documentSnapshot.get("capacity") as Int)) {
-                    transaction.update(buildingRef, "numPeople", FieldValue.increment(incrementCount as Double))
+                if ((documentSnapshot.get("numPeople") as Long) < (documentSnapshot.get("capacity") as Long)) {
+                    transaction.update(buildingRef, "numPeople", FieldValue.increment(incrementCount.toDouble()))
                     building = transaction.get(buildingRef).toObject<BuildingEntity>()!!
                 } else {
                     throw FirebaseFirestoreException("capacity is full", FirebaseFirestoreException.Code.ABORTED)
                 }
             }
                 .addOnSuccessListener { emitter.onSuccess(building!!) }
-                .addOnFailureListener { e -> emitter.onError(e)}
+                .addOnFailureListener { e ->
+                    Log.d(TAG, e.message.toString())
+                    emitter.onError(e)
+                }
         }
     }
 
