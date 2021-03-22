@@ -112,8 +112,12 @@ class VisitUseCases @Inject constructor(
                             Observable.zip(Observable.just(visitEntity), userRepo.get(visitEntity.userId!!).toObservable(),
                                 {visitEntity2, userEntity -> Pair(visitEntity2, userEntity)})
                         }
-                        .filter { pair -> checkUser(pair.second, userQuery)}
+                        .filter { pair ->
+//                            Log.d(TAG, pair.first.toString())
+                            checkUser(pair.second, userQuery)
+                        }
                         .flatMap { pair ->
+                            Log.d(TAG, pair.first.toString())
                             Observable.just(pair.first)
                         }
                         .flatMap {visitEntity ->
@@ -159,6 +163,7 @@ class VisitUseCases @Inject constructor(
     }
 
     private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
+        Log.d(TAG, userQuery.toString())
         if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
             return false
         if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
@@ -169,11 +174,12 @@ class VisitUseCases @Inject constructor(
             if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
                 return false
         }
+        Log.d(TAG, userQuery.studentId.toString())
         if (userQuery.major != null && userQuery.major == userEntity.major)
             return false
         if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
             return false
-        if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
+        if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
             return false
         return true
     }
