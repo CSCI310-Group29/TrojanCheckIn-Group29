@@ -1,6 +1,5 @@
 package com.csci310_group29.trojancheckincheckout.domain.models
 
-import android.net.Uri
 import com.google.firebase.firestore.DocumentId
 
 data class Building(@DocumentId
@@ -36,4 +35,5 @@ data class Building(@DocumentId
         result = 31 * result + qrCodeRef.hashCode()
         return result
     }
+
 }

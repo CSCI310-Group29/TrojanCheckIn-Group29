@@ -10,6 +10,7 @@ import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.models.MutableBuilding
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.BuildingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observer
 import io.reactivex.SingleObserver
@@ -41,7 +42,11 @@ class BuildingInfoActivity : AppCompatActivity() {
                 override fun onSuccess(t: List<Building>) {
                     buildingInfo = initializeList(t)
                     initializeHashmap(t)
-                    adapter = BuildingListAdapter(buildingDomain,buildingInfo)
+                    adapter =
+                        BuildingListAdapter(
+                            buildingDomain,
+                            buildingInfo
+                        )
                     rv.adapter = adapter
                 }
 

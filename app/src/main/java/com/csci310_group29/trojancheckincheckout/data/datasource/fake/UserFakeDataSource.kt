@@ -7,6 +7,7 @@ import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -38,8 +39,8 @@ class UserFakeDataSource @Inject constructor(): UserRepository {
         return Completable.complete()
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<UserEntity>> {
-        return Single.just(listOf(userEntity))
+    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<UserEntity> {
+        return Observable.just(userEntity)
     }
 
 }

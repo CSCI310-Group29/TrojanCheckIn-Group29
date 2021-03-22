@@ -1,5 +1,5 @@
 
-package com.csci310_group29.trojancheckincheckout.ui.views
+package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +12,9 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 class VisitHistoryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapter<VisitHistoryAdapter.ViewHolder>() {
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView){
-        val buildingText = itemView.findViewById<TextView>(R.id.building)
-        val checkInText = itemView.findViewById<TextView>(R.id.checkIn)
-        val checkOutText = itemView.findViewById<TextView>(R.id.checkOut)
+        val buildingText = itemView.findViewById<TextView>(R.id.querySID)
+        val checkInText = itemView.findViewById<TextView>(R.id.queryBuilding)
+        val checkOutText = itemView.findViewById<TextView>(R.id.queryCheckIn)
 
     }
 

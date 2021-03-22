@@ -42,6 +42,7 @@ class StudentHomeActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         val userObserver = Observer<User> { newUser ->
+            Log.i(TAG, "in Student Home")
             Name.text = newUser.firstName
 
         }

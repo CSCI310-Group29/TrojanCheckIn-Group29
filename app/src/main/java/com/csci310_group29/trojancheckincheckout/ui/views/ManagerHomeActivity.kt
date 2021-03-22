@@ -45,6 +45,10 @@ class ManagerHomeActivity : AppCompatActivity() {
 
     }
 
+    fun onSearch(view: View) {
+        startActivity(Intent(this, VisitQueryActivity::class.java))
+    }
+
     fun onGetBuildings(view: View) {
         startActivity(Intent(this, BuildingInfoActivity::class.java))
 

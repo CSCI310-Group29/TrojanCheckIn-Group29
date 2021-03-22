@@ -6,11 +6,15 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
@@ -128,7 +132,8 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
         }
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+    override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        Log.d(TAG, "querying for visits")
         var query = db.collectionGroup("visits")
         if (visitQuery.startCheckIn != null) query =
             query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
@@ -143,38 +148,33 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
         return Single.create { emitter ->
             query.get()
                 .addOnSuccessListener { snapshots ->
-                    val visitsList: MutableList<VisitEntity> = mutableListOf()
-                    snapshots.forEach { snap ->
-                        val userRef = snap.reference.parent
-                        userRef.get()
-                            .addOnSuccessListener checkingUser@{ userSnap ->
-                                val userEntities = userSnap.toObjects<UserEntity>()
-                                if (userEntities.isEmpty()) {
-                                    val userEntity = userEntities[0]
-                                    if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
-                                        return@checkingUser
-                                    if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
-                                        return@checkingUser
-                                    if (userQuery.isCheckedIn != null) {
-                                        if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
-                                            return@checkingUser
-                                        if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
-                                            return@checkingUser
-                                    }
-                                    if (userQuery.major != null && userQuery.major == userEntity.major)
-                                        return@checkingUser
-                                    if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
-                                        return@checkingUser
-                                    if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
-                                        return@checkingUser
-                                    visitsList.add(snap.toObject<VisitEntity>())
-                                }
-                            }
-                            .addOnFailureListener { e -> emitter.onError(e) }
-                    }
-                    emitter.onSuccess(visitsList)
+                    val visitEntities = snapshots.toObjects<VisitEntity>()
+                    emitter.onSuccess(visitEntities)
                 }
-                .addOnFailureListener { e -> emitter.onError(e) }
+                .addOnFailureListener { e ->
+                    Log.d(TAG, e.localizedMessage)
+                    emitter.onError(e)
+                }
+            }
         }
+
+    private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
+        if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
+            return false
+        if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
+            return false
+        if (userQuery.isCheckedIn != null) {
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+                return false
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+                return false
+        }
+        if (userQuery.major != null && userQuery.major == userEntity.major)
+            return false
+        if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
+            return false
+        if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
+            return false
+        return true
     }
 }
