@@ -2,15 +2,20 @@ package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_manager_home.*
+import kotlinx.android.synthetic.main.activity_student_home.*
 import javax.inject.Inject
 
 private const val TAG = "ManagerHomeActivity"
@@ -31,6 +36,17 @@ class ManagerHomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manager_home)
 
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        val userObserver = Observer<User> { newUser ->
+            Log.i(TAG, "in Manager Home")
+            NameManager.text = newUser.firstName
+
+        }
+
+        viewModel.currUser.observe(this, userObserver)
     }
 
     fun onSearch(view: View) {
