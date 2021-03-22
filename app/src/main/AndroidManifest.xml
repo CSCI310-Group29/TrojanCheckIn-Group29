@@ -21,7 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrojanCheckInCheckOut"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.views.VisitQueryActivity"></activity>
+        <activity android:name=".ui.views.VisitQueryActivity"
+            android:parentActivityName=".ui.views.ManagerHomeActivity"
+            android:windowSoftInputMode="adjustNothing"
+            ></activity>
         <activity
             android:name=".ui.views.QrCodeActivity"
             android:parentActivityName=".ui.views.BuildingInfoActivity" />
