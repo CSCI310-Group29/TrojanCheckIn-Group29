@@ -17,7 +17,9 @@ import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
 import java.io.BufferedReader
+import java.io.File
 import java.io.FileReader
+import java.nio.file.Paths
 import javax.inject.Inject
 
 class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDomain: BuildingUseCases) {
@@ -48,6 +50,7 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
     }
 
     fun updateWithCSV(uri: Uri): Completable {
+        Log.i(TAG, "Curr directory: " + Paths.get("").toAbsolutePath().toString())
         return Completable.create { emitter ->
             var buildingMap: HashMap<String, Double> = HashMap()
             var buildings: List<BuildingUpdate> = emptyList()
@@ -56,10 +59,10 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 
             try {
                 Log.i(TAG, "Inside ViewModel. CSV URI: " + uri)
-//                val parsedUri = uri.replace("content://","")
-//                Log.i(TAG, "Inside ViewModel. Parsed URI: " + parsedUri)
-//                fileReader = BufferedReader(FileReader(parsedUri))
-                fileReader = BufferedReader(FileReader(uri.toString()))
+                val parsedUri = uri.getPath()!!.replace(".csv","")
+                Log.i(TAG, "Inside ViewModel. Parsed URI: " + parsedUri)
+                fileReader = BufferedReader(FileReader(parsedUri))
+//                fileReader = BufferedReader(FileReader(uri.getPath()))
                 Log.i(TAG, "Successfully opened file")
                 csvToBean = CsvToBeanBuilder<BuildingUpdate>(fileReader)
                     .withType(BuildingUpdate::class.java)
