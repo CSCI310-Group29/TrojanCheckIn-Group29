@@ -132,7 +132,8 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
         }
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<VisitEntity> {
+    override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        Log.d(TAG, "querying for visits")
         var query = db.collectionGroup("visits")
         if (visitQuery.startCheckIn != null) query =
             query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
@@ -144,40 +145,18 @@ class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
             query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut!!)
         if (visitQuery.buildingId != null) query =
             query.whereEqualTo("buildingId", visitQuery.buildingId)
-        return Observable.create { emitter ->
+        return Single.create { emitter ->
             query.get()
                 .addOnSuccessListener { snapshots ->
-                    Observable.fromIterable(snapshots)
-                        .concatMap { visitSnap ->
-                            val userRef = visitSnap.reference.parent
-                            val visitEntity = visitSnap.toObject<VisitEntity>()
-                            Observable.create { emitter2: ObservableEmitter<Pair<VisitEntity, UserEntity>> ->
-                                userRef.get()
-                                    .addOnSuccessListener { userSnap ->
-
-                                        val userEntities = userSnap.toObjects<UserEntity>()
-                                        if (userEntities.isNotEmpty()) {
-                                            val userEntity = userSnap.toObjects<UserEntity>()[0]
-                                            emitter2.onNext(Pair(visitEntity, userEntity))
-                                            emitter2.onComplete()
-                                        }
-                                    }
-                                    .addOnFailureListener { e -> emitter.onError(e) }
-                            }
-                        }
-                        .filter { pair ->
-                             checkUser(pair.second, userQuery)
-                        }
-                        .flatMapCompletable { pair ->
-                            emitter.onNext(pair.first)
-                            Completable.complete()
-                        }
-                        .doOnComplete { emitter.onComplete() }
-                        .doOnError { e -> emitter.onError(e) }
+                    val visitEntities = snapshots.toObjects<VisitEntity>()
+                    emitter.onSuccess(visitEntities)
                 }
-                .addOnFailureListener { e -> emitter.onError(e) }
+                .addOnFailureListener { e ->
+                    Log.d(TAG, e.localizedMessage)
+                    emitter.onError(e)
+                }
+            }
         }
-    }
 
     private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
         if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)

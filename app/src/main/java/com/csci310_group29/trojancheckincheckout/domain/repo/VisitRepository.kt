@@ -62,5 +62,5 @@ interface VisitRepository {
 
     fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<VisitEntity>>
 
-    fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<VisitEntity>
+    fun query(visitQuery: VisitQuery): Single<List<VisitEntity>>
 }

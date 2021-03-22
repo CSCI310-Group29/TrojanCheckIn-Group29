@@ -39,6 +39,7 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
                 .addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "successfully read user")
                     val userEntity = documentSnapshot.toObject<UserEntity>()
+                    Log.d(TAG, "$userEntity")
                     Log.d(TAG, userEntity.toString())
                     emitter.onSuccess(userEntity!!)
                 }
@@ -64,9 +65,20 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
     override fun delete(id: String): Completable {
         return Completable.create { emitter ->
             val userRef = db.collection("users").document(id)
-            userRef.delete()
-                .addOnSuccessListener { emitter.onComplete() }
-                .addOnFailureListener { exception -> emitter.onError(exception)}
+            val visitsRef = userRef.collection("visits")
+            visitsRef.get()
+                .addOnSuccessListener { snapshots ->
+                    db.runBatch { batch ->
+                        snapshots.forEach { snap ->
+                            batch.delete(snap.reference)
+                        }
+                        batch.delete(userRef)
+                        batch.commit()
+                    }
+                        .addOnSuccessListener { emitter.onComplete() }
+                        .addOnFailureListener { e -> emitter.onError(e) }
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
         }
     }
 

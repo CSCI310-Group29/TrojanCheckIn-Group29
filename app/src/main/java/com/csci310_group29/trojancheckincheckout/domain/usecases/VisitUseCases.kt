@@ -2,6 +2,7 @@ package com.csci310_group29.trojancheckincheckout.domain.usecases
 
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.models.User
@@ -14,6 +15,7 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.lang.Exception
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -72,28 +74,53 @@ class VisitUseCases @Inject constructor(
                 }
     }
 
+    private fun getVisit(visitEntity: VisitEntity, picture: Boolean = true): Single<Visit> {
+        return Single.zip(buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!),
+        userUseCases.getUser(visitEntity.userId!!), { building, user ->
+                buildVisitModel(user, null, building, visitEntity)
+            })
+    }
+
     fun searchVisits(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<Visit>> {
         if (visitQuery.buildingName != null) {
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
                 .flatMap { building ->
                     visitQuery.buildingId = building.id
-                    visitRepo.query(userQuery, visitQuery)
-                        .concatMap { visitEntity ->
-                            userUseCases.getUser(visitEntity.userId!!).toObservable()
-                                .concatMap { user ->
-                                    Observable.just(buildVisitModel(user, null, building, visitEntity))
+                    visitRepo.query(visitQuery)
+                        .flatMap { visitEntities ->
+                            Observable.fromIterable(visitEntities)
+                                .flatMap { visitEntity ->
+                                    Observable.zip(Observable.just(visitEntity), userRepo.get(visitEntity.userId!!).toObservable(),
+                                        {visitEntity2, userEntity -> Pair(visitEntity2, userEntity)})
                                 }
-                        }.toList()
+                                .filter { pair -> checkUser(pair.second, userQuery)}
+                                .flatMap { pair ->
+                                    Observable.just(pair.first)
+                                }
+                                .flatMap {visitEntity ->
+                                    Log.d(TAG, "$visitEntity")
+                                    getVisit(visitEntity).toObservable()
+                                }.toList()
+
+                        }
                 }
         } else {
-            return visitRepo.query(userQuery, visitQuery)
-                .concatMap { visitEntity ->
-                    Observable.zip(userUseCases.getUser(visitEntity.userId!!).toObservable(),
-                        buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!).toObservable(), { user, building ->
-                            buildVisitModel(user, null, building, visitEntity)
-                        })
+            return visitRepo.query(visitQuery)
+                .flatMap { visitEntities ->
+                    Observable.fromIterable(visitEntities)
+                        .flatMap { visitEntity ->
+                            Observable.zip(Observable.just(visitEntity), userRepo.get(visitEntity.userId!!).toObservable(),
+                                {visitEntity2, userEntity -> Pair(visitEntity2, userEntity)})
+                        }
+                        .filter { pair -> checkUser(pair.second, userQuery)}
+                        .flatMap { pair ->
+                            Observable.just(pair.first)
+                        }
+                        .flatMap {visitEntity ->
+                            getVisit(visitEntity).toObservable()
                         }.toList()
                 }
+            }
         }
 
 
@@ -131,6 +158,26 @@ class VisitUseCases @Inject constructor(
         }
     }
 
+    private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
+        if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
+            return false
+        if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
+            return false
+        if (userQuery.isCheckedIn != null) {
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+                return false
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+                return false
+        }
+        if (userQuery.major != null && userQuery.major == userEntity.major)
+            return false
+        if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
+            return false
+        if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
+            return false
+        return true
+    }
+
     private fun buildVisitModel(user: User, buildingEntity: BuildingEntity?, building: Building?, visitEntity: VisitEntity): Visit {
         if (building != null) {
             return Visit(
@@ -155,7 +202,6 @@ class VisitUseCases @Inject constructor(
                 checkOut = visitEntity.checkOut
             )
         }
-
     }
 
 

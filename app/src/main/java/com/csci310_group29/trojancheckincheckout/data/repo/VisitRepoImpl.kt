@@ -32,7 +32,7 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
         return remoteDataSource.getUserVisitHistory(userId, visitQuery)
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<VisitEntity> {
-        return remoteDataSource.query(userQuery, visitQuery)
+    override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        return remoteDataSource.query(visitQuery)
     }
 }
