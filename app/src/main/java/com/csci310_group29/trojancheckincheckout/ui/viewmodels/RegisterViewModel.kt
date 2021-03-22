@@ -33,27 +33,26 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
             } else if (user.major == "Major" && user.isStudent!!) {
                 emitter.onError(Exception("Must choose a major if you are a student"))
             }
-
-            val domain = getEmailDomain(email)
-            if (domain != "usc.edu") {
+            else if (getEmailDomain(email) != "usc.edu") {
                 //Log.e(TAG, "Not usc email passed to registerViewModel")
                 emitter.onError(Exception("Must register with a usc email"))
+            } else {
+
+
+                val observable = authDomain.signup(email, password, user);
+                observable.subscribe(object : CompletableObserver {
+                    override fun onComplete() {
+                        emitter.onComplete()
+                    }
+
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onError(e: Throwable) {
+                        emitter.onError(e)
+                    }
+                })
             }
-
-
-            val observable = authDomain.signup(email, password, user);
-            observable.subscribe(object : CompletableObserver {
-                override fun onComplete() {
-                    emitter.onComplete()
-                }
-
-                override fun onSubscribe(d: Disposable) {
-                }
-
-                override fun onError(e: Throwable) {
-                    emitter.onError(e)
-                }
-            })
         }
 
 

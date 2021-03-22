@@ -9,9 +9,6 @@ import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -25,11 +22,8 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                                                private val visitDomain: VisitUseCases):ViewModel() {
 
     private val TAG = "StudentHomeViewModel"
-    private val colRef = Firebase.firestore.collection("users")
-    private var listener: ListenerRegistration? = null
 
     var currUser: MutableLiveData<User> = MutableLiveData<User>(Session.user)
-
 
 
     fun decodeQR(bitmap: Bitmap?): Single<Visit> {
@@ -44,29 +38,28 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             var image: InputImage? = null
             try {
                 image = InputImage.fromBitmap(bitmap,0)
+                val scanner = BarcodeScanning.getClient(options)
+                scanner.process(image!!).addOnSuccessListener {barcodes ->
+                    for(barcode in barcodes) {
+                        val rawValue = barcode.rawValue as String
+                        Log.i(TAG, "raw value: $rawValue")
+                        if(Session.checkedInBuilding == null) {
+                            Log.i(TAG,"checking in")
+                            attemptCheckInEmit(emitter,rawValue)
+                        } else {
+                            Log.i(TAG,"checking out")
+                            attemptCheckOutEmit(emitter, rawValue)
+                        }
+                    }
+                }.addOnFailureListener {e ->
+                    Log.i(TAG, e.localizedMessage)
+                    emitter.onError(Exception("could not decode QR code"))
+                }
             } catch(e: Exception) {
                 Log.e(TAG,e.localizedMessage)
                 emitter.onError(Exception("Unable to get picture"))
             }
 
-
-            val scanner = BarcodeScanning.getClient(options)
-            scanner.process(image!!).addOnSuccessListener {barcodes ->
-                for(barcode in barcodes) {
-                    val rawValue = barcode.rawValue as String
-                    Log.i(TAG, "raw value: $rawValue")
-                    if(Session.checkedInBuilding == null) {
-                        Log.i(TAG,"checking in")
-                        attemptCheckInEmit(emitter,rawValue)
-                    } else {
-                        Log.i(TAG,"checking out")
-                        attemptCheckOutEmit(emitter, rawValue)
-                    }
-                }
-            }.addOnFailureListener {e ->
-                Log.i(TAG, e.localizedMessage)
-                emitter.onError(Exception("could not decode QR code"))
-            }
         }
 
     }
@@ -121,20 +114,22 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
     fun checkOutManual(): Single<Visit> {
         return Single.create{ emitter ->
             if(Session.checkedInBuilding == null) emitter.onError(Exception("Not Checked In"))
-            val observable = visitDomain.checkOut(Session.checkedInBuilding!!.id)
-            observable.subscribe(object : SingleObserver<Visit> {
-                override fun onSuccess(t: Visit) {
-                    Session.checkedInBuilding = null
-                    emitter.onSuccess(t)
-                }
+            else {
+                val observable = visitDomain.checkOut(Session.checkedInBuilding!!.id)
+                observable.subscribe(object : SingleObserver<Visit> {
+                    override fun onSuccess(t: Visit) {
+                        Session.checkedInBuilding = null
+                        emitter.onSuccess(t)
+                    }
 
-                override fun onSubscribe(d: Disposable) {
-                }
+                    override fun onSubscribe(d: Disposable) {
+                    }
 
-                override fun onError(e: Throwable) {
-                    emitter.onError(e)
-                }
-            })
+                    override fun onError(e: Throwable) {
+                        emitter.onError(e)
+                    }
+                })
+            }
         }
 
 

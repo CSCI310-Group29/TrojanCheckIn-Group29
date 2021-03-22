@@ -9,19 +9,20 @@
     >
 
     <TextView
-        android:id="@+id/querySID"
+        android:id="@+id/historyBuilding"
+        android:textAlignment="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         />
     <TextView
-        android:id="@+id/queryBuilding"
+        android:id="@+id/historyCheckIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         />
     <TextView
-        android:id="@+id/queryCheckIn"
+        android:id="@+id/historyCheckOut"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

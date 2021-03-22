@@ -12,9 +12,9 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 class VisitHistoryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapter<VisitHistoryAdapter.ViewHolder>() {
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView){
-        val buildingText = itemView.findViewById<TextView>(R.id.querySID)
-        val checkInText = itemView.findViewById<TextView>(R.id.queryBuilding)
-        val checkOutText = itemView.findViewById<TextView>(R.id.queryCheckIn)
+        val buildingText = itemView.findViewById<TextView>(R.id.historyBuilding)
+        val checkInText = itemView.findViewById<TextView>(R.id.historyCheckIn)
+        val checkOutText = itemView.findViewById<TextView>(R.id.historyCheckOut)
 
     }
 

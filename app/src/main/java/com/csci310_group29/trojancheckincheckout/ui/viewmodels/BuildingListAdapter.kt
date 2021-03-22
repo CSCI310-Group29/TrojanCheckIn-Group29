@@ -36,7 +36,7 @@ class BuildingListAdapter @Inject constructor(private val buildingDomain: Buildi
         val context = parent.context
         val inflater = LayoutInflater.from(context)
 
-        val contactView = inflater.inflate(R.layout.activity_building_list, parent, false)
+        val contactView = inflater.inflate(R.layout.item_buildinginfo, parent, false)
 
         return ViewHolder(contactView)
     }
