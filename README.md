@@ -12,6 +12,9 @@
 
 ## Running the Project
 
+Uncompress the assignment zip file, and then uncompress the project zip file. In android studio, import the project folder by "open an existing project" in Android Studio.
+
+
 #### Set up Android Emulator
 You should have the included Android emulator. Ensure that the webcam is enabled in order to scan QR codes.
 - In Android Studio, go to the "Tools" tab
