@@ -148,6 +148,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 override fun onComplete() {
                     Session.uid = ""
                     Session.user = null
+                    emitter.onComplete()
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -155,7 +156,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 }
 
                 override fun onError(e: Throwable) {
-                    throw Exception(e.localizedMessage)
+                    emitter.onError(e)
                 }
             })
         }

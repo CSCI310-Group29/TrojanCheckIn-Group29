@@ -21,6 +21,7 @@ class ManagerHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             val observable = authDomain.logout();
             observable.subscribe(object: CompletableObserver {
                 override fun onComplete() {
+                    emitter.onComplete()
                     Session.uid = ""
                     Session.user = null
                 }
@@ -30,7 +31,7 @@ class ManagerHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 }
 
                 override fun onError(e: Throwable) {
-                    throw Exception(e.localizedMessage)
+                    emitter.onError(e)
                 }
             })
         }
