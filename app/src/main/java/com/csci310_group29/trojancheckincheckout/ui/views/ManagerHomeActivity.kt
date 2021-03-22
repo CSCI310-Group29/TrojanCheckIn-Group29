@@ -22,6 +22,10 @@ class ManagerHomeActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModel: ManagerHomeViewModel
 
+    fun onGetBuildings(view: View) {
+        startActivity(Intent(this, BuildingInfoActivity::class.java))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         lateinit var building: ArrayList<Building>
         super.onCreate(savedInstanceState)
