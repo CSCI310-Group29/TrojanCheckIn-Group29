@@ -7,6 +7,8 @@
 - Enter "https://github.com/CSCI310-Group29/TrojanCheckIn-Group29" for the repository url
 - You should have now cloned the github repository
 
+- If opening project from project folder, Open project folder within Android Studio
+
 
 ## Running the Project
 
