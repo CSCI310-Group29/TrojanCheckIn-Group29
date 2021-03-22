@@ -17,6 +17,7 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.CompletableObserver
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_student_home.*
@@ -56,15 +57,23 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun onLogout(view: View) {
-        try {
-            viewModel.logout()
-            startActivity(Intent(this, AppHomeActivity::class.java))
-            finishAffinity()
-        } catch(e:Exception) {
-            Log.e(TAG, e.localizedMessage)
-            val toast = Toast.makeText(this, "Unable to logout. Try again",Toast.LENGTH_SHORT)
-            toast.show()
-        }
+        val observable = viewModel.logout()
+        observable.subscribe(object: CompletableObserver {
+            override fun onComplete() {
+                startActivity(Intent(this@StudentHomeActivity, AppHomeActivity::class.java))
+                finishAffinity()
+            }
+
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onError(e: Throwable) {
+                val toast = Toast.makeText(this@StudentHomeActivity, "Unable to logout. Try again",Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        })
+
     }
 
     fun onManualCheckout(view: View) {
