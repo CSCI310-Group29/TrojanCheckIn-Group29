@@ -36,4 +36,7 @@ data class Building(@DocumentId
         return result
     }
 
+    override fun toString(): String {
+        return buildingName
+    }
 }

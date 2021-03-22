@@ -2,11 +2,14 @@ package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,24 +81,34 @@ class VisitQueryActivity : AppCompatActivity() {
 
     }
 
-    private fun getBuildingOptions(buildings: List<Building>): MutableList<String> {
-        val res = mutableListOf<String>()
-        res.add("Building")
+    private fun getBuildingOptions(buildings: List<Building>): MutableList<Building> {
+        val res = mutableListOf<Building>()
+        res.add(Building("", "Building", "", 0, 0, ""))
         for(b in buildings) {
-            res.add(b.buildingName)
+            res.add(b)
         }
         return res
     }
 
     fun onSearch(view:View) {
-        val id = if(SearchId.text.toString() == "Major") null else SearchId.text.toString()
+        try {
+            val imm: InputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        } catch (e: java.lang.Exception) {
+        }
+
+        val id = if(SearchId.text.toString().isBlank()) null else SearchId.text.toString()
         val building = if(building_spinner.selectedItem.toString() == "Building") null
         else building_spinner.selectedItem.toString()
         val major = if(major_spinner.selectedItem.toString().isEmpty()) null else major_spinner.selectedItem.toString()
 
         Log.i(TAG, "Id is null: " + id.isNullOrBlank().toString())
+        Log.i(TAG, id.toString())
         Log.i(TAG, "building is null: " + building.isNullOrBlank().toString())
+        Log.i(TAG, building.toString())
         Log.i(TAG, "major is null: " + major.isNullOrBlank().toString())
+        Log.i(TAG, major.toString())
         if(startDate == null) {
             Log.i(TAG, "startdate is null")
         }
@@ -114,6 +127,7 @@ class VisitQueryActivity : AppCompatActivity() {
                 val adapter = VisitQueryAdapter(t)
                 rv.adapter = adapter
                 adapter.notifyDataSetChanged()
+                if(t.size == 0)  makeToast("No results for this query")
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -127,6 +141,10 @@ class VisitQueryActivity : AppCompatActivity() {
         rv.layoutManager = LinearLayoutManager(this)
 
 
+    }
+
+    fun makeToast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
     fun onClickStart(view: View) {
