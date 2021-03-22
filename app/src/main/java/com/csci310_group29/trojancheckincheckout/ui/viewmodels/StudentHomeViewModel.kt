@@ -12,6 +12,10 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.common.InputImage
 import io.reactivex.CompletableObserver
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
@@ -31,59 +35,10 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
 
 
 
-    fun getUserData(): MutableLiveData<User> {
-        return object: MutableLiveData<User>() {
-            init {
-                //observe changes in DB
-                //currUser.setValue(newUser)
-            }
-        }
-        /*
-        return object: MutableLiveData<UserEntity>() {
-            val data = this
-            val docRef = colRef.document(Session.uid)
-
-            init {
-                listener = docRef.addSnapshotListener {
-                        snapshot, e ->
-                    if (e != null) {
-                        Log.e(TAG, "could not get user data from firestore ")
-                        return@addSnapshotListener
-                    }
-
-                    if (snapshot != null && snapshot.exists()) {
-                        val first = snapshot["firstName"] as String
-                        val last = snapshot["lastName"] as String
-                        val isStudent = snapshot["isStudent"] as Boolean
-                        val major = snapshot["major"] as String
-                        val sid = snapshot["studentId"] as String
-                        val uid = snapshot.id
-
-                        val newUser = UserEntity(uid, isStudent, first, last, major, null, sid)
-                        currUser.setValue(newUser)
-                    }
-                }
-
-            }
-        }*/
-
-    }
-
-
     fun decodeQR(bitmap: Bitmap?): Single<Visit> {
 
         return Single.create{emitter ->
-            if(Session.checkedInBuilding == null) {
-                Log.i(TAG,"checking in")
-                attemptCheckInEmit(emitter,
-                    "OEbuTSFCEgjMEkNmPwjX"
-                )
-            } else {
-                Log.i(TAG,"checking out")
-                attemptCheckOutEmit(emitter,
-                        "OEbuTSFCEgjMEkNmPwjX")
-            }
-            /*
+
             val options = BarcodeScannerOptions.Builder()
                 .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                 .build()
@@ -114,7 +69,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
             }.addOnFailureListener {e ->
                 Log.i(TAG, e.localizedMessage)
                 emitter.onError(Exception("could not decode QR code"))
-            }*/
+            }
         }
 
     }

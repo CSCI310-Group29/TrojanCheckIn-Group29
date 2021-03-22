@@ -1,6 +1,7 @@
 
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 
+val TAG = "VisitQueryAdapter"
 class VisitQueryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapter<VisitQueryAdapter.ViewHolder>() {
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView){
@@ -20,6 +22,7 @@ class VisitQueryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        Log.i(TAG, "oncreate viewholder")
         val context = parent.context
         val inflater = LayoutInflater.from(context)
 
@@ -33,7 +36,9 @@ class VisitQueryAdapter(private val vHistory: List<Visit>): RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.i(TAG, "bind viewholder")
         val visit: Visit = vHistory[position]
+        Log.i(TAG, visit.toString())
 
         val sText = holder.studentText
         sText.text = visit.user!!.studentId

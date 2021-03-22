@@ -28,7 +28,7 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
             throw Exception("Must enter student id if you are a student")
         } else if(password.isEmpty()) {
             throw Exception("Must enter password")
-        } else if(user.major == "" && user.isStudent!!) {
+        } else if(user.major == "Major" && user.isStudent!!) {
             throw Exception("Must choose a major if you are a student")
         }
 

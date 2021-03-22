@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
@@ -79,7 +80,7 @@ class VisitQueryActivity : AppCompatActivity() {
 
     private fun getBuildingOptions(buildings: List<Building>): MutableList<String> {
         val res = mutableListOf<String>()
-        res.add("")
+        res.add("Building")
         for(b in buildings) {
             res.add(b.buildingName)
         }
@@ -87,8 +88,8 @@ class VisitQueryActivity : AppCompatActivity() {
     }
 
     fun onSearch(view:View) {
-        val id = if(SearchId.text.isEmpty()) null else SearchId.text.toString()
-        val building = if(building_spinner.selectedItem.toString().isEmpty()) null
+        val id = if(SearchId.text.toString() == "Major") null else SearchId.text.toString()
+        val building = if(building_spinner.selectedItem.toString() == "Building") null
         else building_spinner.selectedItem.toString()
         val major = if(major_spinner.selectedItem.toString().isEmpty()) null else major_spinner.selectedItem.toString()
 
@@ -112,6 +113,7 @@ class VisitQueryActivity : AppCompatActivity() {
                 Log.i(TAG, "${t.size}")
                 val adapter = VisitQueryAdapter(t)
                 rv.adapter = adapter
+                adapter.notifyDataSetChanged()
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -122,6 +124,7 @@ class VisitQueryActivity : AppCompatActivity() {
                 Log.i(TAG,  "error query")
             }
         })
+        rv.layoutManager = LinearLayoutManager(this)
 
 
     }
