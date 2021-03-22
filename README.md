@@ -26,5 +26,5 @@ You should have the included Android emulator. Ensure that the webcam is enabled
 - Open Actions dropdown and Cold Boot
 
 #### Run the App
-Open "Run" tab and select Run 'app' OR click the green "Run 'app'" arrow in the top right 
+Open "Run" tab and select Run 'app' OR click the green "Run 'app'" arrow in the top right.   
 App should build and open in the Android emulator shortly
