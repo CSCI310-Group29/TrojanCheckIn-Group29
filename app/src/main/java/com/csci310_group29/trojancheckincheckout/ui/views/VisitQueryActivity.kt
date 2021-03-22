@@ -60,7 +60,8 @@ class VisitQueryActivity : AppCompatActivity() {
         observable.subscribe(object: SingleObserver<List<Building>> {
             override fun onSuccess(t: List<Building>) {
                 Log.i(TAG, "${t.size}")
-                val adapter = ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,t)
+                val list = getBuildingOptions(t)
+                val adapter = ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,list)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
             }
@@ -74,6 +75,15 @@ class VisitQueryActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    private fun getBuildingOptions(buildings: List<Building>): MutableList<String> {
+        val res = mutableListOf<String>()
+        res.add("")
+        for(b in buildings) {
+            res.add(b.buildingName)
+        }
+        return res
     }
 
     fun onSearch(view:View) {
