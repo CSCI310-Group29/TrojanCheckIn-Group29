@@ -67,6 +67,9 @@ class ManagerHomeActivity : AppCompatActivity() {
 
     }
 
+    fun onChangeCapacities(view: View) {
+        startActivity(Intent(this, ManagerUpdateCapacityActivity::class.java))
+    }
 
     fun onViewProfile(view: View) {
         startActivity(Intent(this, ManagerProfileActivity::class.java))

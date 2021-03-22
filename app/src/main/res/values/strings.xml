@@ -137,6 +137,17 @@
         <item> Writing for Screen and Television </item>
     </string-array>
 
+    <string-array name="buildings_array">
+        <item> SAL </item>
+        <item> THH </item>
+        <item> RTH </item>
+        <item> LVL </item>
+        <item> GFS </item>
+        <item> A </item>
+        <item> B </item>
+        <item> C </item>
+    </string-array>
+
     <string-array name="account_type">
         <item>Student</item>
         <item>Manager</item>
