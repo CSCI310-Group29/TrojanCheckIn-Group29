@@ -35,6 +35,7 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
         return Single.create { emitter ->
             Log.d(TAG, "getting user")
             val userRef = db.collection("users").document(id)
+            Log.d(TAG, "$id")
             userRef.get()
                 .addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "successfully read user")
@@ -73,7 +74,6 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
                             batch.delete(snap.reference)
                         }
                         batch.delete(userRef)
-                        batch.commit()
                     }
                         .addOnSuccessListener { emitter.onComplete() }
                         .addOnFailureListener { e -> emitter.onError(e) }
