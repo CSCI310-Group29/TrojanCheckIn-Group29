@@ -29,5 +29,5 @@ You should have the included Android emulator. Ensure that the webcam is enabled
 Open "Run" tab and select Run 'app' OR click the green "Run 'app'" arrow in the top right.   
 App should build and open in the Android emulator shortly.    
 
-Database will be initialized with buildings and capacities.
+Database will be initialized with buildings and capacities.  
 Note: May need to take a picture of the QR code to scan with computer webcam and sign in
