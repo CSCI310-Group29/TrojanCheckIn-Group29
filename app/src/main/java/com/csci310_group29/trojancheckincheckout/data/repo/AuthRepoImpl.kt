@@ -1,33 +1,33 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
-import com.csci310_group29.trojancheckincheckout.data.fake.AuthFakeDataSource
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.remote.AuthFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.csci310_group29.trojancheckincheckout.data.datasource.remote.AuthFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
+import javax.inject.Inject
+import javax.inject.Named
 
-class AuthRepoImpl(fake: Boolean = false): AuthRepository {
-    private val remoteDataSource: AuthRepository = if (!fake) {
-        AuthFirebaseDataSource()
-    } else {
-        AuthFakeDataSource()
-    }
+class AuthRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: AuthRepository):
+        AuthRepository {
 
-    override fun getCurrentUser(): Single<User> {
+    override fun getCurrentUser(): Single<AuthEntity> {
         return remoteDataSource.getCurrentUser()
     }
 
-    override fun getUserWithCredentials(email: String, password: String): Single<User> {
-        return remoteDataSource.getUserWithCredentials(email, password)
-    }
 
     override fun logoutCurrentUser(): Completable {
         return remoteDataSource.logoutCurrentUser()
     }
 
-    override fun createUser(email: String, password: String, user: User) : Completable {
-        return remoteDataSource.createUser(email, password, user)
+
+    override fun createUser(email: String, password: String) : Single<AuthEntity> {
+        return remoteDataSource.createUser(email, password)
+    }
+
+    override fun loginUser(email: String, password: String): Completable {
+        return remoteDataSource.loginUser(email, password)
     }
 
     override fun updateEmail(newEmail: String): Completable {

@@ -1,27 +1,38 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
-import com.csci310_group29.trojancheckincheckout.data.fake.VisitFakeDataSource
-import com.csci310_group29.trojancheckincheckout.data.models.User
-import com.csci310_group29.trojancheckincheckout.data.models.Visit
-import com.csci310_group29.trojancheckincheckout.data.remote.VisitFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.data.datasource.remote.VisitFirebaseDataSource
+import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
+import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
+import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import io.reactivex.Observable
 import io.reactivex.Single
+import javax.inject.Inject
+import javax.inject.Named
 
-class VisitRepoImpl(fake: Boolean = false): VisitRepository {
-    private val remoteDataSource = if (!fake) VisitFirebaseDataSource() else VisitFakeDataSource()
+class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: VisitRepository): VisitRepository {
 
-    override fun attemptCheckIn(userId: String, buildingName: String): Single<Visit> {
-        return remoteDataSource.attemptCheckIn(userId, buildingName)
+    override fun create(userId: String, buildingId: String): Single<VisitEntity> {
+        return remoteDataSource.create(userId, buildingId)
     }
 
-    override fun checkOut(userId: String): Single<Visit> {
-        return remoteDataSource.checkOut(userId)
+    override fun get(userId: String, visitId: String): Single<VisitEntity> {
+        return remoteDataSource.get(userId, visitId)
     }
 
-    override fun isCheckedIn(userId: String): Single<Visit> {
-        return remoteDataSource.isCheckedIn(userId)
+    override fun getLatestVisit(userId: String): Single<VisitEntity> {
+        return remoteDataSource.getLatestVisit(userId)
     }
 
-    override fun queryVisits(user: User, visit: Visit): Single<List<Visit>> {
-        return remoteDataSource.queryVisits(user, visit)
+    override fun checkOutVisit(userId: String, visitId: String): Single<VisitEntity> {
+        return remoteDataSource.checkOutVisit(userId, visitId)
+    }
+
+    override fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        return remoteDataSource.getUserVisitHistory(userId, visitQuery)
+    }
+
+    override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
+        return remoteDataSource.query(visitQuery)
     }
 }
