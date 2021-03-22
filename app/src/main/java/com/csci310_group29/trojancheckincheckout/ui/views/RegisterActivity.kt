@@ -15,6 +15,8 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.RegisterViewModel
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.CompletableObserver
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -78,24 +80,29 @@ class RegisterActivity : AppCompatActivity() {
                 id,
                 null
             )
+        val observable = registerViewModel!!.register(email, pass, newUser)
 
-        try {
-            registerViewModel!!.register(email, pass, newUser)
+        observable.subscribe(object: CompletableObserver {
+            override fun onComplete() {
+                firstNameText.text!!.clear()
+                lastNameText.text!!.clear()
+                emailText.text!!.clear()
+                passwordText.text!!.clear()
+                SIDText.text!!.clear()
 
-            firstNameText.text!!.clear()
-            lastNameText.text!!.clear()
-            emailText.text!!.clear()
-            passwordText.text!!.clear()
-            SIDText.text!!.clear()
+                val toast = Toast.makeText(this@RegisterActivity, "Registered", Toast.LENGTH_SHORT)
+                toast.show()
+            }
 
-            val toast = Toast.makeText(this, "Registered", Toast.LENGTH_SHORT)
-            toast.show()
-        } catch (e: Exception) {
-            //Log.i(TAG, "error returned from register function in registerViewmodel " + e.getMessage());
-            val toast =
-                Toast.makeText(this, "Cannot Register: " + e.message, Toast.LENGTH_SHORT)
-            toast.show()
-        }
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onError(e: Throwable) {
+                val toast = Toast.makeText(this@RegisterActivity, "Unable to register: " + e.localizedMessage, Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        })
+
     }
 
     companion object {

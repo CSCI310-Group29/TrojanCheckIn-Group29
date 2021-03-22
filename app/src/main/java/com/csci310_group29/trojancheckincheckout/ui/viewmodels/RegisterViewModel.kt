@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
+import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
@@ -13,49 +14,47 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
     private val TAG = "RegisterViewModel"
 
 
-    public fun register(email:String, password:String,user: UserEntity) {
-        var success:Boolean = true
-        var dis: Disposable? = null
-        Log.i(TAG, "register called successfully");
-        if(user.firstName == "") {
-            //Log.e(TAG, "No first name passed to registerViewModel")
-            throw Exception("Must enter first name")
-        } else if(user.lastName == "") {
-            //Log.e(TAG, "No last name passed to registerViewModel")
-            throw Exception("Must enter last name")
-        } else if(user.studentId == "" && user.isStudent!!) {
-            //Log.e(TAG, "No student id passed to registerViewModel")
-            throw Exception("Must enter student id if you are a student")
-        } else if(password.isEmpty()) {
-            throw Exception("Must enter password")
-        } else if(user.major == "Major" && user.isStudent!!) {
-            throw Exception("Must choose a major if you are a student")
+    public fun register(email:String, password:String,user: UserEntity): Completable {
+        return Completable.create {emitter->
+            var success: Boolean = true
+            var dis: Disposable? = null
+            Log.i(TAG, "register called successfully");
+            if (user.firstName == "") {
+                //Log.e(TAG, "No first name passed to registerViewModel")
+                emitter.onError(Exception("Must enter first name"))
+            } else if (user.lastName == "") {
+                //Log.e(TAG, "No last name passed to registerViewModel")
+                emitter.onError(Exception("Must enter last name"))
+            } else if (user.studentId == "" && user.isStudent!!) {
+                //Log.e(TAG, "No student id passed to registerViewModel")
+                emitter.onError(Exception("Must enter student id if you are a student"))
+            } else if (password.isEmpty()) {
+                emitter.onError(Exception("Must enter password"))
+            } else if (user.major == "Major" && user.isStudent!!) {
+                emitter.onError(Exception("Must choose a major if you are a student"))
+            }
+
+            val domain = getEmailDomain(email)
+            if (domain != "usc.edu") {
+                //Log.e(TAG, "Not usc email passed to registerViewModel")
+                emitter.onError(Exception("Must register with a usc email"))
+            }
+
+
+            val observable = authDomain.signup(email, password, user);
+            observable.subscribe(object : CompletableObserver {
+                override fun onComplete() {
+                    emitter.onComplete()
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onError(e: Throwable) {
+                    emitter.onError(e)
+                }
+            })
         }
-
-        val domain = getEmailDomain(email)
-        if(domain != "usc.edu") {
-            //Log.e(TAG, "Not usc email passed to registerViewModel")
-            throw Exception("Must register with a usc email")
-        }
-
-
-        val observable = authDomain.signup(email,password,user);
-        observable.subscribe(object: CompletableObserver {
-            override fun onComplete() {
-                dis!!.dispose()
-            }
-
-            override fun onSubscribe(d: Disposable) {
-                Log.i(TAG, "vm subscribed")
-                dis = d
-            }
-
-            override fun onError(e: Throwable) {
-                Log.i(TAG, e.localizedMessage)
-                throw(e)
-                dis!!.dispose()
-            }
-        })
 
 
     }

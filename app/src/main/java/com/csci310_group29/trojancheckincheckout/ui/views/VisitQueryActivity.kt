@@ -1,7 +1,5 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -111,14 +109,18 @@ class VisitQueryActivity : AppCompatActivity() {
         Log.i(TAG, major.toString())
         if(startDate == null) {
             Log.i(TAG, "startdate is null")
+        } else {
+            Log.i(TAG, startDate.toString())
         }
         if(endDate == null) {
             Log.i(TAG, "enddate is null")
+        } else {
+            Log.i(TAG, endDate.toString())
         }
 
 
         val userQ = UserQuery(null, null,major, id,null,null)
-        val visitQ = VisitQuery(startDate,null,null,endDate,building,null)
+        val visitQ = VisitQuery(null,null,null,null,building,null)
 
         val observable = visitDomain.searchVisits(userQ, visitQ)
         observable.subscribe(object: SingleObserver<List<Visit>> {
@@ -147,7 +149,7 @@ class VisitQueryActivity : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    fun onClickStart(view: View) {
+    /*fun onClickStart(view: View) {
         if(startDate != null) {
             startDateView.text = "Start Date"
             startDateView.textSize =  24F
@@ -192,5 +194,5 @@ class VisitQueryActivity : AppCompatActivity() {
                 }
             }, startHour, startMinute, false).show()
         }, startYear, startMonth, startDay).show()
-    }
+    }*/
 }
