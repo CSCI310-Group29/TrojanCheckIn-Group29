@@ -51,6 +51,8 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 
     fun updateWithCSV(uri: Uri): Completable {
         Log.i(TAG, "Curr directory: " + Paths.get("").toAbsolutePath().toString())
+        Log.i(TAG, "Is absolute URI? " + uri.isAbsolute)
+        Log.i(TAG, "Is relative URI? " + uri.isRelative)
         return Completable.create { emitter ->
             var buildingMap: HashMap<String, Double> = HashMap()
             var buildings: List<BuildingUpdate> = emptyList()
@@ -58,11 +60,11 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
             var csvToBean: CsvToBean<BuildingUpdate>
 
             try {
-                Log.i(TAG, "Inside ViewModel. CSV URI: " + uri)
-                val parsedUri = uri.getPath()!!.replace(".csv","")
-                Log.i(TAG, "Inside ViewModel. Parsed URI: " + parsedUri)
-                fileReader = BufferedReader(FileReader(parsedUri))
-//                fileReader = BufferedReader(FileReader(uri.getPath()))
+                Log.i(TAG, "Inside ViewModel. CSV URI: " + uri.getPath())
+//                val parsedUri = uri.getPath()!!.replace(".csv","")
+//                Log.i(TAG, "Inside ViewModel. Parsed URI: " + parsedUri)
+//                fileReader = BufferedReader(FileReader(parsedUri))
+                fileReader = BufferedReader(FileReader(uri.getPath()))
                 Log.i(TAG, "Successfully opened file")
                 csvToBean = CsvToBeanBuilder<BuildingUpdate>(fileReader)
                     .withType(BuildingUpdate::class.java)
