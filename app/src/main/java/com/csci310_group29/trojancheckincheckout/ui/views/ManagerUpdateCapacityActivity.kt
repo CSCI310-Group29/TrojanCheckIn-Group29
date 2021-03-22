@@ -1,20 +1,21 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isEmpty
 import com.csci310_group29.trojancheckincheckout.R
+import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerUpdateCapacityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.CompletableObserver
+import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_manager_update_capacity.*
-import java.net.URI
 import javax.inject.Inject
 
 
@@ -23,6 +24,9 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: ManagerUpdateCapacityViewModel
+
+    @Inject
+    lateinit var buildingDomain: BuildingUseCases
 
     private val TAG = "ManagerUpdateCapacityActivity"
     // Request code for selecting a PDF document.
@@ -37,12 +41,23 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         val spinner = findViewById<View>(R.id.BuildingInput) as Spinner
-        val adapter = ArrayAdapter.createFromResource(
-            this,
-            R.array.buildings_array,
-            android.R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+
+        val observable = buildingDomain.getAllBuildings()
+        observable.subscribe(object: SingleObserver<List<Building>> {
+            override fun onSuccess(t: List<Building>) {
+                val adapter = ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,t)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner.adapter = adapter
+            }
+
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onError(e: Throwable) {
+
+            }
+        })
 
 
 //        val buildingObserver = Observer<Building> { newBuilding ->
