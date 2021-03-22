@@ -55,8 +55,9 @@
         android:id="@+id/SearchId"
         android:layout_width="363dp"
         android:layout_height="56dp"
-        android:ems="10"
         android:clickable="true"
+        android:ems="10"
+        android:hint="Student ID"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +67,7 @@
         app:layout_constraintVertical_bias="0.023" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/startDateView"
         android:layout_width="173dp"
         android:layout_height="39dp"
         android:text="Start Date"
@@ -81,7 +82,7 @@
         app:layout_constraintVertical_bias="0.214" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/endDateView"
         android:layout_width="187dp"
         android:layout_height="39dp"
         android:text="End Date"
