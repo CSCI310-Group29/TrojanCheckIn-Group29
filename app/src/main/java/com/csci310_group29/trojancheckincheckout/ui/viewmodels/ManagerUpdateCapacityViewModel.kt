@@ -49,70 +49,74 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 
     }
 
-    fun updateWithCSV(uri: Uri): Completable {
-        Log.i(TAG, "Curr directory: " + Paths.get("").toAbsolutePath().toString())
-        Log.i(TAG, "Is absolute URI? " + uri.isAbsolute)
-        Log.i(TAG, "Is relative URI? " + uri.isRelative)
-        return Completable.create { emitter ->
-            var buildingMap: HashMap<String, Double> = HashMap()
-            var buildings: List<BuildingUpdate> = emptyList()
-            var fileReader: BufferedReader? = null
-            var csvToBean: CsvToBean<BuildingUpdate>
-
-            try {
-                Log.i(TAG, "Inside ViewModel. CSV URI: " + uri.getPath())
-//                val parsedUri = uri.getPath()!!.replace(".csv","")
-//                Log.i(TAG, "Inside ViewModel. Parsed URI: " + parsedUri)
-//                fileReader = BufferedReader(FileReader(parsedUri))
-                fileReader = BufferedReader(FileReader(uri.getPath()))
-                Log.i(TAG, "Successfully opened file")
-                csvToBean = CsvToBeanBuilder<BuildingUpdate>(fileReader)
-                    .withType(BuildingUpdate::class.java)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build()
-
+    /**
+     * Update Capacity with CSV
+     * commented out for assignment 3
+     */
+//    fun updateWithCSV(uri: Uri): Completable {
+//        Log.i(TAG, "Curr directory: " + Paths.get("").toAbsolutePath().toString())
+//        Log.i(TAG, "Is absolute URI? " + uri.isAbsolute)
+//        Log.i(TAG, "Is relative URI? " + uri.isRelative)
+//        return Completable.create { emitter ->
+//            var buildingMap: HashMap<String, Double> = HashMap()
+//            var buildings: List<BuildingUpdate> = emptyList()
+//            var fileReader: BufferedReader? = null
+//            var csvToBean: CsvToBean<BuildingUpdate>
+//
+//            try {
+//                Log.i(TAG, "Inside ViewModel. CSV URI: " + uri.getPath())
+////                val parsedUri = uri.getPath()!!.replace(".csv","")
+////                Log.i(TAG, "Inside ViewModel. Parsed URI: " + parsedUri)
+////                fileReader = BufferedReader(FileReader(parsedUri))
+//                fileReader = BufferedReader(FileReader(uri.getPath()))
+//                Log.i(TAG, "Successfully opened file")
+//                csvToBean = CsvToBeanBuilder<BuildingUpdate>(fileReader)
+//                    .withType(BuildingUpdate::class.java)
+//                    .withIgnoreLeadingWhiteSpace(true)
+//                    .build()
+//
+////                val buildings = csvToBean.parse()
+////                val csvcontents = csvReader().readAll(uri)
+////                val buildings = grass<BuildingUpdate>().harvest(csvcontents)
 //                val buildings = csvToBean.parse()
-//                val csvcontents = csvReader().readAll(uri)
-//                val buildings = grass<BuildingUpdate>().harvest(csvcontents)
-                val buildings = csvToBean.parse()
-                Log.i(TAG, "Successfully processed file")
-
-            } catch(e: Exception) {
-                Log.e(TAG,"Cannot read file")
-                emitter.onError(e)
-            } finally {
-                try {
-                    fileReader!!.close()
-                    Log.i(TAG, "Successfully read and closed file")
-                } catch(e: Exception) {
-                    Log.e(TAG, "Cannot close file")
-                    emitter.onError(e)
-                }
-            }
-
-            for (b in buildings) {
-                buildingMap.put(b.getName(), b.getCap())
-            }
-
-            val observe = buildingDomain.updateMultipleBuildingCapacities(buildingMap)
-
-            observe.subscribe(object: CompletableObserver {
-                override fun onComplete() {
-                    emitter.onComplete()
-                }
-
-                override fun onSubscribe(d: Disposable) {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    emitter.onError(e)
-                }
-            })
-
-
-        }
-
-    }
+//                Log.i(TAG, "Successfully processed file")
+//
+//            } catch(e: Exception) {
+//                Log.e(TAG,"Cannot read file")
+//                emitter.onError(e)
+//            } finally {
+//                try {
+//                    fileReader!!.close()
+//                    Log.i(TAG, "Successfully read and closed file")
+//                } catch(e: Exception) {
+//                    Log.e(TAG, "Cannot close file")
+//                    emitter.onError(e)
+//                }
+//            }
+//
+//            for (b in buildings) {
+//                buildingMap.put(b.getName(), b.getCap())
+//            }
+//
+//            val observe = buildingDomain.updateMultipleBuildingCapacities(buildingMap)
+//
+//            observe.subscribe(object: CompletableObserver {
+//                override fun onComplete() {
+//                    emitter.onComplete()
+//                }
+//
+//                override fun onSubscribe(d: Disposable) {
+//
+//                }
+//
+//                override fun onError(e: Throwable) {
+//                    emitter.onError(e)
+//                }
+//            })
+//
+//
+//        }
+//
+//    }
 
 }
