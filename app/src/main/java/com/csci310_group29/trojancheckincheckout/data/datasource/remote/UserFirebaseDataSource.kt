@@ -36,7 +36,8 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
                     val userEntity = documentSnapshot.toObject<UserEntity>()
                     Log.d(TAG, "$userEntity")
                     Log.d(TAG, userEntity.toString())
-                    emitter.onSuccess(userEntity!!)
+                    if (userEntity == null) emitter.onError(Exception("user does not exist"))
+                    else emitter.onSuccess(userEntity)
                 }
                 .addOnFailureListener { exception ->
                     Log.d(TAG, exception.localizedMessage!!)
