@@ -6,6 +6,7 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
@@ -17,17 +18,10 @@ import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
 
-class UserFirebaseDataSource @Inject constructor(): UserRepository {
+class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFirestore): UserRepository {
 
     companion object {
         private val TAG = "UserFirebaseDataSource"
-        private val EMULATOR = false
-    }
-
-    private val db = Firebase.firestore
-
-    init {
-        if (EMULATOR) db.useEmulator("10.0.2.2", 8080)
     }
 
     override fun get(id: String): Single<UserEntity> {
@@ -35,7 +29,7 @@ class UserFirebaseDataSource @Inject constructor(): UserRepository {
         return Single.create { emitter ->
             Log.d(TAG, "getting user")
             val userRef = db.collection("users").document(id)
-            Log.d(TAG, "$id")
+            Log.d(TAG, id)
             userRef.get()
                 .addOnSuccessListener { documentSnapshot ->
                     Log.d(TAG, "successfully read user")

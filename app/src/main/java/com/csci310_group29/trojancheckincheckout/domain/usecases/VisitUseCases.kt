@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 
-class VisitUseCases @Inject constructor(
+open class VisitUseCases @Inject constructor(
     @Named("Repo") private val buildingRepo: BuildingRepository,
     @Named("Repo") private val visitRepo: VisitRepository,
     @Named("Repo") private val userRepo: UserRepository,
@@ -33,7 +33,7 @@ class VisitUseCases @Inject constructor(
 
     fun attemptCheckIn(buildingId: String): Single<Visit> {
         Log.d(TAG, "attempting to check in")
-        return buildingRepo.incrementNumPeople(buildingId, 1.toDouble())
+        return buildingRepo.incrementNumPeople(buildingId, 1.0)
                 .flatMap { building ->
                     userUseCases.getCurrentlyLoggedInUser()
                             .flatMap {user ->
@@ -76,7 +76,7 @@ class VisitUseCases @Inject constructor(
 
     private fun getVisit(visitEntity: VisitEntity, picture: Boolean = true): Single<Visit> {
         return Single.zip(buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!),
-        userUseCases.getUser(visitEntity.userId!!), { building, user ->
+        userUseCases.getUser(visitEntity.userId!!, null, picture), { building, user ->
                 buildVisitModel(user, null, building, visitEntity)
             })
     }

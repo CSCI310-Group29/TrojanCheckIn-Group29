@@ -36,11 +36,11 @@ open class UserUseCases @Inject constructor(
     }
 
     fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
-        Log.d(TAG, "getting logged in user")
+//        Log.d(TAG, "getting logged in user")
         return authRepo.getCurrentUser()
             .flatMap { authEntity ->
-                Log.d(TAG, "logged in user $authEntity")
-                getUser(authEntity.id, picture)
+//                Log.d(TAG, "logged in user $authEntity")
+                getUser(authEntity.id, authEntity, picture)
             }
     }
 
@@ -74,21 +74,21 @@ open class UserUseCases @Inject constructor(
             .flatMap { getCurrentlyLoggedInUser() }
     }
 
-    fun getUser(userId: String, picture: Boolean = true): Single<User> {
-        Log.d(TAG,"getting user for visit: $userId")
+    fun getUser(userId: String, authEntity: AuthEntity? = null, picture: Boolean = true): Single<User> {
+//        Log.d(TAG,"getting user for visit: $userId")
         return userRepo.get(userId)
             .flatMap { userEntity ->
-                Log.d(TAG, "user exists: $userEntity")
+//                Log.d(TAG, "user exists: $userEntity")
                 if (userEntity.checkedInBuildingId != null) {
 
                     buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!)
                         .flatMap { building ->
-                            Log.d(TAG, "getting user building: $building")
-                            getPictureAndUser(picture, null, building, userEntity)
+//                            Log.d(TAG, "getting user building: $building")
+                            getPictureAndUser(picture, authEntity, building, userEntity)
                         }
                 } else {
-                    Log.d(TAG, "getting user without building")
-                    getPictureAndUser(picture, null, null, userEntity)
+//                    Log.d(TAG, "getting user without building")
+                    getPictureAndUser(picture, authEntity, null, userEntity)
                 }
             }
     }
@@ -132,13 +132,13 @@ open class UserUseCases @Inject constructor(
 
     private fun buildUser(authEntity: AuthEntity?, userEntity: UserEntity, building: Building?, picture: ByteArray? = null): User {
 
-        if (authEntity != null) {
-            return User(userEntity.id!!, userEntity.isStudent,
+        return if (authEntity != null) {
+            User(userEntity.id!!, userEntity.isStudent,
                 authEntity.email, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
                 building, userEntity.studentId, picture)
         } else {
-            return User(userEntity.id!!, userEntity.isStudent,
+            User(userEntity.id!!, userEntity.isStudent,
                 null, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
                 building, userEntity.studentId, picture)

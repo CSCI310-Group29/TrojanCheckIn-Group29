@@ -3,6 +3,8 @@ package com.csci310_group29.trojancheckincheckout.data.datasources
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.csci310_group29.trojancheckincheckout.data.datasource.remote.UserFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -11,11 +13,11 @@ import org.junit.runner.RunWith
 import java.lang.Exception
 
 
-private val userEntity = UserEntity("12", true, "Tommy", "Trojan", "Computer Science", false, "123", "exampleURL")
+private val userEntity = UserEntity("12", true, "Tommy", "Trojan", "Computer Science", null, "123", "exampleURL")
 @RunWith(AndroidJUnit4::class)
 class UserFirebaseDataSourceTest {
 
-    private var dataSource = UserFirebaseDataSource()
+    private var dataSource = UserFirebaseDataSource(Firebase.firestore)
 
 //    @Before
 //    fun init() {
