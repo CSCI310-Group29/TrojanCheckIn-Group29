@@ -7,6 +7,7 @@ import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -19,17 +20,10 @@ import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
 
-class VisitFirebaseDataSource @Inject constructor(): VisitRepository {
+class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirestore): VisitRepository {
 
     companion object {
         private val TAG = "VisitFirebaseDataSource"
-        private val EMULATOR = false
-    }
-
-    private val db = Firebase.firestore
-
-    init {
-        if (EMULATOR) db.useEmulator("10.0.2.2", 8080)
     }
 
     override fun create(userId: String, buildingId: String): Single<VisitEntity> {

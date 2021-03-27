@@ -8,6 +8,7 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -18,17 +19,10 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 
-class BuildingFirebaseDataSource @Inject constructor(): BuildingRepository {
+class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFirestore): BuildingRepository {
 
     companion object {
         private val TAG = "BuildingFirebaseDataSource"
-        private val EMULATOR = false
-    }
-
-    private val db = Firebase.firestore
-
-    init {
-        if (EMULATOR) db.useEmulator("10.0.2.2", 8080)
     }
 
     override fun get(id: String): Single<BuildingEntity> {

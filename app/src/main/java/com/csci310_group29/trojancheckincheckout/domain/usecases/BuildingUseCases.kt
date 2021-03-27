@@ -11,7 +11,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Named
 
-class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRepo: BuildingRepository,
+open class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRepo: BuildingRepository,
                                            @Named("Repo") private val pictureRepo: PicturesRepository) {
 
     fun getBuildingInfo(buildingName: String): Single<Building> {

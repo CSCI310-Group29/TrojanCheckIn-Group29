@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.domain
+package com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 
 import android.graphics.BitmapFactory
 import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
@@ -7,6 +7,7 @@ import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
+import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -16,16 +17,17 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
+import org.mockito.Spy
 import org.mockito.runners.MockitoJUnitRunner
+import java.lang.Exception
 
 
-private val userEntity = UserEntity("12", false, "Tommy", "Trojan", "Computer Science", false, "123", "exampleURL")
-private val user = User("12", false, "test@gmail.com", "Tommy", "Trojan", "Computer Science", false, "123", ByteArray(1024))
-private val authEntity = AuthEntity("12",
-        "test@gmail.com")
+private val userEntity = UserEntity("12", false, "Tommy", "Trojan", "Computer Science", null, "123", null)
+private val user = User("12", false, "test@usc.edu", "Tommy", "Trojan", "Computer Science", null, "123", null)
+private val authEntity = AuthEntity("12", "test@usc.edu")
 
 @RunWith(MockitoJUnitRunner::class)
-class UserUseCasesTest {
+class UserUseCasesGetLoggedInUserTestTest {
 
     @Mock
     private lateinit var mockAuthRepo: AuthRepository
@@ -36,11 +38,13 @@ class UserUseCasesTest {
     @Mock
     private lateinit var mockUserRepo: UserRepository
 
+    @Mock
+    private lateinit var mockBuildingUseCases: BuildingUseCases
+
     private lateinit var userUseCases: UserUseCases
 
     @Before
     fun setupRepo() {
-        `when`(mockAuthRepo.getCurrentUser()).thenReturn(Single.just(authEntity))
         val inputStream = this.javaClass.getResourceAsStream("tennis_ball.jpg")
         if (inputStream != null) {
             val profileByteArray = ByteArray(inputStream.available())
@@ -50,20 +54,24 @@ class UserUseCasesTest {
             val profileByteArray = ByteArray(1024)
             `when`(mockPictureRepo.get("exampleURL")).thenReturn(Single.just(profileByteArray))
         }
-        `when`(mockUserRepo.get("12")).thenReturn(Single.just(userEntity))
         `when`(mockUserRepo.update(userEntity)).thenReturn(Completable.complete())
-        userUseCases = UserUseCases(mockAuthRepo, mockUserRepo, mockPictureRepo)
+        userUseCases = UserUseCases(mockAuthRepo, mockUserRepo, mockPictureRepo, mockBuildingUseCases)
     }
 
     @Test
-    fun getLoggedInUserTest() {
+    fun userIsLoggedIn() {
+        `when`(mockAuthRepo.getCurrentUser()).thenReturn(Single.just(authEntity))
+        `when`(mockUserRepo.get("12")).thenReturn(Single.just(userEntity))
         val observable = userUseCases.getCurrentlyLoggedInUser()
         observable.test().assertSubscribed().assertComplete().assertValue(user).dispose()
     }
 
     @Test
-    fun updateProfileTest() {
-        userUseCases.updateProfile(userEntity).test().assertSubscribed().assertComplete()
+    fun userIsLoggedOut() {
+        `when`(mockAuthRepo.getCurrentUser()).thenReturn(Single.error(Exception()))
+        val observable = userUseCases.getCurrentlyLoggedInUser()
+        observable.test().assertSubscribed().assertError(Exception::class.java).dispose()
     }
+
 
 }
