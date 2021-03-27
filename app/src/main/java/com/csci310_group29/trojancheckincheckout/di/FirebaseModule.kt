@@ -17,7 +17,8 @@ import javax.inject.Singleton
 class FirebaseModule {
 
     companion object {
-        private val EMULATOR = false
+        private val EMULATOR = true
+        private val HOST = "10.0.2.2"
         private val DB_PORT = 8080
         private val AUTH_PORT = 9099
     }
@@ -26,7 +27,7 @@ class FirebaseModule {
     @Singleton
     fun provideFirebaseFirestoreInstance(): FirebaseFirestore {
         val db = Firebase.firestore
-        if (EMULATOR) db.useEmulator("10.0.2.2", DB_PORT)
+        if (EMULATOR) db.useEmulator(HOST, DB_PORT)
         return db;
     }
 
@@ -34,7 +35,7 @@ class FirebaseModule {
     @Singleton
     fun provideFirebaseAuthInstance(): FirebaseAuth {
         val auth = Firebase.auth
-        if (EMULATOR) auth.useEmulator("10.0.2.2", AUTH_PORT)
+        if (EMULATOR) auth.useEmulator(HOST, AUTH_PORT)
         return auth
     }
 
