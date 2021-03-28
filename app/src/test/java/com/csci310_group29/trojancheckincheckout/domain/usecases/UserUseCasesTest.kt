@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
+package com.csci310_group29.trojancheckincheckout.domain.usecases
 
 import android.graphics.BitmapFactory
 import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity

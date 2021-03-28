@@ -20,6 +20,14 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Single.just(listOf(buildingEntity))
     }
 
+    override fun create(buildingEntity: BuildingEntity): Single<BuildingEntity> {
+        return Single.just(buildingEntity)
+    }
+
+    override fun delete(buildingId: String): Completable {
+        return Completable.complete()
+    }
+
     override fun observe(id: String): Observable<BuildingEntity> {
         return Observable.just(buildingEntity)
     }

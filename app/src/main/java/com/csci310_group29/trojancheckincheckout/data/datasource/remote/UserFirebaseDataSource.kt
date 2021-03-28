@@ -85,7 +85,9 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
                     Log.d(TAG, "successfully created user")
                     userRef.get()
                         .addOnSuccessListener { documentSnapshot ->
-                            emitter.onSuccess(documentSnapshot.toObject<UserEntity>()!!)
+                            val userEntity = documentSnapshot.toObject<UserEntity>()
+                            if (userEntity == null) emitter.onError(Exception("User was not able to be created"))
+                            else emitter.onSuccess(userEntity)
                         }
                         .addOnFailureListener { exception -> emitter.onError(exception)}
                 }
@@ -100,7 +102,9 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
                 .addOnSuccessListener {
                     userRef.get()
                         .addOnSuccessListener { documentSnapshot ->
-                            emitter.onSuccess(documentSnapshot.toObject<UserEntity>()!!)
+                            val userEntity = documentSnapshot.toObject<UserEntity>()
+                            if (userEntity == null) emitter.onError(Exception("User was not able to be created"))
+                            else emitter.onSuccess(userEntity)
                         }
                         .addOnFailureListener { e -> emitter.onError(e)}
                 }

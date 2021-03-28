@@ -47,6 +47,7 @@ class PictureFirebaseDataSource @Inject constructor(private val storage: Firebas
                     Log.d(TAG, e.message.toString())
                     emitter.onError(e)
                 }
+
         }
 
     }
