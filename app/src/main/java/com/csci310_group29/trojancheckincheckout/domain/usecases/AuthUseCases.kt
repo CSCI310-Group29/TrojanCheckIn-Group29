@@ -19,12 +19,12 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
                                             @Named("Repo") private val userRepo: UserRepository,
                                             private val userUseCases: UserUseCases) {
 
-    protected fun getUserAuth(): Single<AuthEntity> {
+    open fun getUserAuth(): Single<AuthEntity> {
         return authRepo.getCurrentUser()
     }
 
 
-    fun signup(email: String, password: String, userEntity: UserEntity): Completable {
+    open fun signup(email: String, password: String, userEntity: UserEntity): Completable {
         return authRepo.createUser(email, password)
             .flatMapCompletable {authEntity ->
                 userEntity.id = authEntity.id
@@ -32,17 +32,17 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
             }
     }
 
-    fun login(email: String, password: String): Single<User> {
+    open fun login(email: String, password: String): Single<User> {
         return authRepo.loginUser(email, password)
                 .toSingleDefault(false)
                 .flatMap { userUseCases.getCurrentlyLoggedInUser() }
     }
 
-    fun logout(): Completable {
+    open fun logout(): Completable {
         return authRepo.logoutCurrentUser()
     }
 
-    fun deleteAccount(): Completable {
+    open fun deleteAccount(): Completable {
         return userUseCases.getCurrentlyLoggedInUser()
             .flatMapCompletable { user ->
                 userRepo.delete(user.id)
