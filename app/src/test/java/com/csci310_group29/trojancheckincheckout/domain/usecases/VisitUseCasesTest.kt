@@ -58,17 +58,20 @@ class VisitUseCasesTest {
             10, 5, "qrRef")
         val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
             buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
+        val checkedInUser = User(
+            userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
+            userEntity.lastName, userEntity.major, building, userEntity.studentId,null)
         val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date(), null)
         val visit = Visit(user, building, visitEntity.checkIn, visitEntity.checkOut)
-
+        val newVisit = Visit(checkedInUser, building, visitEntity.checkIn, visitEntity.checkOut)
         `when`(mockUserUseCases.getCurrentlyLoggedInUser()).thenReturn(Single.just(user))
         `when`(mockUserRepo.setCheckedInBuilding(userEntity.id!!, "1")).thenReturn(Single.just(userEntity))
         `when`(mockVisitRepo.create(userEntity.id!!, buildingEntity.id!!)).thenReturn(Single.just(visitEntity))
         `when`(mockBuildingRepo.incrementNumPeople(buildingEntity.id!!, 1.0)).thenReturn(Single.just(buildingEntity))
-        `when`(mockBuildingRepo.get(buildingEntity.id!!)).thenReturn(Single.just(buildingEntity))
+        `when`(mockBuildingUseCases.getBuildingInfoById(buildingEntity.id!!)).thenReturn(Single.just(building))
         `when`(mockVisitRepo.runCheckInTransaction(userEntity.id!!, buildingEntity.id!!)).thenReturn(Single.just(visitEntity))
         visitUseCases.attemptCheckIn(buildingEntity.id!!).test()
-                .assertSubscribed().assertComplete().assertValue(visit)
+                .assertSubscribed().assertComplete().assertValue(newVisit)
     }
 
     @Test
@@ -88,6 +91,7 @@ class VisitUseCasesTest {
         `when`(mockUserUseCases.getCurrentlyLoggedInUser()).thenReturn(Single.just(user))
         `when`(mockUserRepo.setCheckedInBuilding(userEntity.id!!, "1")).thenReturn(Single.just(userEntity))
         `when`(mockVisitRepo.create(userEntity.id!!, buildingEntity.id!!)).thenReturn(Single.just(visitEntity))
+        `when`(mockBuildingUseCases.getBuildingInfoById(buildingEntity.id!!)).thenReturn(Single.just(building))
         `when`(mockBuildingRepo.incrementNumPeople(buildingEntity.id!!, 1.0)).thenReturn(Single.just(buildingEntity))
         `when`(mockBuildingRepo.get(buildingEntity.id!!)).thenReturn(Single.just(buildingEntity))
         visitUseCases.attemptCheckIn(buildingEntity.id!!).test()

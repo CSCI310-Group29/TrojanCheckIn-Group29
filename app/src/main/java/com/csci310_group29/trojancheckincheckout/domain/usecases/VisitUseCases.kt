@@ -32,28 +32,16 @@ open class VisitUseCases @Inject constructor(
     }
 
     open fun attemptCheckIn(buildingId: String): Single<Visit> {
-//        Log.d(TAG, "attempting to check in")
-//        return buildingRepo.incrementNumPeople(buildingId, 1.0)
-//                .flatMap { building ->
-//                    userUseCases.getCurrentlyLoggedInUser()
-//                            .flatMap {user ->
-//                                userRepo.setCheckedInBuilding(user.id, buildingId)
-//                                        .flatMap {visitRepo.create(user.id, building.id!!)
-//                                                    .flatMap { visit ->
-//                                                        Single.just(buildVisitModel(user, building, null, visit))
-//                                                    }
-//                                        }
-//                            }
-//                        }
         return userUseCases.getCurrentlyLoggedInUser()
             .flatMap { user ->
                 if (user.checkedInBuilding != null) throw Exception("user is already checked in")
                 else {
                     visitRepo.runCheckInTransaction(user.id, buildingId)
                         .flatMap { visitEntity ->
-                            buildingRepo.get(buildingId)
-                                .flatMap { buildingEntity ->
-                                    Single.just(buildVisitModel(user, buildingEntity, null, visitEntity))
+                            buildingUseCases.getBuildingInfoById(buildingId)
+                                .flatMap { building ->
+                                    user.checkedInBuilding = building
+                                    Single.just(buildVisitModel(user, null, building, visitEntity))
                                 }
                         }
                 }
@@ -65,7 +53,7 @@ open class VisitUseCases @Inject constructor(
                 .flatMap { user ->
                     Log.d(TAG, user.toString())
 
-                    if (user.checkedInBuilding != null && user.checkedInBuilding.id == buildingId) {
+                    if (user.checkedInBuilding != null && user.checkedInBuilding!!.id == buildingId) {
                         Log.d(TAG, "user is checked in")
                         userRepo.setCheckedInBuilding(user.id, null)
                             .flatMap {  newUser ->
