@@ -14,49 +14,49 @@ import javax.inject.Named
 open class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRepo: BuildingRepository,
                                            @Named("Repo") private val pictureRepo: PicturesRepository) {
 
-    fun getBuildingInfo(buildingName: String): Single<Building> {
+    open fun getBuildingInfo(buildingName: String): Single<Building> {
         return buildingRepo.getByName(buildingName)
                 .flatMap {building -> Single.just(buildModel(building))}
     }
 
-    fun getBuildingInfoById(buildingId: String): Single<Building> {
+    open fun getBuildingInfoById(buildingId: String): Single<Building> {
         return buildingRepo.get(buildingId)
             .flatMap { building -> Single.just(buildModel(building)) }
     }
 
-    fun getAllBuildings(): Single<List<Building>> {
+    open fun getAllBuildings(): Single<List<Building>> {
         return buildingRepo.getAll()
             .flatMap { buildings ->
                 buildModels(buildings)
             }
     }
 
-    fun observeBuilding(buildingName: String): Observable<Building> {
+    open fun observeBuilding(buildingName: String): Observable<Building> {
         return buildingRepo.observeByName(buildingName)
             .flatMap { buildingEntity ->
                 Observable.just(buildModel(buildingEntity))
             }
     }
 
-    fun observeBuildingById(buildingId: String): Observable<Building> {
+    open fun observeBuildingById(buildingId: String): Observable<Building> {
         return buildingRepo.observe(buildingId)
             .flatMap { buildingEntity ->
                 Observable.just(buildModel(buildingEntity))
             }
     }
 
-    fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Double): Completable {
+    open fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Double): Completable {
         return getBuildingInfo(buildingName)
             .flatMapCompletable { building -> buildingRepo.updateSingleCapacity(building.id, newCapacity) }
     }
 
-    fun updateMultipleBuildingCapacities(buildings: HashMap<String, Double>): Completable {
+    open fun updateMultipleBuildingCapacities(buildings: HashMap<String, Double>): Completable {
         val completables: MutableList<Completable> = mutableListOf()
         buildings.forEach { (buildingName, capacity) -> completables.add(updateSingleBuildingCapacity(buildingName, capacity)) }
         return Completable.merge(completables)
     }
 
-    fun getQrCode(buildingName: String): Single<ByteArray> {
+    open fun getQrCode(buildingName: String): Single<ByteArray> {
         return getBuildingInfo(buildingName)
                 .flatMap { building ->
                     pictureRepo.get(building.qrCodeRef)

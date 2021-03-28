@@ -5,6 +5,7 @@ import com.csci310_group29.trojancheckincheckout.data.datasource.remote.VisitFir
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -20,6 +21,10 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
         return remoteDataSource.get(userId, visitId)
     }
 
+    override fun delete(userId: String, visitId: String): Completable {
+        return remoteDataSource.delete(userId, visitId)
+    }
+
     override fun getLatestVisit(userId: String): Single<VisitEntity> {
         return remoteDataSource.getLatestVisit(userId)
     }
@@ -30,6 +35,14 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
 
     override fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<VisitEntity>> {
         return remoteDataSource.getUserVisitHistory(userId, visitQuery)
+    }
+
+    override fun runCheckInTransaction(userId: String, buildingId: String): Single<VisitEntity> {
+        return remoteDataSource.runCheckInTransaction(userId, buildingId)
+    }
+
+    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String): Single<VisitEntity> {
+        return remoteDataSource.runCheckOutTransaction(userId, visitId, buildingId)
     }
 
     override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {

@@ -35,7 +35,7 @@ open class UserUseCases @Inject constructor(
         private val TAG = "UserUseCases"
     }
 
-    fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
+    open fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
 //        Log.d(TAG, "getting logged in user")
         return authRepo.getCurrentUser()
             .flatMap { authEntity ->
