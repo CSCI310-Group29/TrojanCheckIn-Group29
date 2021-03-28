@@ -73,6 +73,15 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
         }
     }
 
+    override fun delete(userId: String, visitId: String): Completable {
+        return Completable.create { emitter ->
+            val ref = db.collection("users").document(userId).collection("visits").document(visitId)
+            ref.delete()
+                .addOnSuccessListener { emitter.onComplete() }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
     override fun getLatestVisit(userId: String): Single<VisitEntity> {
         return Single.create { emitter ->
             val visitRef = db.collection("users")

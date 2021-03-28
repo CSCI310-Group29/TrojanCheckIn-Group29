@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.junit.After
@@ -32,7 +33,11 @@ class UserFirebaseDataSourceTest {
     @Before
     fun setup() {
         app = FirebaseApp.initializeApp(context)!!
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(false)
+            .build()
         val db = Firebase.firestore
+        db.firestoreSettings = settings
         db.useEmulator(HOST, DB_PORT)
         dataSource = UserFirebaseDataSource(db)
     }

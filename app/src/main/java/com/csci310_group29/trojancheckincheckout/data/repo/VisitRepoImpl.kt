@@ -5,6 +5,7 @@ import com.csci310_group29.trojancheckincheckout.data.datasource.remote.VisitFir
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -18,6 +19,10 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
 
     override fun get(userId: String, visitId: String): Single<VisitEntity> {
         return remoteDataSource.get(userId, visitId)
+    }
+
+    override fun delete(userId: String, visitId: String): Completable {
+        return remoteDataSource.delete(userId, visitId)
     }
 
     override fun getLatestVisit(userId: String): Single<VisitEntity> {
