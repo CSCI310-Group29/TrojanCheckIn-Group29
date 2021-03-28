@@ -8,13 +8,11 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
-class PictureFirebaseDataSource @Inject constructor(): PicturesRepository {
+class PictureFirebaseDataSource @Inject constructor(private val storage: FirebaseStorage): PicturesRepository {
 
     companion object {
         private val TAG = "PictureFirebaseDataSource"
     }
-
-    private val storage = FirebaseStorage.getInstance()
 
     override fun get(url: String): Single<ByteArray> {
         Log.d(TAG, "Getting picture")

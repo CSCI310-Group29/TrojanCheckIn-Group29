@@ -12,16 +12,10 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
-class AuthFirebaseDataSource @Inject constructor(): AuthRepository {
+class AuthFirebaseDataSource @Inject constructor(private val auth: FirebaseAuth): AuthRepository {
 
     companion object {
         val TAG = "AuthRemoteDataSource"
-        val EMULATOR = false
-    }
-    private val auth = Firebase.auth
-
-    init {
-        if (EMULATOR) auth.useEmulator("10.0.2.2", 9099)
     }
 
     override fun getCurrentUser(): Single<AuthEntity> {
