@@ -1,12 +1,13 @@
-package com.csci310_group29.trojancheckincheckout.data.datasources.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
 import org.junit.Test
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.AuthFirebaseDataSource
+import androidx.test.platform.app.InstrumentationRegistry
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import org.junit.After
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
@@ -22,14 +23,22 @@ class AuthFirebaseDataSourceTest {
         private val AUTH_PORT = 9099
 
     }
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+
     private lateinit var authDataSource: AuthFirebaseDataSource
+    private lateinit var app: FirebaseApp
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
     fun setup() {
+        app = FirebaseApp.initializeApp(context)!!
         val auth = Firebase.auth
         auth.useEmulator(HOST, AUTH_PORT)
         authDataSource = AuthFirebaseDataSource(auth)
+    }
+
+    @After
+    fun teardown() {
+        app.delete()
     }
 
     @Test

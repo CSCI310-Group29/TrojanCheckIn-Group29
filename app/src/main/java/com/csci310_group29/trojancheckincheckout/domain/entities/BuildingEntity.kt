@@ -3,12 +3,12 @@ package com.csci310_group29.trojancheckincheckout.domain.entities
 import com.google.firebase.firestore.DocumentId
 
 data class BuildingEntity(@DocumentId
-                          val id: String? = null,
-                          val buildingName: String? = null,
-                          val address: String? = null,
-                          val capacity: Int? = null,
-                          val numPeople: Int? = null,
-                          val qrCodeRef: String? = null) {
+                          var id: String? = null,
+                          var buildingName: String? = null,
+                          var address: String? = null,
+                          var capacity: Int? = null,
+                          var numPeople: Int? = null,
+                          var qrCodeRef: String? = null) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

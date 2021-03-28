@@ -1,14 +1,15 @@
-package com.csci310_group29.trojancheckincheckout.data.datasources.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.UserFirebaseDataSource
+import androidx.test.platform.app.InstrumentationRegistry
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
+import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.lang.Exception
@@ -25,12 +26,20 @@ class UserFirebaseDataSourceTest {
     }
 
     private lateinit var dataSource: UserFirebaseDataSource
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private lateinit var app: FirebaseApp
 
     @Before
     fun setup() {
+        app = FirebaseApp.initializeApp(context)!!
         val db = Firebase.firestore
         db.useEmulator(HOST, DB_PORT)
         dataSource = UserFirebaseDataSource(db)
+    }
+
+    @After
+    fun teardown() {
+        app.delete()
     }
 
     @Test
