@@ -31,23 +31,36 @@ open class VisitUseCases @Inject constructor(
         private val TAG = "VisitUseCases"
     }
 
-    fun attemptCheckIn(buildingId: String): Single<Visit> {
-        Log.d(TAG, "attempting to check in")
-        return buildingRepo.incrementNumPeople(buildingId, 1.0)
-                .flatMap { building ->
-                    userUseCases.getCurrentlyLoggedInUser()
-                            .flatMap {user ->
-                                userRepo.setCheckedInBuilding(user.id, buildingId)
-                                        .flatMap {visitRepo.create(user.id, building.id!!)
-                                                    .flatMap { visit ->
-                                                        Single.just(buildVisitModel(user, building, null, visit))
-                                                    }
-                                        }
-                            }
+    open fun attemptCheckIn(buildingId: String): Single<Visit> {
+//        Log.d(TAG, "attempting to check in")
+//        return buildingRepo.incrementNumPeople(buildingId, 1.0)
+//                .flatMap { building ->
+//                    userUseCases.getCurrentlyLoggedInUser()
+//                            .flatMap {user ->
+//                                userRepo.setCheckedInBuilding(user.id, buildingId)
+//                                        .flatMap {visitRepo.create(user.id, building.id!!)
+//                                                    .flatMap { visit ->
+//                                                        Single.just(buildVisitModel(user, building, null, visit))
+//                                                    }
+//                                        }
+//                            }
+//                        }
+        return userUseCases.getCurrentlyLoggedInUser()
+            .flatMap { user ->
+                if (user.checkedInBuilding != null) throw Exception("user is already checked in")
+                else {
+                    visitRepo.runCheckInTransaction(user.id, buildingId)
+                        .flatMap { visitEntity ->
+                            buildingRepo.get(buildingId)
+                                .flatMap { buildingEntity ->
+                                    Single.just(buildVisitModel(user, buildingEntity, null, visitEntity))
+                                }
                         }
+                }
+            }
     }
 
-    fun checkOut(buildingId: String): Single<Visit> {
+    open fun checkOut(buildingId: String): Single<Visit> {
         return userUseCases.getCurrentlyLoggedInUser()
                 .flatMap { user ->
                     Log.d(TAG, user.toString())
@@ -81,7 +94,7 @@ open class VisitUseCases @Inject constructor(
             })
     }
 
-    fun searchVisits(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<Visit>> {
+    open fun searchVisits(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<Visit>> {
         if (visitQuery.buildingName != null) {
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
                 .flatMap { building ->
@@ -128,7 +141,7 @@ open class VisitUseCases @Inject constructor(
         }
 
 
-    fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<Visit>> {
+    open fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<Visit>> {
         Log.d(TAG, "domain get user visit history called")
         if (visitQuery.buildingName != null) {
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)

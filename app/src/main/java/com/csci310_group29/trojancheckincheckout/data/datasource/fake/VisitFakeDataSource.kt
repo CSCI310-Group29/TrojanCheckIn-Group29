@@ -38,6 +38,10 @@ class VisitFakeDataSource @Inject constructor(): VisitRepository {
         return Single.just(listOf(visitEntity))
     }
 
+    override fun runCheckInTransaction(userId: String, buildingId: String): Single<VisitEntity> {
+        return Single.just(visitEntity)
+    }
+
     override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
         return Single.just(listOf(visitEntity))
     }

@@ -3,12 +3,11 @@ package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
@@ -147,6 +146,40 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
                     Log.d(TAG, "data returned: ${visitEntities.size}")
                     Log.d(TAG, "$visitEntities")
                     emitter.onSuccess(snapshots.toObjects<VisitEntity>())
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
+    override fun runCheckInTransaction(userId: String, buildingId: String): Single<VisitEntity> {
+        return Single.create { emitter ->
+            val buildingRef = db.collection("buildings").document(buildingId)
+            val userRef = db.collection("users").document(userId)
+            val visitRef = userRef.collection("visits").document()
+            db.runTransaction { transaction ->
+                val buildingSnap = transaction.get(buildingRef)
+                val numPeople = buildingSnap.getDouble("numPeople")!!
+                val capacity = buildingSnap.getDouble("capacity")!!
+                if (numPeople < capacity) {
+                    transaction.update(buildingRef, "numPeople", FieldValue.increment(1.0))
+                    transaction.update(userRef, "checkedInBuildingId", buildingId)
+                    val visitEntity = VisitEntity(null, userId, buildingId, Date(), null)
+                    transaction.set(visitRef, visitEntity)
+                } else {
+                    throw FirebaseFirestoreException("capacity is full", FirebaseFirestoreException.Code.ABORTED)
+                }
+            }
+                .addOnSuccessListener {
+                    visitRef.get()
+                        .addOnSuccessListener { snap ->
+                            val visitEntity = snap.toObject<VisitEntity>()
+                            if (visitEntity != null) {
+                                emitter.onSuccess(visitEntity)
+                            } else {
+                                emitter.onError(Exception("visit unable to be created"))
+                            }
+                        }
+                        .addOnFailureListener { e -> emitter.onError(e) }
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }

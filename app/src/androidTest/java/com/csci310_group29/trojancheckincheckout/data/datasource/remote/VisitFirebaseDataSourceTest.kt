@@ -98,6 +98,53 @@ class VisitFirebaseDataSourceTest {
         deleteUser(userId)
     }
 
+    @Test
+    fun checkInWithOpenCapacityTest() {
+        val userEntity = UserEntity("1", true, "Tommy",
+            "Trojan", "Computer Science", null, "2", "ref")
+        val buildingEntity = BuildingEntity("2", "A", "A", 10, 2, "ref")
+        val userId = createUser(userEntity)
+        val buildingId = createBuilding(buildingEntity)
+        val visitId = runCheckInTransaction(userId, buildingId)
+        getVisit(userId, visitId)
+        deleteVisit(userId, visitId)
+        deleteBuilding(buildingId)
+        deleteUser(userId)
+    }
+
+    @Test
+    fun checkInAtFullCapacityTest() {
+        val userEntity = UserEntity("1", true, "Tommy",
+            "Trojan", "Computer Science", null, "2", "ref")
+        val buildingEntity = BuildingEntity("2", "A", "A", 10, 10, "ref")
+        val userId = createUser(userEntity)
+        val buildingId = createBuilding(buildingEntity)
+        val visitId = runCheckInTransaction(userId, buildingId, true)
+        getVisit(userId, visitId, true)
+        deleteBuilding(buildingId)
+        deleteUser(userId)
+    }
+
+    private fun runCheckInTransaction(userId: String, buildingId: String, expectError: Boolean = false): String {
+        val single = visitDataSource.runCheckInTransaction(userId, buildingId)
+        try {
+            val visitEntity = single.blockingGet()
+            if (!expectError) {
+                assertEquals(userId, visitEntity.userId)
+                assertEquals(buildingId, visitEntity.buildingId)
+                return visitEntity.id!!
+            } else {
+                fail("expected an exception when trying to run transaction")
+                return "na"
+            }
+        } catch(e: Exception) {
+            if (!expectError) {
+                fail("got an exception when trying to run transaction")
+            }
+            return "na"
+        }
+    }
+
 
     private fun createUser(userN: UserEntity): String {
         val single = userDataSource.create(userN)
