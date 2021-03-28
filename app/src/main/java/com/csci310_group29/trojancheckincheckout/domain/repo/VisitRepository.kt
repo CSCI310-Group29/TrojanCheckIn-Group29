@@ -21,5 +21,9 @@ interface VisitRepository {
 
     fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<VisitEntity>>
 
+    fun runCheckInTransaction(userId: String, buildingId: String): Single<VisitEntity>
+
+    fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String): Single<VisitEntity>
+
     fun query(visitQuery: VisitQuery): Single<List<VisitEntity>>
 }

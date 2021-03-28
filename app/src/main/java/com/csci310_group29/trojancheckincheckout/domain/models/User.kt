@@ -10,7 +10,7 @@ data class User(val id: String,
                 val firstName: String? = null,
                 val lastName: String? = null,
                 val major: String? = null,
-                val checkedInBuilding: Building? = null,
+                var checkedInBuilding: Building? = null,
                 val studentId: String? = null,
                 val profilePicture: ByteArray? = null) {
 
