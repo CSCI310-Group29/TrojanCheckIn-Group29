@@ -101,16 +101,87 @@ class VisitUseCasesTest {
     @Test
     fun checkOutCorrectlyTest() {
         val userEntity = UserEntity("12", false, "Tommy", "Trojan",
-            "Computer Science", null, "123", "exampleURL")
-        val user = User(
-            userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+            "Computer Science", "1", "123", "exampleURL")
         val buildingEntity = BuildingEntity("1", "building", "123",
             10, 5, "qrRef")
         val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
             buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
-        val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date(), null)
+        val user = User(
+            userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
+            userEntity.lastName, userEntity.major, building, userEntity.studentId,null)
+        val checkOutUser = User(
+            userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
+            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+        val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date())
+        val checkOutDate = Date()
+        val checkOutVisitEntity = VisitEntity(visitEntity.id, userEntity.id, buildingEntity.id, visitEntity.checkIn, checkOutDate)
         val visit = Visit(user, building, visitEntity.checkIn, visitEntity.checkOut)
+        val buildingCheckedOut = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address!!,
+        buildingEntity.capacity!!, buildingEntity.numPeople?.minus(1)!!, buildingEntity.qrCodeRef!!)
+        val checkOutVisit = Visit(checkOutUser, buildingCheckedOut, visitEntity.checkIn, checkOutVisitEntity.checkOut)
         `when`(mockUserUseCases.getCurrentlyLoggedInUser()).thenReturn(Single.just(user))
+        `when`(mockVisitRepo.getLatestVisit(user.id)).thenReturn(Single.just(visitEntity))
+        `when`(mockVisitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, buildingEntity.id!!))
+            .thenReturn(Single.just(checkOutVisitEntity))
+        `when`(mockBuildingUseCases.getBuildingInfoById(buildingEntity.id!!)).thenReturn(Single.just(buildingCheckedOut))
+        visitUseCases.checkOut(buildingEntity.id!!).test().assertComplete().assertValue(checkOutVisit)
+    }
+
+    @Test
+    fun checkOutWhenNotCheckedInTest() {
+        val userEntity = UserEntity("12", false, "Tommy", "Trojan",
+            "Computer Science", null, "123", "exampleURL")
+        val buildingEntity = BuildingEntity("1", "building", "123",
+            10, 5, "qrRef")
+        val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
+            buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
+        val user = User(
+            userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
+            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+        val checkOutUser = User(
+            userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
+            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+        val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date())
+        val checkOutDate = Date()
+        val checkOutVisitEntity = VisitEntity(visitEntity.id, userEntity.id, buildingEntity.id, visitEntity.checkIn, checkOutDate)
+        val visit = Visit(user, building, visitEntity.checkIn, visitEntity.checkOut)
+        val buildingCheckedOut = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address!!,
+            buildingEntity.capacity!!, buildingEntity.numPeople?.minus(1)!!, buildingEntity.qrCodeRef!!)
+        val checkOutVisit = Visit(checkOutUser, buildingCheckedOut, visitEntity.checkIn, checkOutVisitEntity.checkOut)
+        `when`(mockUserUseCases.getCurrentlyLoggedInUser()).thenReturn(Single.just(user))
+        `when`(mockVisitRepo.getLatestVisit(user.id)).thenReturn(Single.just(visitEntity))
+        `when`(mockVisitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, buildingEntity.id!!))
+            .thenReturn(Single.just(checkOutVisitEntity))
+        `when`(mockBuildingUseCases.getBuildingInfoById(buildingEntity.id!!)).thenReturn(Single.just(buildingCheckedOut))
+        visitUseCases.checkOut(buildingEntity.id!!).test().assertError(Exception::class.java)
+    }
+
+    @Test
+    fun checkOutOfWrongBuildingTest() {
+        val userEntity = UserEntity("12", false, "Tommy", "Trojan",
+            "Computer Science", null, "123", "exampleURL")
+        val buildingEntity = BuildingEntity("1", "building", "123",
+            10, 5, "qrRef")
+        val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
+            buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
+        val user = User(
+            userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
+            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+        val checkOutUser = User(
+            userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
+            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+        val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date())
+        val checkOutDate = Date()
+        val checkOutVisitEntity = VisitEntity(visitEntity.id, userEntity.id, buildingEntity.id, visitEntity.checkIn, checkOutDate)
+        val visit = Visit(user, building, visitEntity.checkIn, visitEntity.checkOut)
+        val buildingCheckedOut = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address!!,
+            buildingEntity.capacity!!, buildingEntity.numPeople?.minus(1)!!, buildingEntity.qrCodeRef!!)
+        val checkOutVisit = Visit(checkOutUser, buildingCheckedOut, visitEntity.checkIn, checkOutVisitEntity.checkOut)
+        `when`(mockUserUseCases.getCurrentlyLoggedInUser()).thenReturn(Single.just(user))
+        `when`(mockVisitRepo.getLatestVisit(user.id)).thenReturn(Single.just(visitEntity))
+        `when`(mockVisitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, buildingEntity.id!!))
+            .thenReturn(Single.just(checkOutVisitEntity))
+        `when`(mockBuildingUseCases.getBuildingInfoById(buildingEntity.id!!)).thenReturn(Single.just(buildingCheckedOut))
+        visitUseCases.checkOut("wrong building id").test().assertError(Exception::class.java)
     }
 }

@@ -185,6 +185,32 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
         }
     }
 
+    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String): Single<VisitEntity> {
+        return Single.create { emitter ->
+            val userRef = db.collection("users").document(userId)
+            val visitRef = userRef.collection("visits").document(visitId)
+            val buildingRef = db.collection("buildings").document(buildingId)
+            db.runBatch { batch ->
+                batch.update(buildingRef, "numPeople", FieldValue.increment(-1.0))
+                batch.update(userRef, "checkedInBuildingId", null)
+                batch.update(visitRef, "checkOut", Date())
+            }
+                .addOnSuccessListener {
+                    visitRef.get()
+                        .addOnSuccessListener { visitSnap ->
+                            val visitEntity = visitSnap.toObject<VisitEntity>()
+                            if (visitEntity != null) {
+                                emitter.onSuccess(visitEntity)
+                            } else {
+                                emitter.onError(Exception("visit could be retrieved"))
+                            }
+                        }
+                        .addOnFailureListener { e -> emitter.onError(e) }
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
     override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
         Log.d(TAG, "querying for visits")
         var query = db.collectionGroup("visits")

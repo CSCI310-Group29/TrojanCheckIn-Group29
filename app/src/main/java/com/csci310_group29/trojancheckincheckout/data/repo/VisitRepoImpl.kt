@@ -41,6 +41,10 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
         return remoteDataSource.runCheckInTransaction(userId, buildingId)
     }
 
+    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String): Single<VisitEntity> {
+        return remoteDataSource.runCheckOutTransaction(userId, visitId, buildingId)
+    }
+
     override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
         return remoteDataSource.query(visitQuery)
     }

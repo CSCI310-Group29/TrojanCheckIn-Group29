@@ -106,6 +106,8 @@ class VisitFirebaseDataSourceTest {
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
         val visitId = runCheckInTransaction(userId, buildingId)
+        checkUserBuildingId(userId, buildingId)
+        checkBuildingNumPeople(buildingId, buildingEntity.numPeople?.plus(1)!!)
         getVisit(userId, visitId)
         deleteVisit(userId, visitId)
         deleteBuilding(buildingId)
@@ -120,7 +122,26 @@ class VisitFirebaseDataSourceTest {
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
         val visitId = runCheckInTransaction(userId, buildingId, true)
+        checkBuildingNumPeople(buildingId, buildingEntity.numPeople!!)
+        checkUserBuildingId(userId, null)
         getVisit(userId, visitId, true)
+        deleteBuilding(buildingId)
+        deleteUser(userId)
+    }
+
+    @Test
+    fun checkOutSuccessfullyTest() {
+        val userEntity = UserEntity("1", true, "Tommy",
+            "Trojan", "Computer Science", null, "2", "ref")
+        val buildingEntity = BuildingEntity("2", "A", "A", 10, 8, "ref")
+        val userId = createUser(userEntity)
+        val buildingId = createBuilding(buildingEntity)
+        val visitIdCheckIn = runCheckInTransaction(userId, buildingId)
+        checkBuildingNumPeople(buildingId, buildingEntity.numPeople?.plus(1)!!)
+        checkUserBuildingId(userId, buildingId)
+        val visitIdCheckOut = runCheckOutTransaction(userId, visitIdCheckIn, buildingId)
+        checkBuildingNumPeople(buildingId, buildingEntity.numPeople!!)
+        checkUserBuildingId(userId, null)
         deleteBuilding(buildingId)
         deleteUser(userId)
     }
@@ -139,8 +160,48 @@ class VisitFirebaseDataSourceTest {
             }
         } catch(e: Exception) {
             if (!expectError) {
-                fail("got an exception when trying to run transaction")
+                fail("got an exception when trying to run transaction: ${e.localizedMessage}")
             }
+            return "na"
+        }
+    }
+
+    fun checkBuildingNumPeople(buildingId: String, testNumPeople: Int) {
+        val single = buildingDataSource.get(buildingId)
+        try {
+            val buildingEntity = single.blockingGet()
+            assertEquals(testNumPeople, buildingEntity.numPeople)
+        } catch(e: Exception) {
+            fail("got an exception when trying to check building num people: ${e.localizedMessage}")
+        }
+    }
+
+    fun checkUserBuildingId(userId: String, buildingId: String?) {
+        val single = userDataSource.get(userId)
+        try {
+            val userEntity = single.blockingGet()
+            assertEquals(buildingId, userEntity.checkedInBuildingId)
+        } catch(e: Exception) {
+            fail("got an exception when trying to get the user's buildingId: ${e.localizedMessage}")
+        }
+    }
+
+    private fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, expectError: Boolean = false): String {
+        val single = visitDataSource.runCheckOutTransaction(userId, visitId, buildingId)
+        try {
+            val visitEntity = single.blockingGet()
+            if (!expectError) {
+                assertNotNull(visitEntity.checkOut)
+                assertEquals(visitId, visitEntity.id)
+                assertEquals(userId, visitEntity.userId)
+                assertEquals(buildingId, visitEntity.buildingId)
+                return visitEntity.id!!
+            } else {
+                fail("expected an exception when trying to run check out transaction")
+                return "na"
+            }
+        } catch(e: Exception) {
+            if (!expectError) fail("got an exception when trying to run check out transaction")
             return "na"
         }
     }

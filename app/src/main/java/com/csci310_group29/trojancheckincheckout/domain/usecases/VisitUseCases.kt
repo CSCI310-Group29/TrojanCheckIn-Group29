@@ -50,29 +50,23 @@ open class VisitUseCases @Inject constructor(
 
     open fun checkOut(buildingId: String): Single<Visit> {
         return userUseCases.getCurrentlyLoggedInUser()
-                .flatMap { user ->
-                    Log.d(TAG, user.toString())
-
-                    if (user.checkedInBuilding != null && user.checkedInBuilding!!.id == buildingId) {
-                        Log.d(TAG, "user is checked in")
-                        userRepo.setCheckedInBuilding(user.id, null)
-                            .flatMap {  newUser ->
-                                visitRepo.getLatestVisit(newUser.id!!)
-                                    .flatMap {visitEntity ->
-                                        Log.d(TAG, visitEntity.toString())
-                                        Single.zip(visitRepo.checkOutVisit(newUser.id!!, visitEntity.id!!),
-                                            buildingRepo.incrementNumPeople(visitEntity.buildingId!!,
-                                                (-1).toDouble()
-                                            ),
-                                            { newVisitEntity, buildingEntity ->
-                                                buildVisitModel(user, buildingEntity, null, newVisitEntity)
-                                            })
-                                    }
-                            }
-                    } else {
-                        throw Exception("user is not checked in or is checkout of wrong building")
-                    }
+            .flatMap { user ->
+                if (user.checkedInBuilding != null && user.checkedInBuilding?.id == buildingId) {
+                    visitRepo.getLatestVisit(user.id)
+                        .flatMap { visitEntity ->
+                            visitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, user.checkedInBuilding?.id!!)
+                                .flatMap { visitEntityCheckOut ->
+                                    buildingUseCases.getBuildingInfoById(user.checkedInBuilding!!.id)
+                                        .flatMap {building ->
+                                            user.checkedInBuilding = null
+                                            Single.just(buildVisitModel(user, null, building, visitEntityCheckOut))
+                                        }
+                                }
+                        }
+                } else {
+                    throw Exception("User is not checked in or is checking out of the wrong building")
                 }
+            }
     }
 
     private fun getVisit(visitEntity: VisitEntity, picture: Boolean = true): Single<Visit> {
