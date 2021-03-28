@@ -44,7 +44,7 @@ open class UserUseCases @Inject constructor(
             }
     }
 
-    fun updateProfilePicture(picture: ByteArray): Single<User> {
+    open fun updateProfilePicture(picture: ByteArray): Single<User> {
         return authRepo.getCurrentUser()
                 .flatMap { authEntity ->
                     userRepo.get(authEntity.id)
@@ -62,7 +62,7 @@ open class UserUseCases @Inject constructor(
             .flatMap { getCurrentlyLoggedInUser()}
     }
 
-    fun updateProfile(userEntity: UserEntity): Single<User> {
+    open fun updateProfile(userEntity: UserEntity): Single<User> {
         return authRepo.getCurrentUser()
                 .flatMap { authEntity ->
                     userRepo.get(authEntity.id)
@@ -74,7 +74,7 @@ open class UserUseCases @Inject constructor(
             .flatMap { getCurrentlyLoggedInUser() }
     }
 
-    fun getUser(userId: String, authEntity: AuthEntity? = null, picture: Boolean = true): Single<User> {
+    open fun getUser(userId: String, authEntity: AuthEntity? = null, picture: Boolean = true): Single<User> {
 //        Log.d(TAG,"getting user for visit: $userId")
         return userRepo.get(userId)
             .flatMap { userEntity ->
@@ -93,7 +93,7 @@ open class UserUseCases @Inject constructor(
             }
     }
 
-    fun searchUsers(userQuery: UserQuery, visitQuery: VisitQuery, picture: Boolean = true): Single<List<User>> {
+    open fun searchUsers(userQuery: UserQuery, visitQuery: VisitQuery, picture: Boolean = true): Single<List<User>> {
         if (visitQuery.buildingName != null) {
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
                 .flatMap { building ->
