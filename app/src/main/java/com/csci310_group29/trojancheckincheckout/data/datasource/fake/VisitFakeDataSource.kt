@@ -4,6 +4,7 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.*
@@ -19,6 +20,10 @@ class VisitFakeDataSource @Inject constructor(): VisitRepository {
 
     override fun get(userId: String, visitId: String): Single<VisitEntity> {
         return Single.just(visitEntity)
+    }
+
+    override fun delete(userId: String, visitId: String): Completable {
+        return Completable.complete()
     }
 
     override fun getLatestVisit(userId: String): Single<VisitEntity> {

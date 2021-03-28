@@ -38,8 +38,13 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
                 .addOnSuccessListener {
                     visitRef.get()
                         .addOnSuccessListener { documentSnapshot ->
-                            Log.d(TAG, "successfully created visit")
-                            emitter.onSuccess(documentSnapshot.toObject<VisitEntity>()!!)
+                            val visitEntity2 = documentSnapshot.toObject<VisitEntity>()
+                            if (visitEntity2 != null) {
+                                Log.d(TAG, "successfully created visit")
+                                emitter.onSuccess(visitEntity2)
+                            } else {
+                                emitter.onError(Exception("visit unable to be created"))
+                            }
                         }
                 }
                 .addOnFailureListener { e ->
@@ -56,8 +61,23 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
                 .document(visitId)
             visitRef.get()
                 .addOnSuccessListener { documentSnapshot ->
-                    emitter.onSuccess(documentSnapshot.toObject<VisitEntity>()!!)
+                    val visitEntity = documentSnapshot.toObject<VisitEntity>()
+                    if (visitEntity != null) {
+                        Log.d(TAG, "successfully created visit")
+                        emitter.onSuccess(visitEntity)
+                    } else {
+                        emitter.onError(Exception("visit unable to be created"))
+                    }
                 }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
+    override fun delete(userId: String, visitId: String): Completable {
+        return Completable.create { emitter ->
+            val ref = db.collection("users").document(userId).collection("visits").document(visitId)
+            ref.delete()
+                .addOnSuccessListener { emitter.onComplete() }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }
     }
@@ -89,7 +109,13 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
                 .addOnSuccessListener {
                     visitRef.get()
                         .addOnSuccessListener { documentSnapshot ->
-                            emitter.onSuccess(documentSnapshot.toObject<VisitEntity>()!!)
+                            val visitEntity = documentSnapshot.toObject<VisitEntity>()
+                            if (visitEntity != null) {
+                                Log.d(TAG, "successfully created visit")
+                                emitter.onSuccess(visitEntity)
+                            } else {
+                                emitter.onError(Exception("cannot get visit"))
+                            }
                         }
                         .addOnFailureListener { e -> emitter.onError(e) }
                 }

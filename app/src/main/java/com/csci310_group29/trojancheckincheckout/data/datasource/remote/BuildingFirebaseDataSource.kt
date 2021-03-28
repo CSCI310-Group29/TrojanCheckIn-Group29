@@ -6,10 +6,7 @@ import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
@@ -30,8 +27,13 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
             val buildingRef = db.collection("buildings").document(id)
             buildingRef.get()
                 .addOnSuccessListener { documentSnapshot ->
-                    Log.d(TAG, "building info id success")
-                    emitter.onSuccess(documentSnapshot.toObject<BuildingEntity>()!!)
+                    val buildingEntity = documentSnapshot.toObject<BuildingEntity>()
+                    if (buildingEntity != null) {
+                        Log.d(TAG, "building info id success")
+                        emitter.onSuccess(buildingEntity)
+                    } else {
+                        emitter.onError(Exception("Building not found"))
+                    }
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }
@@ -41,8 +43,40 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
         return Single.create { emitter ->
             db.collection("buildings").get()
                 .addOnSuccessListener { snapshots ->
+                    val source = if (snapshots.metadata.isFromCache)
+                        "local cache"
+                    else "server"
+                    Log.d(TAG,  "All buildings fetched from $source")
+                    Log.d(TAG, "Found ${snapshots.size()} buildings")
                     emitter.onSuccess(snapshots.toObjects<BuildingEntity>())
                 }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
+    override fun create(buildingEntity: BuildingEntity): Single<BuildingEntity> {
+        return Single.create { emitter ->
+            val ref = db.collection("buildings").document()
+            ref.set(buildingEntity)
+                .addOnSuccessListener {
+                    ref.get()
+                        .addOnSuccessListener { snap ->
+                            val buildingEntity2 = snap.toObject<BuildingEntity>()
+                            if (buildingEntity2 != null) {
+                                emitter.onSuccess(buildingEntity2)
+                            } else {
+                                emitter.onError(Exception("building could not be created"))
+                            }
+                        }
+                }
+        }
+    }
+
+    override fun delete(buildingId: String): Completable {
+        return Completable.create { emitter ->
+            val ref = db.collection("buildings").document(buildingId)
+            ref.delete()
+                .addOnSuccessListener { emitter.onComplete() }
                 .addOnFailureListener { e -> emitter.onError(e) }
         }
     }

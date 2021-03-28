@@ -3,6 +3,7 @@ package com.csci310_group29.trojancheckincheckout.di
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -18,6 +19,7 @@ class FirebaseModule {
 
     companion object {
         private val EMULATOR = false
+        private val HOST = "10.0.2.2"
         private val DB_PORT = 8080
         private val AUTH_PORT = 9099
     }
@@ -25,8 +27,12 @@ class FirebaseModule {
     @Provides
     @Singleton
     fun provideFirebaseFirestoreInstance(): FirebaseFirestore {
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(false)
+            .build()
         val db = Firebase.firestore
-        if (EMULATOR) db.useEmulator("10.0.2.2", DB_PORT)
+        db.firestoreSettings = settings
+        if (EMULATOR) db.useEmulator(HOST, DB_PORT)
         return db;
     }
 
@@ -34,7 +40,7 @@ class FirebaseModule {
     @Singleton
     fun provideFirebaseAuthInstance(): FirebaseAuth {
         val auth = Firebase.auth
-        if (EMULATOR) auth.useEmulator("10.0.2.2", AUTH_PORT)
+        if (EMULATOR) auth.useEmulator(HOST, AUTH_PORT)
         return auth
     }
 
