@@ -34,11 +34,8 @@ class LoginActivityEspressoTest {
      * Testing LoginActivity
      */
     @get:Rule
-//    val intentsRule = IntentsTestRule(LoginActivity::class.java)
     val activityRule = ActivityScenarioRule(LoginActivity::class.java)
 
-//    private var mIdlingResource: IdlingResource? = null
-//    private lateinit var mIdlingResource: IdlingResource
     // Local vars for testing
     private val validEmailStudent = "espressoStudent@usc.edu"
     private val validPasswordStudent = "espressoStudent"
@@ -48,18 +45,6 @@ class LoginActivityEspressoTest {
     private val invalidPassword = "1234"
 
 
-//    @Before
-//    fun registerIdlingResource() {
-//        val activityScenario: ActivityScenario<*> = ActivityScenario.launch(LoginActivity::class.java)
-//        activityScenario.onActivity(ActivityScenario.ActivityAction<LoginActivity> { activity ->
-//            mIdlingResource = activity.getIdlingResourceInTest()
-//        })
-//
-////        ActivityScenario.ActivityAction<LoginActivity> { activity ->
-////            mIdlingResource = activity.getIdlingResourceInTest()
-////            // To prove that the test fails, omit this call:
-////            IdlingRegistry.getInstance().register(mIdlingResource)
-//    }
     @Before
     fun setUp() {
         Intents.init()
@@ -68,46 +53,26 @@ class LoginActivityEspressoTest {
     @Test
     // Tests that valid student login succeeds
     fun validLoginStudent() {
-//        val idlingResource : CountingIdlingResource? = intentsRule.activity.getIdlingResourceInTest()
-//        Espresso.registerIdlingResources(idlingResource)
-
-//        val componentIdlingResource: CountingIdlingResource =
-//            activityScenario. .getIdlingResourceInTest()
-
-
-//        Intents.init()
         onView(withId(R.id.emailInput)).perform(typeText(validEmailStudent))
         onView(withId(R.id.passwordInput)).perform(typeText(validPasswordStudent))
         onView(withId(R.id.loginButton)).perform(click())
+        Thread.sleep(5000)
 
         // Should start StudentHomeActivity
         intended(hasComponent(StudentHomeActivity::class.java.name))
-//        Intents.release()
     }
 
     @Test
     // Tests that valid manager login succeeds
     fun validLoginManager() {
-//        Intents.init()
         onView(withId(R.id.emailInput)).perform(typeText(validEmailManager))
         onView(withId(R.id.passwordInput)).perform(typeText(validPasswordManager))
         onView(withId(R.id.loginButton)).perform(click())
+        Thread.sleep(5000)
 
         // Should start ManagerHomeActivity
         intended(hasComponent(ManagerHomeActivity::class.java.name))
-//        Intents.release()
     }
-
-//    @Test
-//    // Tests incorrect credentials will stay on LoginActivity
-//    fun invalidLoginReturnToLogin() {
-//        onView(withId(R.id.emailInput)).perform(typeText(invalidEmail))
-//        onView(withId(R.id.passwordInput)).perform(typeText(invalidPassword))
-//        onView(withId(R.id.loginButton)).perform(click())
-//
-//        // Should remain on LoginActivity
-//
-//    }
 
     @Test
     // Tests incorrect credentials will show error Toast
@@ -121,23 +86,6 @@ class LoginActivityEspressoTest {
         onView(withText("email or password incorrect"))
             .inRoot(ToastMatcher()).check(matches(isDisplayed()))
     }
-
-//    protected fun afterActivityLaunched() {
-//        Intents.init()
-//        super.afterActivityLaunched()
-//    }
-//
-//    protected fun afterActivityFinished() {
-//        super.afterActivityFinished()
-//        Intents.release()
-//    }
-
-//    @After
-//    fun unregisterIdlingResource() {
-//        if (mIdlingResource != null) {
-//            IdlingRegistry.getInstance().unregister(mIdlingResource)
-//        }
-//    }
 
     @After
     fun tearDown() {

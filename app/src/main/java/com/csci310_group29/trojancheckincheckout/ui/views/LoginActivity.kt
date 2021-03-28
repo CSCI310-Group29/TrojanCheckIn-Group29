@@ -31,9 +31,6 @@ private const val TAG = "LoginActivity"
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
-    @Nullable
-    private var mIdlingResource : CountingIdlingResource? = null
-
     @Inject
     lateinit var loginViewModel: LoginViewModel
 
@@ -46,12 +43,9 @@ class LoginActivity : AppCompatActivity() {
         pb = findViewById(R.id.indeterminateBar)
         loadingEnd()
 
-
     }
 
     public fun onLogin(view: View) {
-        mIdlingResource?.increment()
-        Log.i(TAG, "should increment idling resource")
         try {
             val imm: InputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -101,10 +95,6 @@ class LoginActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             )
             toast.show()
-        } finally {
-            mIdlingResource?.decrement()
-            Log.i(TAG, "should decrement idling resource")
-
         }
     }
 
@@ -118,7 +108,6 @@ class LoginActivity : AppCompatActivity() {
 
 
     fun loginNextActivity(user: User) {
-        mIdlingResource?.decrement()
 
         if(user != null && user!!.isStudent!!) {
             startActivity(Intent(this, StudentHomeActivity::class.java))
@@ -136,13 +125,6 @@ class LoginActivity : AppCompatActivity() {
         toast.show()
     }
 
-    @VisibleForTesting
-    @NonNull
-    fun getIdlingResourceInTest(): CountingIdlingResource? {
-        if (mIdlingResource == null) {
-            mIdlingResource = CountingIdlingResource("loginActivityIdlingResource")
-        }
-        return mIdlingResource
-    }
+
 }
 
