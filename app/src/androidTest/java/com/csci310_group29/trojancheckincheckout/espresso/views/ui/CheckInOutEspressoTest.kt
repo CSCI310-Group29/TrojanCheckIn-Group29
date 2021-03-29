@@ -230,11 +230,14 @@ class CheckInOutEspressoTest {
     }
 
     fun checkOut() {
+        Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
         onView(withId(R.id.button)).perform(click())
         Thread.sleep(3000)
+        Session.checkedInBuilding = null
     }
 
     fun checkIntoGFS() {
+        Session.checkedInBuilding = null
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.qrcode)
         val resultData = Intent()
         resultData.putExtra("data", bitmap)
@@ -243,8 +246,10 @@ class CheckInOutEspressoTest {
 
         intending(toPackage("com.android.camera2")).respondWith(result);
 
+
         onView(withId(R.id.button2)).perform(click())
         Thread.sleep(4000)
+        Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
     }
 
     @After

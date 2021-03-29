@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId "com.csci310_group29.trojancheckincheckout"
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
