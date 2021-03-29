@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId "com.csci310_group29.trojancheckincheckout"
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -108,6 +108,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
     implementation 'androidx.test.espresso:espresso-idling-resource:3.3.0'
     androidTestImplementation 'it.xabaras.android.espresso:recyclerview-child-actions:1.0'
+
+    // injecting fields in junit tests
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
+    kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -63,7 +63,6 @@ class CheckInOutEspressoTest {
 
     @Before
     fun setUp() {
-
         val activityScenario = ActivityScenario.launch(LoginActivity::class.java)
         Espresso.onView(ViewMatchers.withId(R.id.emailInput))
             .perform(ViewActions.typeText(studentEmail), ViewActions.closeSoftKeyboard())
