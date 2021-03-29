@@ -83,6 +83,7 @@ class CheckInOutEspressoTest {
 
     @Test
     fun checkIn() {
+        //note: for this test case you must have the user not checked into any building in the db
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.qrcode)
         val resultData = Intent()
         resultData.putExtra("data", bitmap)
@@ -103,6 +104,7 @@ class CheckInOutEspressoTest {
 
     @Test
     fun checkInInvalidQr() {
+        //note: for this test case you must have the user not checked into any building in the db
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.invalidqr)
         val resultData = Intent()
         resultData.putExtra("data", bitmap)
@@ -123,6 +125,7 @@ class CheckInOutEspressoTest {
 
     @Test
     fun checkOutInvalidQr() {
+        //note: for this test case you must have the user checked into a building in the db
         Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
 
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.invalidqr)
@@ -145,6 +148,7 @@ class CheckInOutEspressoTest {
 
     @Test
     fun checkOutScan() {
+        //note: for this test case you must have the user not checked into a building in the db
         Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
 
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.qrcode)
@@ -166,6 +170,7 @@ class CheckInOutEspressoTest {
 
     @Test
     fun checkOutManual() {
+        //note: for this test case you must have the user checked into a building in the db
         Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
 
         onView(withId(R.id.button)).perform(click())
@@ -180,6 +185,7 @@ class CheckInOutEspressoTest {
 
     @Test
     fun checkOutNotCheckedIn() {
+        //note: for this test case you must have the user not checked into any building in the db
         onView(withId(R.id.button)).perform(click())
 
         Thread.sleep(1000)
