@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.provider.MediaStore
 import android.view.View
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
@@ -13,6 +14,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
@@ -26,12 +28,16 @@ import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentProfileViewModel
 import com.csci310_group29.trojancheckincheckout.ui.views.LoginActivity
 import com.csci310_group29.trojancheckincheckout.ui.views.StudentHomeActivity
+import dagger.hilt.android.AndroidEntryPoint
 import org.hamcrest.Matchers
 import org.junit.*
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 
 @RunWith(AndroidJUnit4::class)
@@ -42,6 +48,10 @@ class CheckInOutEspressoTest {
 
     @get:Rule
     var mRuntimePermissionRule = GrantPermissionRule.grant(android.Manifest.permission.CAMERA)
+
+
+//    @Inject
+//    lateinit var visitDomain: VisitUseCases
 
     companion object {
         init {
@@ -70,7 +80,7 @@ class CheckInOutEspressoTest {
         Espresso.onView(ViewMatchers.withId(R.id.passwordInput))
             .perform(ViewActions.typeText(studentPassword), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.loginButton)).perform(ViewActions.click())
-        Thread.sleep(2000)
+        Thread.sleep(5000)
 
         Intents.init()
 
@@ -84,6 +94,8 @@ class CheckInOutEspressoTest {
     @Test
     fun checkIn() {
         //note: for this test case you must have the user not checked into any building in the db
+        checkOut()
+
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.qrcode)
         val resultData = Intent()
         resultData.putExtra("data", bitmap)
@@ -105,6 +117,10 @@ class CheckInOutEspressoTest {
     @Test
     fun checkInInvalidQr() {
         //note: for this test case you must have the user not checked into any building in the db
+
+        //ensure the user is checked out first
+        checkOut()
+
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.invalidqr)
         val resultData = Intent()
         resultData.putExtra("data", bitmap)
@@ -126,6 +142,9 @@ class CheckInOutEspressoTest {
     @Test
     fun checkOutInvalidQr() {
         //note: for this test case you must have the user checked into a building in the db
+        checkOut()
+        checkIntoGFS()
+
         Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
 
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.invalidqr)
@@ -148,7 +167,10 @@ class CheckInOutEspressoTest {
 
     @Test
     fun checkOutScan() {
-        //note: for this test case you must have the user not checked into a building in the db
+        //note: for this test case you must have the user checked into the GFS building in the db
+        checkIntoGFS()
+        Thread.sleep(1000)
+
         Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
 
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.qrcode)
@@ -157,11 +179,11 @@ class CheckInOutEspressoTest {
         val result: Instrumentation.ActivityResult =
             Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
 
-        intending(toPackage("com.android.camera2")).respondWith(result);
+        intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(result);
 
         onView(withId(R.id.button2)).perform(click())
 
-        Thread.sleep(1000)
+        Thread.sleep(3000)
 
         onView(ViewMatchers.withText("Successfully checked out of GFS"))
             .inRoot(RootMatchers.withDecorView(Matchers.not(decorView)))
@@ -171,6 +193,8 @@ class CheckInOutEspressoTest {
     @Test
     fun checkOutManual() {
         //note: for this test case you must have the user checked into a building in the db
+        checkIntoGFS()
+
         Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
 
         onView(withId(R.id.button)).perform(click())
@@ -186,6 +210,8 @@ class CheckInOutEspressoTest {
     @Test
     fun checkOutNotCheckedIn() {
         //note: for this test case you must have the user not checked into any building in the db
+        checkOut()
+
         onView(withId(R.id.button)).perform(click())
 
         Thread.sleep(1000)
@@ -201,6 +227,24 @@ class CheckInOutEspressoTest {
         getInstrumentation().runOnMainSync { run { currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(
             Stage.RESUMED).elementAtOrNull(0) } }
         return currentActivity
+    }
+
+    fun checkOut() {
+        onView(withId(R.id.button)).perform(click())
+        Thread.sleep(3000)
+    }
+
+    fun checkIntoGFS() {
+        val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.qrcode)
+        val resultData = Intent()
+        resultData.putExtra("data", bitmap)
+        val result: Instrumentation.ActivityResult =
+            Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
+
+        intending(toPackage("com.android.camera2")).respondWith(result);
+
+        onView(withId(R.id.button2)).perform(click())
+        Thread.sleep(4000)
     }
 
     @After
