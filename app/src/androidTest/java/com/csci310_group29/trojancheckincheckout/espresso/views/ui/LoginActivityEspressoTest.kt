@@ -1,18 +1,15 @@
 package com.csci310_group29.trojancheckincheckout.espresso.views.ui
 
-import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
+import android.view.View
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.Root
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.runner.AndroidJUnit4
@@ -20,6 +17,8 @@ import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.ui.views.LoginActivity
 import com.csci310_group29.trojancheckincheckout.ui.views.ManagerHomeActivity
 import com.csci310_group29.trojancheckincheckout.ui.views.StudentHomeActivity
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -44,10 +43,18 @@ class LoginActivityEspressoTest {
     private val invalidEmail = "bruin@gmail.com"
     private val invalidPassword = "1234"
 
+    private var decorView: View? = null
 
     @Before
     fun setUp() {
         Intents.init()
+        activityRule.scenario.onActivity { activity: LoginActivity ->
+            decorView = activity.window.decorView
+        }
+    }
+
+    fun isToast(): Matcher<Root?>? {
+        return ToastMatcher()
     }
 
     @Test
@@ -83,8 +90,14 @@ class LoginActivityEspressoTest {
 
         // Should show toast "Unable to login: email or password incorrect"
         val toastString = "email or password incorrect"
-        onView(withText("email or password incorrect"))
-            .inRoot(ToastMatcher()).check(matches(isDisplayed()))
+//        onView(withText("email or password incorrect"))
+//            .inRoot(ToastMatcher()).check(matches(isDisplayed()))
+        onView(withText(toastString))
+            .inRoot(RootMatchers.withDecorView(not(decorView)))
+            .check(matches(isDisplayed()))
+//        onView(withText(toastString))
+//            .inRoot(withDecorView(not(activityRule.onActivity.getWindow().getDecorView())))
+//            .check(matches(isDisplayed()))
     }
 
     @After
