@@ -36,7 +36,6 @@ class AppHomeActivityEspressoTest {
     // Tests that valid student login succeeds
     fun loginStart() {
         Espresso.onView(ViewMatchers.withId(R.id.login)).perform(ViewActions.click())
-//        Thread.sleep(5000)
 
         // Should start LoginActivity
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
@@ -46,7 +45,6 @@ class AppHomeActivityEspressoTest {
     // Tests that valid student login succeeds
     fun registerStart() {
         Espresso.onView(ViewMatchers.withId(R.id.signup)).perform(ViewActions.click())
-//        Thread.sleep(5000)
 
         // Should start RegisterActivity
         Intents.intended(IntentMatchers.hasComponent(RegisterActivity::class.java.name))
