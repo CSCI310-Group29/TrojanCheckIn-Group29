@@ -46,6 +46,7 @@ class StudentHomeEspressoTest {
         activityRule.scenario.onActivity { activity: LoginActivity ->
             decorView = activity.window.decorView
         }
+        Thread.sleep(3000)
         //note: when you run these tests change the datasource module to use fake data sources
     }
 
