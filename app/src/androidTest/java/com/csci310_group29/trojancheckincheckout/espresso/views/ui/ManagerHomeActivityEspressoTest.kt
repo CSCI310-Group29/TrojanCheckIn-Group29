@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 class ManagerHomeActivityEspressoTest {
 
     /**
-     * Testing LoginActivity
+     * Testing ManagerHomeActivity
      */
     @get:Rule
     val activityRule = ActivityScenarioRule(ManagerHomeActivity::class.java)
@@ -57,7 +57,6 @@ class ManagerHomeActivityEspressoTest {
     @Test
     fun managerBuildingListStart() {
         Espresso.onView(ViewMatchers.withId(R.id.checkBuilding)).perform(ViewActions.click())
-//        Thread.sleep(5000)
 
         // Should start StudentHomeActivity
         Intents.intended(IntentMatchers.hasComponent(BuildingInfoActivity::class.java.name))
@@ -66,7 +65,6 @@ class ManagerHomeActivityEspressoTest {
     @Test
     fun managerUpdateCapacityStart() {
         Espresso.onView(ViewMatchers.withId(R.id.button5)).perform(ViewActions.click())
-//        Thread.sleep(5000)
 
         // Should start StudentHomeActivity
         Intents.intended(IntentMatchers.hasComponent(ManagerUpdateCapacityActivity::class.java.name))
@@ -75,7 +73,6 @@ class ManagerHomeActivityEspressoTest {
     @Test
     fun managerSearchStart() {
         Espresso.onView(ViewMatchers.withId(R.id.button7)).perform(ViewActions.click())
-//        Thread.sleep(5000)
 
         // Should start StudentHomeActivity
         Intents.intended(IntentMatchers.hasComponent(VisitQueryActivity::class.java.name))
@@ -84,7 +81,6 @@ class ManagerHomeActivityEspressoTest {
     @Test
     fun managerProfileStart() {
         Espresso.onView(ViewMatchers.withId(R.id.ViewProfileButton)).perform(ViewActions.click())
-//        Thread.sleep(5000)
 
         // Should start StudentHomeActivity
         Intents.intended(IntentMatchers.hasComponent(ManagerProfileActivity::class.java.name))
@@ -93,7 +89,6 @@ class ManagerHomeActivityEspressoTest {
     @Test
     fun managerLogoutStart() {
         Espresso.onView(ViewMatchers.withId(R.id.LogoutButton)).perform(ViewActions.click())
-//        Thread.sleep(5000)
 
         // Should start StudentHomeActivity
         Intents.intended(IntentMatchers.hasComponent(AppHomeActivity::class.java.name))
