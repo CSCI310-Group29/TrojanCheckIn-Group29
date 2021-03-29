@@ -95,7 +95,7 @@ class CheckInOutEspressoTest {
     fun checkIn() {
         //note: for this test case you must have the user not checked into any building in the db
         checkOut()
-
+        Session.checkedInBuilding = null
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.qrcode)
         val resultData = Intent()
         resultData.putExtra("data", bitmap)
@@ -120,7 +120,7 @@ class CheckInOutEspressoTest {
 
         //ensure the user is checked out first
         checkOut()
-
+        Session.checkedInBuilding = null
         val bitmap = BitmapFactory.decodeResource(InstrumentationRegistry.getInstrumentation().targetContext.resources, R.drawable.invalidqr)
         val resultData = Intent()
         resultData.putExtra("data", bitmap)
@@ -211,6 +211,7 @@ class CheckInOutEspressoTest {
     fun checkOutNotCheckedIn() {
         //note: for this test case you must have the user not checked into any building in the db
         checkOut()
+        Session.checkedInBuilding = null
 
         onView(withId(R.id.button)).perform(click())
 
@@ -233,7 +234,7 @@ class CheckInOutEspressoTest {
         Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
         onView(withId(R.id.button)).perform(click())
         Thread.sleep(3000)
-        Session.checkedInBuilding = null
+
     }
 
     fun checkIntoGFS() {
@@ -249,7 +250,7 @@ class CheckInOutEspressoTest {
 
         onView(withId(R.id.button2)).perform(click())
         Thread.sleep(4000)
-        Session.checkedInBuilding = Building("Ax8j8movNxKM6eb3HIRf","", "", 0,0,"")
+
     }
 
     @After

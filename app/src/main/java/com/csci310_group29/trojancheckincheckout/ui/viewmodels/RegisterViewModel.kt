@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session.Companion.user
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
@@ -25,9 +26,9 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
             } else if (user.lastName == "") {
                 //Log.e(TAG, "No last name passed to registerViewModel")
                 emitter.onError(Exception("Must enter last name"))
-            } else if (user.studentId == "" && user.isStudent!!) {
+            } else if (user.studentId!!.length != 10 && user.isStudent!!) {
                 //Log.e(TAG, "No student id passed to registerViewModel")
-                emitter.onError(Exception("Must enter student id if you are a student"))
+                emitter.onError(Exception("Must enter student id that is 10 digits if you are a student"))
             } else if (password.isEmpty()) {
                 emitter.onError(Exception("Must enter password"))
             } else if (user.major == "Major" && user.isStudent!!) {
@@ -36,7 +37,10 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
             else if (getEmailDomain(email) != "usc.edu") {
                 //Log.e(TAG, "Not usc email passed to registerViewModel")
                 emitter.onError(Exception("Must register with a usc email"))
-            } else {
+            } else if(user.isStudent!! && !isNumber(user.studentId!!)) {
+                emitter.onError(Exception("Student id must only contain digits"))
+            }
+            else {
 
 
                 val observable = authDomain.signup(email, password, user);
@@ -64,5 +68,14 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
             return email.substring(index+1)
         }
         return ""
+    }
+
+    private fun isNumber(str: String): Boolean {
+        try {
+            user!!.studentId!!.toInt();
+        } catch(e: Exception) {
+            return false
+        }
+        return true
     }
 }
