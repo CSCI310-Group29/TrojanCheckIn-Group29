@@ -22,7 +22,6 @@ class RegisterViewModelTest {
     @Before
     fun setup() {
         registerViewModel = RegisterViewModel(mockAuthUseCases)
-
     }
 
     @Test
