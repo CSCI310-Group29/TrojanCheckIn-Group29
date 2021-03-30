@@ -14,6 +14,8 @@
 
 Uncompress the assignment zip file, and then uncompress the project zip file. In android studio, import the project folder by "open an existing project" in Android Studio.
 
+Once you run the project, Android Studio should have automatically changed the path to your Android SDK in the <root>/local.properties file. Otherwise, please specify the location to the Android SDK manually in this file.
+
 
 #### Set up Android Emulator
 You should have the included Android emulator. Ensure that the webcam is enabled in order to scan QR codes.
