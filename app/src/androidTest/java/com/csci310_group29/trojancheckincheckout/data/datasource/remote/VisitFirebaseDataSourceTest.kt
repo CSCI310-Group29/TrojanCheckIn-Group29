@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
@@ -146,6 +147,45 @@ class VisitFirebaseDataSourceTest {
         deleteUser(userId)
     }
 
+    @Test
+    fun visitHistorySingleVisitTest() {
+        val userEntity = UserEntity("1", true, "Tommy",
+            "Trojan", "Computer Science", null, "2", "ref")
+        val buildingEntity = BuildingEntity("2", "A", "A", 10, 8, "ref")
+        val userId = createUser(userEntity)
+        val buildingId = createBuilding(buildingEntity)
+        var visitId = runCheckInTransaction(userId, buildingId)
+        visitId = runCheckOutTransaction(userId, visitId, buildingId)
+        val visitQuery = VisitQuery()
+        getUserVisitHistory(userId, visitQuery, 1)
+        deleteVisit(userId, visitId)
+        getUserVisitHistory(userId, visitQuery, 0)
+        deleteUser(userId)
+        deleteBuilding(buildingId)
+    }
+
+    @Test
+    fun visitHistoryTwoVisitsTest() {
+        val userEntity = UserEntity("1", true, "Tommy",
+            "Trojan", "Computer Science", null, "2", "ref")
+        val buildingEntity = BuildingEntity("2", "A", "A", 10, 8, "ref")
+        val userId = createUser(userEntity)
+        val buildingId = createBuilding(buildingEntity)
+        var visitId = runCheckInTransaction(userId, buildingId)
+        visitId = runCheckOutTransaction(userId, visitId, buildingId)
+        var visitId2 = runCheckInTransaction(userId, buildingId)
+        visitId2 = runCheckOutTransaction(userId, visitId2, buildingId)
+        val visitQuery = VisitQuery()
+        getUserVisitHistory(userId, visitQuery, 2)
+        deleteVisit(userId, visitId)
+        getUserVisitHistory(userId, visitQuery, 1)
+        deleteVisit(userId, visitId2)
+        getUserVisitHistory(userId, visitQuery, 0)
+        deleteUser(userId)
+        deleteBuilding(buildingId)
+    }
+
+
     private fun runCheckInTransaction(userId: String, buildingId: String, expectError: Boolean = false): String {
         val single = visitDataSource.runCheckInTransaction(userId, buildingId)
         try {
@@ -173,6 +213,20 @@ class VisitFirebaseDataSourceTest {
             assertEquals(testNumPeople, buildingEntity.numPeople)
         } catch(e: Exception) {
             fail("got an exception when trying to check building num people: ${e.localizedMessage}")
+        }
+    }
+
+    private fun getUserVisitHistory(userId: String, visitQuery: VisitQuery, testSize: Int, expectError: Boolean = false) {
+        val single = visitDataSource.getUserVisitHistory(userId, visitQuery)
+        try {
+            val visitEntities = single.blockingGet()
+            if (!expectError) {
+                assertEquals(testSize, visitEntities.size)
+            } else {
+                fail("expected an exception when trying to get visit history")
+            }
+        } catch(e: Exception) {
+            if (!expectError) fail("got an exception when trying to get user visit history: ${e.localizedMessage}")
         }
     }
 

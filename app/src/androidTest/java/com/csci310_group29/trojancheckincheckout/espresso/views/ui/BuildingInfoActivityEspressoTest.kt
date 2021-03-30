@@ -43,6 +43,9 @@ class BuildingInfoActivityEspressoTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(BuildingInfoActivity::class.java)
 
+    /*
+        Building list order and capacity current as of 09:21 EDT Mar 29 2021
+     */
     private val LIST_ITEM_UNDER_TEST = 1
     private val BUILDING_UNDER_TEST = "SAL"
     private val CAPACITY_UNDER_TEST = "42"
@@ -108,10 +111,10 @@ class BuildingInfoActivityEspressoTest {
         // Building name under QR code matches
         onView(withId(R.id.bName)).check(matches(withText(BUILDING_UNDER_TEST)))
     }
-    
+
     @Test
     fun updateBuildings() {
-        val newCap = "202"
+        val newCap = "42"
 
         // Match initial capacity
         onView(withId(R.id.buildingInfo))
