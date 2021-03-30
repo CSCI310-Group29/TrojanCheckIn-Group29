@@ -112,37 +112,37 @@ class BuildingInfoActivityEspressoTest {
         onView(withId(R.id.bName)).check(matches(withText(BUILDING_UNDER_TEST)))
     }
 
-    @Test
-    fun updateBuildings() {
-        val newCap = "42"
-
-        // Match initial capacity
-        onView(withId(R.id.buildingInfo))
-            .check(matches(childOfViewAtPositionWithMatcher(R.id.numOfCapacity,
-                LIST_ITEM_UNDER_TEST,
-                withText(CAPACITY_UNDER_TEST))))
-
-        // Launch UpdateCapacity and update
-        val activityScenario2 = ActivityScenario.launch(ManagerUpdateCapacityActivity::class.java)
-        onView(withId(R.id.BuildingInput)).perform(click())
-        Espresso.onData(CoreMatchers.anything()).atPosition(LIST_ITEM_UNDER_TEST).perform(click())
-        onView(withId(R.id.NewCapacityInput)).perform(typeText(newCap))
-        onView(withId(R.id.UpdateCapacityUI)).perform(click())
-        val activityScenario3 = ActivityScenario.launch(BuildingInfoActivity::class.java)
-
-        // Match initial capacity
-        onView(withId(R.id.buildingInfo))
-            .check(matches(childOfViewAtPositionWithMatcher(R.id.numOfCapacity,
-                LIST_ITEM_UNDER_TEST,
-                withText(newCap))))
-
-        // Launch UpdateCapacity and reset capacity
-        val activityScenario4 = ActivityScenario.launch(ManagerUpdateCapacityActivity::class.java)
-        onView(withId(R.id.BuildingInput)).perform(click())
-        Espresso.onData(CoreMatchers.anything()).atPosition(LIST_ITEM_UNDER_TEST).perform(click())
-        onView(withId(R.id.NewCapacityInput)).perform(typeText(CAPACITY_UNDER_TEST))
-        onView(withId(R.id.UpdateCapacityUI)).perform(click())
-    }
+//    @Test
+//    fun updateBuildings() {
+//        val newCap = "42"
+//
+//        // Match initial capacity
+//        onView(withId(R.id.buildingInfo))
+//            .check(matches(childOfViewAtPositionWithMatcher(R.id.numOfCapacity,
+//                LIST_ITEM_UNDER_TEST,
+//                withText(CAPACITY_UNDER_TEST))))
+//
+//        // Launch UpdateCapacity and update
+//        val activityScenario2 = ActivityScenario.launch(ManagerUpdateCapacityActivity::class.java)
+//        onView(withId(R.id.BuildingInput)).perform(click())
+//        Espresso.onData(CoreMatchers.anything()).atPosition(LIST_ITEM_UNDER_TEST).perform(click())
+//        onView(withId(R.id.NewCapacityInput)).perform(typeText(newCap))
+//        onView(withId(R.id.UpdateCapacityUI)).perform(click())
+//        val activityScenario3 = ActivityScenario.launch(BuildingInfoActivity::class.java)
+//
+//        // Match initial capacity
+//        onView(withId(R.id.buildingInfo))
+//            .check(matches(childOfViewAtPositionWithMatcher(R.id.numOfCapacity,
+//                LIST_ITEM_UNDER_TEST,
+//                withText(newCap))))
+//
+//        // Launch UpdateCapacity and reset capacity
+//        val activityScenario4 = ActivityScenario.launch(ManagerUpdateCapacityActivity::class.java)
+//        onView(withId(R.id.BuildingInput)).perform(click())
+//        Espresso.onData(CoreMatchers.anything()).atPosition(LIST_ITEM_UNDER_TEST).perform(click())
+//        onView(withId(R.id.NewCapacityInput)).perform(typeText(CAPACITY_UNDER_TEST))
+//        onView(withId(R.id.UpdateCapacityUI)).perform(click())
+//    }
 
     @After
     fun tearDown() {

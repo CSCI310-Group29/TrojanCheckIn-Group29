@@ -61,17 +61,17 @@ class ManagerHomeActivityEspressoTest {
         Espresso.onView(ViewMatchers.withId(R.id.NameManager)).check(matches(withText("espressoManager")))
     }
 
-    @Test
-    fun managerBuildingListStart() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-
-        Espresso.onView(ViewMatchers.withId(R.id.checkBuilding)).perform(ViewActions.click())
-
-//        onView(withId(R.id.buildingInfo)).check(matches(isDisplayed()))
-        // Should start StudentHomeActivity
-        Intents.intended(IntentMatchers.hasComponent(BuildingInfoActivity::class.java.name))
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-    }
+//    @Test
+//    fun managerBuildingListStart() {
+//        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+//
+//        Espresso.onView(ViewMatchers.withId(R.id.checkBuilding)).perform(ViewActions.click())
+//
+////        onView(withId(R.id.buildingInfo)).check(matches(isDisplayed()))
+//        // Should start StudentHomeActivity
+//        Intents.intended(IntentMatchers.hasComponent(BuildingInfoActivity::class.java.name))
+//        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
+//    }
 
     @Test
     fun managerUpdateCapacityStart() {
