@@ -5,11 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.Nullable
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.idling.CountingIdlingResource
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.ui.util.EspressoIdlingResource
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.CompletableObserver
@@ -63,9 +68,13 @@ class ManagerHomeActivity : AppCompatActivity() {
     }
 
     fun onLogout(view: View)  {
+        EspressoIdlingResource.increment()
+
         val observable = viewModel.logout()
         observable.subscribe(object: CompletableObserver {
             override fun onComplete() {
+                EspressoIdlingResource.decrement()
+
                 startActivity(Intent(this@ManagerHomeActivity, AppHomeActivity::class.java))
                 finishAffinity()
             }
@@ -75,12 +84,13 @@ class ManagerHomeActivity : AppCompatActivity() {
             }
 
             override fun onError(e: Throwable) {
+                EspressoIdlingResource.decrement()
+
                 val toast = Toast.makeText(this@ManagerHomeActivity, "Unable to logout. Try again",Toast.LENGTH_SHORT)
                 toast.show()
             }
         })
 
     }
-
 
 }
