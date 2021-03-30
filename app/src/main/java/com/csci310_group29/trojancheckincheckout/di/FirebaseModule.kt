@@ -18,7 +18,7 @@ import javax.inject.Singleton
 class FirebaseModule {
 
     companion object {
-        private val EMULATOR = true
+        private val EMULATOR = false
         private val HOST = "10.0.2.2"
         private val DB_PORT = 8080
         private val AUTH_PORT = 9099
