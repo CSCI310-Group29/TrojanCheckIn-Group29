@@ -10,7 +10,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +17,7 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.ui.util.EspressoIdlingResource
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.SingleObserver
@@ -46,6 +46,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     public fun onLogin(view: View) {
+        EspressoIdlingResource.increment()
+
         try {
             val imm: InputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -67,6 +69,9 @@ class LoginActivity : AppCompatActivity() {
                     Log.i(TAG, "success in activity")
                     //Log.i(TAG, Session.user!!.firstName + Session.user!!.lastName)
                     loadingEnd()
+
+                    EspressoIdlingResource.decrement()
+
                     loginNextActivity(t)
                     dis!!.dispose()
                 }
@@ -80,6 +85,9 @@ class LoginActivity : AppCompatActivity() {
                 override fun onError(e: Throwable) {
                     Log.i(TAG, e.localizedMessage)
                     loadingEnd()
+
+                    EspressoIdlingResource.decrement()
+
                     makeToast("email or password incorrect")
                     dis!!.dispose()
                 }
@@ -93,8 +101,11 @@ class LoginActivity : AppCompatActivity() {
                 this,
                 "Unable to Login: " + e.localizedMessage,
                 Toast.LENGTH_SHORT
+
             )
             toast.show()
+
+            EspressoIdlingResource.decrement()
         }
     }
 
@@ -124,7 +135,6 @@ class LoginActivity : AppCompatActivity() {
         val toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
         toast.show()
     }
-
 
 }
 

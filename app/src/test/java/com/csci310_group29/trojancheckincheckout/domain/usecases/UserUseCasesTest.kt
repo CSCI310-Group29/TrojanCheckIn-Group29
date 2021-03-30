@@ -9,6 +9,8 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.LoginViewModel
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerHomeViewModel
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Assert.*
@@ -41,6 +43,12 @@ class UserUseCasesGetLoggedInUserTestTest {
     @Mock
     private lateinit var mockBuildingUseCases: BuildingUseCases
 
+    @Mock
+    private lateinit var authDomain: AuthUseCases
+
+    @Mock
+    private lateinit var buildingDomain: BuildingUseCases
+
     private lateinit var userUseCases: UserUseCases
 
     @Before
@@ -71,6 +79,31 @@ class UserUseCasesGetLoggedInUserTestTest {
         `when`(mockAuthRepo.getCurrentUser()).thenReturn(Single.error(Exception()))
         val observable = userUseCases.getCurrentlyLoggedInUser()
         observable.test().assertSubscribed().assertError(Exception::class.java).dispose()
+    }
+
+    @Test
+    fun logInViewModelTest() {
+        val mockLogInViewModel = LoginViewModel(authDomain)
+        `when`(
+            mockLogInViewModel.login(
+                "tommy@usc.edu",
+                "1234"
+            )
+        ).thenReturn(Single.error(Exception()))
+        val observable = userUseCases.getCurrentlyLoggedInUser()
+        observable.test().assertSubscribed().assertError(Exception::class.java).dispose()
+    }
+
+    @Test
+    fun managerHomeViewModelTest() {
+        val mockManagerViewModel = ManagerHomeViewModel(authDomain, buildingDomain)
+
+    }
+
+    @Test
+    fun managerProfileViewModelTest() {
+        val mockManagerViewModel = ManagerHomeViewModel(authDomain, buildingDomain)
+
     }
 
 

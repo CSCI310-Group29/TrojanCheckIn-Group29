@@ -249,7 +249,7 @@ class CheckInOutEspressoTest {
 
 
         onView(withId(R.id.button2)).perform(click())
-        Thread.sleep(4000)
+        Thread.sleep(6000)
 
     }
 

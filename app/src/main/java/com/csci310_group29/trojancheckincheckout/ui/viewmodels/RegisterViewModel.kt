@@ -21,13 +21,13 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
             var dis: Disposable? = null
             Log.i(TAG, "register called successfully");
             if (user.firstName == "") {
-                //Log.e(TAG, "No first name passed to registerViewModel")
+                Log.e(TAG, "No first name passed to registerViewModel")
                 emitter.onError(Exception("Must enter first name"))
             } else if (user.lastName == "") {
-                //Log.e(TAG, "No last name passed to registerViewModel")
+                Log.e(TAG, "No last name passed to registerViewModel")
                 emitter.onError(Exception("Must enter last name"))
             } else if (user.studentId!!.length != 10 && user.isStudent!!) {
-                //Log.e(TAG, "No student id passed to registerViewModel")
+                Log.e(TAG, "No student id passed to registerViewModel")
                 emitter.onError(Exception("Must enter student id that is 10 digits if you are a student"))
             } else if (password.isEmpty()) {
                 emitter.onError(Exception("Must enter password"))
@@ -35,7 +35,7 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
                 emitter.onError(Exception("Must choose a major if you are a student"))
             }
             else if (getEmailDomain(email) != "usc.edu") {
-                //Log.e(TAG, "Not usc email passed to registerViewModel")
+                Log.e(TAG, "Not usc email passed to registerViewModel")
                 emitter.onError(Exception("Must register with a usc email"))
             } else if(user.isStudent!! && !isNumber(user.studentId!!)) {
                 emitter.onError(Exception("Student id must only contain digits"))
@@ -72,8 +72,9 @@ class RegisterViewModel @Inject constructor(private val authDomain: AuthUseCases
 
     private fun isNumber(str: String): Boolean {
         try {
-            user!!.studentId!!.toInt();
+            str.toDouble();
         } catch(e: Exception) {
+            //Log.i(TAG + "isNumber", e.localizedMessage)
             return false
         }
         return true

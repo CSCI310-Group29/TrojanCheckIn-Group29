@@ -1,7 +1,10 @@
 package com.csci310_group29.trojancheckincheckout.espresso.views.ui
 
+import android.util.Log
 import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.Root
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
@@ -14,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.runner.AndroidJUnit4
 import com.csci310_group29.trojancheckincheckout.R
+import com.csci310_group29.trojancheckincheckout.ui.util.EspressoIdlingResource
 import com.csci310_group29.trojancheckincheckout.ui.views.LoginActivity
 import com.csci310_group29.trojancheckincheckout.ui.views.ManagerHomeActivity
 import com.csci310_group29.trojancheckincheckout.ui.views.StudentHomeActivity
@@ -51,6 +55,8 @@ class LoginActivityEspressoTest {
         activityRule.scenario.onActivity { activity: LoginActivity ->
             decorView = activity.window.decorView
         }
+
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
     }
 
 
@@ -60,7 +66,6 @@ class LoginActivityEspressoTest {
         onView(withId(R.id.emailInput)).perform(typeText(validEmailStudent), closeSoftKeyboard())
         onView(withId(R.id.passwordInput)).perform(typeText(validPasswordStudent), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
-        Thread.sleep(5000)
 
         // Should start StudentHomeActivity
         intended(hasComponent(StudentHomeActivity::class.java.name))
@@ -72,7 +77,6 @@ class LoginActivityEspressoTest {
         onView(withId(R.id.emailInput)).perform(typeText(validEmailManager), closeSoftKeyboard())
         onView(withId(R.id.passwordInput)).perform(typeText(validPasswordManager), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
-        Thread.sleep(5000)
 
         // Should start ManagerHomeActivity
         intended(hasComponent(ManagerHomeActivity::class.java.name))
@@ -96,5 +100,7 @@ class LoginActivityEspressoTest {
     @After
     fun tearDown() {
         Intents.release()
+
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
     }
 }

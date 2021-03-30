@@ -28,6 +28,9 @@ class StudentHistoryActivityEspressoTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(StudentHistoryActivity::class.java)
 
+    /*
+        One particular visit for student@usc.edu, which is present in database as of 09:20 EDT Mar 29 2021
+     */
     private val LIST_ITEM_UNDER_TEST = 1
     private val BUILDING_UNDER_TEST = "GFS"
     // FORMAT: "Day[3] Month[3] Date Hour:Minute:Second Timezone Year"
