@@ -155,7 +155,7 @@ class RegisterActivityEspressoTest {
         onView(withId(R.id.registerButton)).perform(click())
 
 
-        onView(ViewMatchers.withText(unsuccessString + "Must enter student id if you are a student"))
+        onView(ViewMatchers.withText(unsuccessString + "Must enter student id that is 10 digits if you are a student"))
             .inRoot(RootMatchers.withDecorView(Matchers.not(decorView)))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
