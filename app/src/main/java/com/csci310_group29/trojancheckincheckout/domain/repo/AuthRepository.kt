@@ -11,7 +11,7 @@ interface AuthRepository {
     Gets the currently logged in user
 
     Returns
-        Single that emits a User object if the user is logged in, or an error if the user is not
+        Single that emits an AuthEntity object if the user is logged in, or an error if the user is not
             logged in
      */
     fun getCurrentUser(): Single<AuthEntity>
@@ -31,7 +31,6 @@ interface AuthRepository {
     Params:
         email: String specifying the email of the user
         password: String specifying the raw input password of user
-        user: User object containing extra information about the user
 
     Returns
         Completable that emits completion if the user was succesfully created, or an error if
@@ -39,6 +38,16 @@ interface AuthRepository {
      */
     fun createUser(email: String, password: String): Single<AuthEntity>
 
+    /*
+    Logs in the user using the email and password.
+
+        Params:
+            email: String specifying the email of the user.
+            password: String specifying the password of the user
+
+        Returns:
+            Completable that emits completion if the user was successfully logged in
+     */
     fun loginUser(email: String, password: String): Completable
 
     /*
