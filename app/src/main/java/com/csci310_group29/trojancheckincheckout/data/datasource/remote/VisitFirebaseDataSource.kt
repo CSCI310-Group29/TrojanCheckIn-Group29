@@ -132,10 +132,6 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
             query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
         if (visitQuery.endCheckIn != null) query =
             query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
-        if (visitQuery.startCheckOut != null) query =
-            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.startCheckOut!!)
-        if (visitQuery.endCheckOut != null) query =
-            query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut!!)
         if (visitQuery.buildingId != null) query =
             query.whereEqualTo("buildingId", visitQuery.buildingId)
         return Single.create { emitter ->
@@ -218,10 +214,6 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
             query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
         if (visitQuery.endCheckIn != null) query =
             query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
-        if (visitQuery.startCheckOut != null) query =
-            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.startCheckOut!!)
-        if (visitQuery.endCheckOut != null) query =
-            query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut!!)
         if (visitQuery.buildingId != null) query =
             query.whereEqualTo("buildingId", visitQuery.buildingId)
         return Single.create { emitter ->

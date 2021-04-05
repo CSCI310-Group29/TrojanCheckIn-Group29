@@ -152,7 +152,7 @@ open class VisitUseCases @Inject constructor(
                                 {visitEntity2, userEntity -> Pair(visitEntity2, userEntity)})
                         }
                         .filter { pair ->
-//                            Log.d(TAG, pair.first.toString())
+                            Log.d(TAG, pair.first.toString())
                             checkUser(pair.second, userQuery)
                         }
                         .flatMap { pair ->
