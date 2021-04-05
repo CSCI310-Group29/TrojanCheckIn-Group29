@@ -5,8 +5,6 @@ import java.util.*
 data class VisitQuery(
     var startCheckIn: Date? = null,
     var endCheckIn: Date? = null,
-    var startCheckOut: Date? = null,
-    var endCheckOut: Date? = null,
     var buildingName: String? = null,
     var buildingId: String? = null
     )

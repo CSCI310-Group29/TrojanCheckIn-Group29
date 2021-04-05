@@ -41,7 +41,7 @@ class StudentHistoryActivity : AppCompatActivity() {
             //val uQuery = UserQuery(Session.user!!.firstName,Session.user!!.lastName, Session.user!!.major,
                 //Session.user!!.studentId, (Session.user!!.checkedInBuilding == null), Session.user!!.isStudent)
 
-            val vQuery = VisitQuery(null,null,null,null,null,null)
+            val vQuery = VisitQuery(null,null,null,null)
             Log.i(TAG, Session.uid)
             val observable = visitDomain.getUserVisitHistory(Session.uid,vQuery)
             observable.subscribe(object : SingleObserver<List<Visit>> {
