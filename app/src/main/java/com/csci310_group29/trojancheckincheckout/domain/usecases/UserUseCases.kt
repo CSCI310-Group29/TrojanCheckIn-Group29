@@ -28,6 +28,7 @@ open class UserUseCases @Inject constructor(
     @Named("Repo") private val authRepo: AuthRepository,
     @Named("Repo") private val userRepo: UserRepository,
     @Named("Repo") private val pictureRepo: PicturesRepository,
+    @Named("Repo") private val visitRepo: VisitRepository,
     private val buildingUseCases: BuildingUseCases
     ) {
 
@@ -151,25 +152,40 @@ open class UserUseCases @Inject constructor(
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
                 .flatMap { building ->
                     visitQuery.buildingId = building.id
-                    userRepo.query(userQuery, visitQuery)
-                        .flatMap { userEntity ->
-                            getPictureAndUser(picture, null, building, userEntity).toObservable()
+                    visitRepo.query(visitQuery)
+                        .flatMap { visitEntities ->
+                            Observable.fromIterable(visitEntities)
+                                .flatMap { visitEntity ->
+                                    Observable.just(visitEntity.userId)
+                                }
+                                .distinct()
+                                .flatMap { userId ->
+                                    userRepo.get(userId).toObservable()
+                                }
+                                .filter { userEntity -> checkUser(userEntity, userQuery)}
+                                .flatMap { userEntity ->
+                                    getPictureAndUser(true, null, building, userEntity).toObservable()
+                                }.toList()
+
                         }
-                        .toList()
                 }
         } else {
-            return userRepo.query(userQuery, visitQuery)
-                    .flatMap { userEntity ->
-                        if (userEntity.checkedInBuildingId != null) {
-                            buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!).toObservable()
-                                .flatMap { building ->
-                                    getPictureAndUser(picture, null, building, userEntity).toObservable()
-                                }
-                        } else {
-                            getPictureAndUser(picture, null, null, userEntity).toObservable()
+            return visitRepo.query(visitQuery)
+                .flatMap { visitEntities ->
+                    Observable.fromIterable(visitEntities)
+                        .flatMap { visitEntity ->
+                            Observable.just(visitEntity.userId)
                         }
-                    }.toList()
-            }
+                        .distinct()
+                        .flatMap { userId ->
+                            userRepo.get(userId).toObservable()
+                        }
+                        .filter { userEntity -> checkUser(userEntity, userQuery)}
+                        .flatMap { userEntity ->
+                            getPictureAndUser(true, null, null, userEntity).toObservable()
+                        }.toList()
+                }
+        }
     }
 
     open fun observeUsersInBuilding(buildingName: String): Observable<List<User>> {
@@ -261,5 +277,39 @@ open class UserUseCases @Inject constructor(
             truth.studentId ?: curr.studentId,
             truth.photoUrl ?: curr.photoUrl
         )
+    }
+
+    private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
+        /*
+        Checks whether the non-null fields in the userQuery match the fields in the userEntity.
+
+            Params:
+                userEntity: UserEntity object to check
+                userQuery: UserQuery object whose non-null fields will be used to check
+                    whether it matches the userEntity
+
+            Returns:
+                Boolean that returns true whether the userQuery matches the userEntity, or
+                false otherwise
+         */
+        Log.d(TAG, userQuery.toString())
+        if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
+            return false
+        if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
+            return false
+        if (userQuery.isCheckedIn != null) {
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+                return false
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+                return false
+        }
+        Log.d(TAG, userQuery.studentId.toString())
+        if (userQuery.major != null && userQuery.major == userEntity.major)
+            return false
+        if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
+            return false
+        if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
+            return false
+        return true
     }
 }
