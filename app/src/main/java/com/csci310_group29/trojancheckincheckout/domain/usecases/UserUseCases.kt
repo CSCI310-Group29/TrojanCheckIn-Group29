@@ -172,6 +172,20 @@ open class UserUseCases @Inject constructor(
             }
     }
 
+    open fun observeUsersInBuilding(buildingName: String): Observable<List<User>> {
+        return buildingUseCases.getBuildingInfo(buildingName)
+            .flatMapObservable { building ->
+                userRepo.observeUsersInBuilding(building.id)
+                    .flatMap { userEntities ->
+                        Observable.fromIterable(userEntities)
+                    }
+                    .flatMap { userEntity ->
+                        getPictureAndUser(true, null, building, userEntity).toObservable()
+                    }
+                    .toList().toObservable()
+            }
+    }
+
     private fun getPictureAndUser(picture: Boolean, authEntity: AuthEntity?, building: Building?, userEntity: UserEntity): Single<User> {
         /*
         Helper function that gets the picture if requested and then gets tthe User object

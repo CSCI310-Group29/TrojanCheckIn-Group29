@@ -46,6 +46,22 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
         }
     }
 
+    override fun observeUsersInBuilding(buildingId: String): Observable<List<UserEntity>> {
+        return Observable.create { emitter ->
+            val query = db.collection("users").whereEqualTo("checkedInBuildingId", buildingId)
+            query.addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.d(TAG, "get users in building failed")
+                    emitter.onError(e)
+                }
+                if (snapshots != null) {
+                    val userEntities: List<UserEntity> = snapshots.toObjects<UserEntity>()
+                    emitter.onNext(userEntities)
+                } else emitter.onError(Exception("no users found in building"))
+            }
+        }
+    }
+
     override fun update(userEntity: UserEntity): Completable {
         return Completable.create { emitter ->
             val userRef = db.collection("users").document(userEntity.id!!)
@@ -129,10 +145,6 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
             query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
         if (visitQuery.endCheckIn != null) query =
             query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
-        if (visitQuery.startCheckOut != null) query =
-            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.startCheckOut!!)
-        if (visitQuery.endCheckOut != null) query =
-            query.whereLessThanOrEqualTo("checkOut", visitQuery.endCheckOut!!)
         if (visitQuery.buildingId != null) query =
             query.whereEqualTo("buildingId", visitQuery.buildingId)
         return Observable.create { emitter ->

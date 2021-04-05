@@ -23,6 +23,19 @@ interface UserRepository {
     fun get(id: String): Single<UserEntity>
 
     /*
+    Observes all users in the specified building
+
+        Params:
+            id: String representing the id of the building
+            limit: the limit of how many users to retrieve
+
+        Returns:
+            Observable that emits a list of UserEntities whenever the users in the building change,
+            or an error otherwise
+     */
+    fun observeUsersInBuilding(buildingId: String): Observable<List<UserEntity>>
+
+    /*
     Updates a user based on the fields in userEntity. Whatever fields the values are in the object will be
         the field values in the user document in the database
 
