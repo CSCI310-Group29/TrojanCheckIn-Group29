@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
+import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
@@ -146,6 +147,69 @@ class VisitFirebaseDataSourceTest {
         deleteUser(userId)
     }
 
+    @Test
+    fun visitHistorySingleVisitTest() {
+        val userEntity = UserEntity("1", true, "Tommy",
+            "Trojan", "Computer Science", null, "2", "ref")
+        val buildingEntity = BuildingEntity("2", "A", "A", 10, 8, "ref")
+        val userId = createUser(userEntity)
+        val buildingId = createBuilding(buildingEntity)
+        var visitId = runCheckInTransaction(userId, buildingId)
+        visitId = runCheckOutTransaction(userId, visitId, buildingId)
+        val visitQuery = VisitQuery()
+        getUserVisitHistory(userId, visitQuery, 1)
+        deleteVisit(userId, visitId)
+        getUserVisitHistory(userId, visitQuery, 0)
+        deleteUser(userId)
+        deleteBuilding(buildingId)
+    }
+
+    @Test
+    fun visitHistoryTwoVisitsTest() {
+        val userEntity = UserEntity("1", true, "Tommy",
+            "Trojan", "Computer Science", null, "2", "ref")
+        val buildingEntity = BuildingEntity("2", "A", "A", 10, 8, "ref")
+        val userId = createUser(userEntity)
+        val buildingId = createBuilding(buildingEntity)
+        var visitId = runCheckInTransaction(userId, buildingId)
+        visitId = runCheckOutTransaction(userId, visitId, buildingId)
+        var visitId2 = runCheckInTransaction(userId, buildingId)
+        visitId2 = runCheckOutTransaction(userId, visitId2, buildingId)
+        val visitQuery = VisitQuery()
+        getUserVisitHistory(userId, visitQuery, 2)
+        deleteVisit(userId, visitId)
+        getUserVisitHistory(userId, visitQuery, 1)
+        deleteVisit(userId, visitId2)
+        getUserVisitHistory(userId, visitQuery, 0)
+        deleteUser(userId)
+        deleteBuilding(buildingId)
+    }
+
+    @Test
+    fun searchVisitsOneVisitTest() {
+        val userEntity = UserEntity("1", true, "Tommy",
+            "Trojan", "Computer Science", null, "2", "ref")
+        val buildingEntity = BuildingEntity("2", "A", "A", 10, 0, "ref")
+        val userId = createUser(userEntity)
+        val buildingId = createBuilding(buildingEntity)
+        var visitId = runCheckInTransaction(userId, buildingId)
+        visitId = runCheckOutTransaction(userId, visitId, buildingId)
+        var visitId2 = runCheckInTransaction(userId, buildingId)
+        visitId2 = runCheckInTransaction(userId, buildingId)
+        val visitId3 = runCheckInTransaction(userId, buildingId)
+        val visit2 = getVisit(userId, visitId2)
+        val visit3 = getVisit(userId, visitId3)
+        val visitQuery = VisitQuery(buildingId = buildingId, startCheckIn = visit2?.checkIn,
+            endCheckIn = visit3?.checkIn)
+        searchVisits(visitQuery, 2)
+        deleteVisit(userId, visitId)
+        deleteVisit(userId, visitId2)
+        deleteVisit(userId, visitId3)
+        deleteUser(userId)
+        deleteBuilding(buildingId)
+    }
+
+
     private fun runCheckInTransaction(userId: String, buildingId: String, expectError: Boolean = false): String {
         val single = visitDataSource.runCheckInTransaction(userId, buildingId)
         try {
@@ -166,13 +230,37 @@ class VisitFirebaseDataSourceTest {
         }
     }
 
-    fun checkBuildingNumPeople(buildingId: String, testNumPeople: Int) {
+    private fun searchVisits(visitQuery: VisitQuery, testSize: Int) {
+        val single = visitDataSource.query(visitQuery)
+        try {
+            val visits = single.blockingGet()
+            assertEquals(visits.size, testSize)
+        } catch(e: Exception) {
+            fail("got an exception when trying to get visits")
+        }
+    }
+
+    private fun checkBuildingNumPeople(buildingId: String, testNumPeople: Int) {
         val single = buildingDataSource.get(buildingId)
         try {
             val buildingEntity = single.blockingGet()
             assertEquals(testNumPeople, buildingEntity.numPeople)
         } catch(e: Exception) {
             fail("got an exception when trying to check building num people: ${e.localizedMessage}")
+        }
+    }
+
+    private fun getUserVisitHistory(userId: String, visitQuery: VisitQuery, testSize: Int, expectError: Boolean = false) {
+        val single = visitDataSource.getUserVisitHistory(userId, visitQuery)
+        try {
+            val visitEntities = single.blockingGet()
+            if (!expectError) {
+                assertEquals(testSize, visitEntities.size)
+            } else {
+                fail("expected an exception when trying to get visit history")
+            }
+        } catch(e: Exception) {
+            if (!expectError) fail("got an exception when trying to get user visit history: ${e.localizedMessage}")
         }
     }
 
@@ -277,18 +365,21 @@ class VisitFirebaseDataSourceTest {
         }
     }
 
-    private fun getVisit(userId: String, visitId: String, expectError: Boolean = false) {
+    private fun getVisit(userId: String, visitId: String, expectError: Boolean = false): VisitEntity? {
         val single = visitDataSource.get(userId, visitId)
         try {
             val visitEntity = single.blockingGet()
             if (!expectError) {
                 assertEquals(userId, visitEntity.userId)
                 assertEquals(visitId, visitEntity.id)
+                return visitEntity
             } else {
                 fail("Expected an exception when trying to get visit")
+                return null
             }
         } catch(e: Exception) {
             if (!expectError) fail("Got an exception when trying to get a visit: ${e.localizedMessage}")
+            return null
         }
     }
 

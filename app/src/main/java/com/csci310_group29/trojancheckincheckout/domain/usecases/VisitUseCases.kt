@@ -32,6 +32,14 @@ open class VisitUseCases @Inject constructor(
     }
 
     open fun attemptCheckIn(buildingId: String): Single<Visit> {
+        /*
+        Attempts to check in the currently logged in user.
+
+            Params:
+                buildingId: id of the building to be checked in at
+            Returns:
+                Single that emits a Visit if the user was checked in, or an error otherwise
+         */
         return userUseCases.getCurrentlyLoggedInUser()
             .flatMap { user ->
                 if (user.checkedInBuilding != null) throw Exception("user is already checked in")
@@ -49,6 +57,17 @@ open class VisitUseCases @Inject constructor(
     }
 
     open fun checkOut(buildingId: String): Single<Visit> {
+        /*
+        Checks out the currently logged in user out of the building specified by the building id. If the building id
+        does not correspond the checked in building id of the user, there will be an error. If the
+        user is not already checked in, there will be an error.
+
+            Params:
+                buildingId: String corresponding to the building id the user is checking out of
+
+            Returns:
+                Single that emits a Visit if the user has successfully checked out, or an error otherwise.
+         */
         return userUseCases.getCurrentlyLoggedInUser()
             .flatMap { user ->
                 if (user.checkedInBuilding != null && user.checkedInBuilding?.id == buildingId) {
@@ -70,6 +89,17 @@ open class VisitUseCases @Inject constructor(
     }
 
     private fun getVisit(visitEntity: VisitEntity, picture: Boolean = true): Single<Visit> {
+        /*
+        Gets a visit that corresponds to the VisitEntity
+
+            Params:
+                visitEntity: VisitEntity object that will be converted to a Visit
+                picture: Boolean specifying whether to get the profile picture of the user
+                    corresponding to the visit
+
+            Returns:
+                Single that emits a Visit upon success, or an error otherwise
+         */
         return Single.zip(buildingUseCases.getBuildingInfoById(visitEntity.buildingId!!),
         userUseCases.getUser(visitEntity.userId!!, null, picture), { building, user ->
                 buildVisitModel(user, null, building, visitEntity)
@@ -77,6 +107,20 @@ open class VisitUseCases @Inject constructor(
     }
 
     open fun searchVisits(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<Visit>> {
+        /*
+        Searches visits according to the visit fields specified by the visitQuery, and the user fields
+        according to the userQuery. The visits will be queried first, and then they will be filtered
+        based on their corresponding users in the userQuery.
+
+            Params:
+                userQuery: UserQuery specifying user fields to query. Any fields that are not null
+                    will be queried for.
+                visitQuery: VisitQuery specifying visit fields to query. Any fields that are not
+                    null will be queried for.
+
+            Returns:
+                Single that emits a list of visits if the query was successful, or an error otherwise
+         */
         if (visitQuery.buildingName != null) {
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
                 .flatMap { building ->
@@ -108,7 +152,7 @@ open class VisitUseCases @Inject constructor(
                                 {visitEntity2, userEntity -> Pair(visitEntity2, userEntity)})
                         }
                         .filter { pair ->
-//                            Log.d(TAG, pair.first.toString())
+                            Log.d(TAG, pair.first.toString())
                             checkUser(pair.second, userQuery)
                         }
                         .flatMap { pair ->
@@ -124,6 +168,17 @@ open class VisitUseCases @Inject constructor(
 
 
     open fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<Visit>> {
+        /*
+        Gets and filters the visit history of a specific user based on the userId
+
+            Params:
+                userId: id of the user whose visit history will be queried
+                visitQuery: specifies the fields to be queried in the user's visit history.
+                    Any fields that are not null will be queried for.
+
+            Returns:
+                Single that emits a list of visits on success, or an error otherwise
+         */
         Log.d(TAG, "domain get user visit history called")
         if (visitQuery.buildingName != null) {
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
@@ -158,6 +213,18 @@ open class VisitUseCases @Inject constructor(
     }
 
     private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
+        /*
+        Checks whether the non-null fields in the userQuery match the fields in the userEntity.
+
+            Params:
+                userEntity: UserEntity object to check
+                userQuery: UserQuery object whose non-null fields will be used to check
+                    whether it matches the userEntity
+
+            Returns:
+                Boolean that returns true whether the userQuery matches the userEntity, or
+                false otherwise
+         */
         Log.d(TAG, userQuery.toString())
         if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
             return false
@@ -180,6 +247,23 @@ open class VisitUseCases @Inject constructor(
     }
 
     private fun buildVisitModel(user: User, buildingEntity: BuildingEntity?, building: Building?, visitEntity: VisitEntity): Visit {
+        /*
+        Builds a visit based on a user, building, and visitEntity
+
+            Params:
+                user: User object for the visit
+                buildingEntity: nullable BuildingEntity object for the visit. If this is not null
+                    then the function will use the buildingEntity to build the visit instead
+                    of the Building
+                building: nullable Building object for the visit. If this is not null
+                    then the function will use the buildingEntity to build the visit instead
+                    of the Building
+                visitEntity: VisitEntity object for the visit
+
+            Returns:
+                Visit object
+
+         */
         if (building != null) {
             return Visit(
                 user = user,

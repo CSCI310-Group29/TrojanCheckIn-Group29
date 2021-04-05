@@ -10,15 +10,21 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.annotation.Nullable
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.idling.CountingIdlingResource
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.ui.util.EspressoIdlingResource
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
+
 
 private const val TAG = "LoginActivity"
 
@@ -37,10 +43,11 @@ class LoginActivity : AppCompatActivity() {
         pb = findViewById(R.id.indeterminateBar)
         loadingEnd()
 
-
     }
 
     public fun onLogin(view: View) {
+        EspressoIdlingResource.increment()
+
         try {
             val imm: InputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -55,13 +62,16 @@ class LoginActivity : AppCompatActivity() {
             loginViewModel.log(" activity called viewModel");
 
             //Log.i(TAG,"User returned is: " + user.firstName + " " + user.lastName + " " + user.major + " " + user.isStudent)
-            val observable = loginViewModel.login(email,password)
-            observable.subscribe(object: SingleObserver<User> {
+            val observable = loginViewModel.login(email, password)
+            observable.subscribe(object : SingleObserver<User> {
 
                 override fun onSuccess(t: User) {
                     Log.i(TAG, "success in activity")
                     //Log.i(TAG, Session.user!!.firstName + Session.user!!.lastName)
                     loadingEnd()
+
+                    EspressoIdlingResource.decrement()
+
                     loginNextActivity(t)
                     dis!!.dispose()
                 }
@@ -75,6 +85,9 @@ class LoginActivity : AppCompatActivity() {
                 override fun onError(e: Throwable) {
                     Log.i(TAG, e.localizedMessage)
                     loadingEnd()
+
+                    EspressoIdlingResource.decrement()
+
                     makeToast("email or password incorrect")
                     dis!!.dispose()
                 }
@@ -82,10 +95,17 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             //Log.i(TAG, "exception returned to onLogin in LoginActivity " + e.localizedMessage)
-            val toast = Toast.makeText(this, "Unable to Login: " + e.localizedMessage, Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(
+                this,
+                "Unable to Login: " + e.localizedMessage,
+                Toast.LENGTH_SHORT
+
+            )
             toast.show()
+
+            EspressoIdlingResource.decrement()
         }
     }
 
@@ -99,6 +119,7 @@ class LoginActivity : AppCompatActivity() {
 
 
     fun loginNextActivity(user: User) {
+
         if(user != null && user!!.isStudent!!) {
             startActivity(Intent(this, StudentHomeActivity::class.java))
             finish()

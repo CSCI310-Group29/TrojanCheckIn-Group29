@@ -28,6 +28,7 @@ open class UserUseCases @Inject constructor(
     @Named("Repo") private val authRepo: AuthRepository,
     @Named("Repo") private val userRepo: UserRepository,
     @Named("Repo") private val pictureRepo: PicturesRepository,
+    @Named("Repo") private val visitRepo: VisitRepository,
     private val buildingUseCases: BuildingUseCases
     ) {
 
@@ -36,6 +37,16 @@ open class UserUseCases @Inject constructor(
     }
 
     open fun getCurrentlyLoggedInUser(picture: Boolean = true): Single<User> {
+        /*
+        Gets the currently logged in user as a User object
+
+            Params:
+                picture: Boolean specifying whether the function should already get the profile
+                    picture of the user
+
+            Returns:
+                Single that emits a User object if the user is logged in or an error otherwise.
+         */
 //        Log.d(TAG, "getting logged in user")
         return authRepo.getCurrentUser()
             .flatMap { authEntity ->
@@ -44,7 +55,17 @@ open class UserUseCases @Inject constructor(
             }
     }
 
-    fun updateProfilePicture(picture: ByteArray): Single<User> {
+    open fun updateProfilePicture(picture: ByteArray): Single<User> {
+        /*
+        Updates the profile picture of the user
+
+            Params:
+                picture: ByteArray specifying the new profile picture
+
+            Returns:
+                Single that emits a User object with the profile picture if the profile picture
+                    was successfully updated, or an error otherwise
+         */
         return authRepo.getCurrentUser()
                 .flatMap { authEntity ->
                     userRepo.get(authEntity.id)
@@ -62,7 +83,13 @@ open class UserUseCases @Inject constructor(
             .flatMap { getCurrentlyLoggedInUser()}
     }
 
-    fun updateProfile(userEntity: UserEntity): Single<User> {
+    open fun updateProfile(userEntity: UserEntity): Single<User> {
+        /*
+        Updates the profile of the user.
+
+            Params: userEntity: UserEntity object representing the fields to be updated. Any fields
+                that are null will not be updated.
+         */
         return authRepo.getCurrentUser()
                 .flatMap { authEntity ->
                     userRepo.get(authEntity.id)
@@ -74,8 +101,19 @@ open class UserUseCases @Inject constructor(
             .flatMap { getCurrentlyLoggedInUser() }
     }
 
-    fun getUser(userId: String, authEntity: AuthEntity? = null, picture: Boolean = true): Single<User> {
-//        Log.d(TAG,"getting user for visit: $userId")
+    open fun getUser(userId: String, authEntity: AuthEntity? = null, picture: Boolean = true): Single<User> {
+        /*
+        Retrieves the user matching the userId
+
+            Params:
+                userId: String specifying the id of the user to be retrieved
+                authEntity: AuthEntity object that is null if the user to be retrieved is not the
+                    currently logged in user, and not null otherwise
+                picture: Boolean specifying whether the profile picture should also be retrieved
+
+            Returns:
+                User object matching the userId
+         */
         return userRepo.get(userId)
             .flatMap { userEntity ->
 //                Log.d(TAG, "user exists: $userEntity")
@@ -93,33 +131,92 @@ open class UserUseCases @Inject constructor(
             }
     }
 
-    fun searchUsers(userQuery: UserQuery, visitQuery: VisitQuery, picture: Boolean = true): Single<List<User>> {
+    open fun searchUsers(userQuery: UserQuery, visitQuery: VisitQuery, picture: Boolean = true): Single<List<User>> {
+        /*
+        Queries a list of users based on their visits as well as their user attributes
+
+            Params:
+                userQuery: query object for user fields. If any fields of the UserQuery object
+                    are null, those fields will not be queried for
+                visitQuery:
+                    query object for visit fields. If any fields of the UserQuery object
+                        are null, those fields will not be queried for
+                picture: Boolean specifying whether to retrieve the profile picture of each queried
+                    user
+
+            Returns:
+                Single emitting a list of User objects on success, or an error if an error occurred
+                    during the querry
+         */
         if (visitQuery.buildingName != null) {
             return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
                 .flatMap { building ->
                     visitQuery.buildingId = building.id
-                    userRepo.query(userQuery, visitQuery)
-                        .flatMap { userEntity ->
-                            getPictureAndUser(picture, null, building, userEntity).toObservable()
+                    visitRepo.query(visitQuery)
+                        .flatMap { visitEntities ->
+                            Observable.fromIterable(visitEntities)
+                                .flatMap { visitEntity ->
+                                    Observable.just(visitEntity.userId)
+                                }
+                                .distinct()
+                                .flatMap { userId ->
+                                    userRepo.get(userId).toObservable()
+                                }
+                                .filter { userEntity -> checkUser(userEntity, userQuery)}
+                                .flatMap { userEntity ->
+                                    getPictureAndUser(true, null, building, userEntity).toObservable()
+                                }.toList()
+
                         }
-                        .toList()
                 }
         } else {
-            return userRepo.query(userQuery, visitQuery)
-                    .flatMap { userEntity ->
-                        if (userEntity.checkedInBuildingId != null) {
-                            buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!).toObservable()
-                                .flatMap { building ->
-                                    getPictureAndUser(picture, null, building, userEntity).toObservable()
-                                }
-                        } else {
-                            getPictureAndUser(picture, null, null, userEntity).toObservable()
+            return visitRepo.query(visitQuery)
+                .flatMap { visitEntities ->
+                    Observable.fromIterable(visitEntities)
+                        .flatMap { visitEntity ->
+                            Observable.just(visitEntity.userId)
                         }
-                    }.toList()
+                        .distinct()
+                        .flatMap { userId ->
+                            userRepo.get(userId).toObservable()
+                        }
+                        .filter { userEntity -> checkUser(userEntity, userQuery)}
+                        .flatMap { userEntity ->
+                            getPictureAndUser(true, null, null, userEntity).toObservable()
+                        }.toList()
+                }
+        }
+    }
+
+    open fun observeUsersInBuilding(buildingName: String): Observable<List<User>> {
+        return buildingUseCases.getBuildingInfo(buildingName)
+            .flatMapObservable { building ->
+                userRepo.observeUsersInBuilding(building.id)
+                    .flatMap { userEntities ->
+                        Observable.fromIterable(userEntities)
+                    }
+                    .flatMap { userEntity ->
+                        getPictureAndUser(true, null, building, userEntity).toObservable()
+                    }
+                    .toList().toObservable()
             }
     }
 
     private fun getPictureAndUser(picture: Boolean, authEntity: AuthEntity?, building: Building?, userEntity: UserEntity): Single<User> {
+        /*
+        Helper function that gets the picture if requested and then gets tthe User object
+
+            Params:
+                picture: Boolean specifying whether to retrieve the profile pictture
+                authEntity: AuthEntity object used for getting the user's email if the userr to be
+                    retrieved is the currently logged in user
+                building: Building object specifying the currently checked in building of the user.
+                    null if not checked in.
+                userEntity: UserEntity object of the user
+
+            Returns:
+                Single that emits a User object on success or an error otherwise
+         */
         return if (picture && userEntity.photoUrl != null) {
             pictureRepo.get(userEntity.photoUrl!!)
                 .flatMap { pictureByteArray ->
@@ -131,7 +228,20 @@ open class UserUseCases @Inject constructor(
     }
 
     private fun buildUser(authEntity: AuthEntity?, userEntity: UserEntity, building: Building?, picture: ByteArray? = null): User {
+    /*
+    Converts a list of objects in a User object that will be useful for the UI
 
+        Params:
+            authEntity: AuthEntity object. Null if the user to be built is not logged in
+            userEntity: UserEntity object corresponding to the user
+            building: Building object representing the checked in building of the user. Null
+                if the user is not checked in
+            picture: Profile picture of the user.
+
+         Returns:
+            User object
+
+     */
         return if (authEntity != null) {
             User(userEntity.id!!, userEntity.isStudent,
                 authEntity.email, userEntity.firstName,
@@ -146,6 +256,17 @@ open class UserUseCases @Inject constructor(
     }
 
     private fun overwrite(curr: UserEntity, truth: UserEntity): UserEntity {
+        /*
+        Overwrites the curr userEntity with the new fields that are not null from the truth userEntity
+
+            Params:
+                curr: UserEntity representing the current fields of the user
+                truth: UserEntity representing the new fields of the user. Fields that are null will
+                    not overwrite the curr
+
+            Returns:
+                overwritten UserEntity object
+         */
         return UserEntity(
             truth.id ?: curr.id,
             truth.isStudent ?: curr.isStudent,
@@ -156,5 +277,39 @@ open class UserUseCases @Inject constructor(
             truth.studentId ?: curr.studentId,
             truth.photoUrl ?: curr.photoUrl
         )
+    }
+
+    private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
+        /*
+        Checks whether the non-null fields in the userQuery match the fields in the userEntity.
+
+            Params:
+                userEntity: UserEntity object to check
+                userQuery: UserQuery object whose non-null fields will be used to check
+                    whether it matches the userEntity
+
+            Returns:
+                Boolean that returns true whether the userQuery matches the userEntity, or
+                false otherwise
+         */
+        Log.d(TAG, userQuery.toString())
+        if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
+            return false
+        if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
+            return false
+        if (userQuery.isCheckedIn != null) {
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+                return false
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+                return false
+        }
+        Log.d(TAG, userQuery.studentId.toString())
+        if (userQuery.major != null && userQuery.major == userEntity.major)
+            return false
+        if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
+            return false
+        if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
+            return false
+        return true
     }
 }

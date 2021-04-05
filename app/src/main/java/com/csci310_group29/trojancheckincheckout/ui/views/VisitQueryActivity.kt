@@ -120,7 +120,7 @@ class VisitQueryActivity : AppCompatActivity() {
 
 
         val userQ = UserQuery(null, null,major, id,null,null)
-        val visitQ = VisitQuery(null,null,null,null,building,null)
+        val visitQ = VisitQuery(null,null, building,null)
 
         val observable = visitDomain.searchVisits(userQ, visitQ)
         observable.subscribe(object: SingleObserver<List<Visit>> {
