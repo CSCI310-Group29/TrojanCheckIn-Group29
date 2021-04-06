@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
+import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -19,11 +20,43 @@ import javax.inject.Inject
 
 
 class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCases,
-                                               private val visitDomain: VisitUseCases):ViewModel() {
+                                               private val visitDomain: VisitUseCases,
+                                               private val userDomain: UserUseCases):ViewModel() {
 
     private val TAG = "StudentHomeViewModel"
 
-    var currUser: MutableLiveData<User> = MutableLiveData<User>(Session.user)
+    var currUser: MutableLiveData<User> = getUserData()
+
+    private fun getUserData(): MutableLiveData<User> {
+
+        return object: MutableLiveData<User>() {
+            init {
+                //val observable1 = userDomain.getCurrentlyLoggedInUser(false);
+
+
+                val observable = userDomain.observeUserById(Session.uid, false);
+                observable.subscribe(object: Observer<User> {
+                    override fun onComplete() {
+
+                    }
+
+                    override fun onSubscribe(d: Disposable) {
+
+                    }
+
+                    override fun onNext(t: User) {
+                        currUser.setValue(t);
+                    }
+
+                    override fun onError(e: Throwable) {
+
+                    }
+                })
+            }
+        }
+    }
+
+
 
 
     fun decodeQR(bitmap: Bitmap?): Single<Visit> {

@@ -45,6 +45,11 @@ class StudentHomeActivity : AppCompatActivity() {
         val userObserver = androidx.lifecycle.Observer<User> { newUser ->
             Log.i(TAG, "in Student Home")
             Name.text = newUser.firstName
+            if(newUser.checkedInBuilding == null) {
+                currBuilding.text = "None"
+            } else {
+                currBuilding.text = newUser.checkedInBuilding!!.buildingName
+            }
 
         }
 
