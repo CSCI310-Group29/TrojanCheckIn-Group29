@@ -23,6 +23,10 @@ class UserFakeDataSource @Inject constructor(): UserRepository {
         return Observable.just(listOf(userEntity))
     }
 
+    override fun observeUserById(userId: String): Observable<UserEntity> {
+        return Observable.just(userEntity)
+    }
+
     override fun update(userEntity: UserEntity): Completable {
         return Completable.complete()
     }
