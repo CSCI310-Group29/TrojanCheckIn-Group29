@@ -101,6 +101,31 @@ open class UserUseCases @Inject constructor(
             .flatMap { getCurrentlyLoggedInUser() }
     }
 
+    open fun observeUserById(userId: String, picture: Boolean = true): Observable<User> {
+        /*
+        Observes a user and emits new user objects on changes
+
+            Params:
+                userId: String representing Id of the user
+                picture: Boolean that is true if we want to get the user's profile picture
+
+            Returns:
+                Observable that emits a new User on every change
+
+         */
+        return userRepo.observeUserById(userId)
+            .flatMap { userEntity ->
+                if (userEntity.checkedInBuildingId != null) {
+                    buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!).toObservable()
+                        .flatMap { building ->
+                            getPictureAndUser(picture, null, building, userEntity).toObservable()
+                        }
+                } else {
+                    getPictureAndUser(picture, null, null, userEntity).toObservable()
+                }
+            }
+    }
+
     open fun getUser(userId: String, authEntity: AuthEntity? = null, picture: Boolean = true): Single<User> {
         /*
         Retrieves the user matching the userId

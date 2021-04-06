@@ -35,6 +35,8 @@ interface UserRepository {
      */
     fun observeUsersInBuilding(buildingId: String): Observable<List<UserEntity>>
 
+    fun observeUserById(userId: String): Observable<UserEntity>
+
     /*
     Updates a user based on the fields in userEntity. Whatever fields the values are in the object will be
         the field values in the user document in the database

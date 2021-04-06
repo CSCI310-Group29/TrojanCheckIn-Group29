@@ -23,6 +23,10 @@ class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSour
         return remoteDataSource.observeUsersInBuilding(buildingId)
     }
 
+    override fun observeUserById(userId: String): Observable<UserEntity> {
+        return remoteDataSource.observeUserById(userId)
+    }
+
     override fun update(userEntity: UserEntity): Completable {
         return remoteDataSource.update(userEntity)
     }
