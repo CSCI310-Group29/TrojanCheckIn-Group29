@@ -99,6 +99,8 @@ dependencies {
     implementation 'com.opencsv:opencsv:4.6'
     implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:0.15.1'
     implementation 'com.vhl.blackmo:kotlin-grass-jvm:0.5.0'
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.2")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.12.2")
 
     //Espresso for black-box testing
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
