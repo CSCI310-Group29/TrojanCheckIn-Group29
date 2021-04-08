@@ -99,7 +99,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, e.localizedMessage)
-                    makeToast("Unable to update capacity")
+                    makeToast("Unable to update capacity\n" + e.localizedMessage)
                 }
             }
         )
@@ -131,14 +131,6 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
             makeToast("Invalid file")
         }
 
-//        try {
-//            viewModel.updateWithCSV()
-//
-//        } catch(e: Exception) {
-//            Log.e(TAG, e.localizedMessage)
-//            val toast = Toast.makeText(this, "Unable to update capacity with file. Try again",Toast.LENGTH_SHORT)
-//            toast.show()
-//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -162,8 +154,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
                             override fun onError(e: Throwable) {
                                 Log.e(TAG, e.localizedMessage)
-//                                Log.e(TAG, e.printStackTrace())
-                                makeToast("Unable to update capacity")
+                                makeToast("Unable to update capacity\n" + e.localizedMessage)
                             }
                         }
                     )

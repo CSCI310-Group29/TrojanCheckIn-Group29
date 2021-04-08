@@ -198,7 +198,9 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                 if (capacity >= snap.getDouble("numPeople")!!) {
                     transaction.update(buildingRef, "capacity", capacity)
                 } else {
-                    throw FirebaseFirestoreException("capacity is too low", FirebaseFirestoreException.Code.ABORTED)
+                    val b = transaction.get(buildingRef).getString("buildingName")
+                    Log.i(TAG, "Capacity Low Building: " + b)
+                    throw FirebaseFirestoreException("Capacity too low: $b", FirebaseFirestoreException.Code.ABORTED)
                 }
             }
                 .addOnSuccessListener { transaction ->
