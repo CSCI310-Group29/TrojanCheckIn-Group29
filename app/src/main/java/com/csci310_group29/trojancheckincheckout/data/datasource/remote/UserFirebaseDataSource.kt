@@ -1,12 +1,14 @@
 package com.csci310_group29.trojancheckincheckout.data.datasource.remote
 
 import android.util.Log
+import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
@@ -62,6 +64,28 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
         }
     }
 
+    override fun observeUserById(userId: String): Observable<UserEntity> {
+        return Observable.create { emitter ->
+            val userRef = db.collection("users").document(userId)
+            userRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    emitter.onError(e)
+                } else {
+                    if (snapshot != null && snapshot.exists()) {
+                        val userEntity = snapshot.toObject<UserEntity>()
+                        if (userEntity == null) {
+                            emitter.onError(FirebaseFirestoreException("user does not exist", FirebaseFirestoreException.Code.UNAVAILABLE))
+                        } else {
+                            emitter.onNext(userEntity)
+                        }
+                    } else {
+                        emitter.onError(FirebaseFirestoreException("user does not exist", FirebaseFirestoreException.Code.UNAVAILABLE))
+                    }
+                }
+            }
+        }
+    }
+
     override fun update(userEntity: UserEntity): Completable {
         return Completable.create { emitter ->
             val userRef = db.collection("users").document(userEntity.id!!)
@@ -90,6 +114,33 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
                         .addOnFailureListener { e -> emitter.onError(e) }
                 }
                 .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
+    override fun getAll(): Single<List<UserEntity>> {
+        return Single.create { emitter ->
+            val coll = db.collection("users")
+            coll.get()
+                .addOnSuccessListener { snapshots ->
+                    val userEntities = snapshots.toObjects<UserEntity>()
+                    emitter.onSuccess(userEntities)
+                }
+                .addOnFailureListener { e ->
+                    emitter.onError(e)
+                }
+        }
+    }
+
+    override fun addDeleteField(id: String): Completable {
+        return Completable.create { emitter ->
+            val userRef = db.collection("users").document(id)
+            userRef.update("deleted", true)
+                .addOnSuccessListener {
+                    emitter.onComplete()
+                }
+                .addOnFailureListener { e ->
+                    emitter.onError(e)
+                }
         }
     }
 

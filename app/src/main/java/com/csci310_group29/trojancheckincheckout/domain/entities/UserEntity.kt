@@ -9,8 +9,8 @@ data class UserEntity(var id: String? = null,
                       @field:JvmField
                       var checkedInBuildingId: String? = null,
                       var studentId: String? = null,
+                      var deleted: Boolean? = null,
                       var photoUrl: String? = null) {
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -24,6 +24,7 @@ data class UserEntity(var id: String? = null,
         if (major != other.major) return false
         if (checkedInBuildingId != other.checkedInBuildingId) return false
         if (studentId != other.studentId) return false
+        if (deleted != other.deleted) return false
         if (photoUrl != other.photoUrl) return false
 
         return true
@@ -37,7 +38,10 @@ data class UserEntity(var id: String? = null,
         result = 31 * result + (major?.hashCode() ?: 0)
         result = 31 * result + (checkedInBuildingId?.hashCode() ?: 0)
         result = 31 * result + (studentId?.hashCode() ?: 0)
+        result = 31 * result + (deleted?.hashCode() ?: 0)
         result = 31 * result + (photoUrl?.hashCode() ?: 0)
         return result
     }
+
+
 }

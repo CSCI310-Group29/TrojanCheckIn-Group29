@@ -23,12 +23,24 @@ class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSour
         return remoteDataSource.observeUsersInBuilding(buildingId)
     }
 
+    override fun observeUserById(userId: String): Observable<UserEntity> {
+        return remoteDataSource.observeUserById(userId)
+    }
+
     override fun update(userEntity: UserEntity): Completable {
         return remoteDataSource.update(userEntity)
     }
 
     override fun delete(id: String): Completable {
         return remoteDataSource.delete(id)
+    }
+
+    override fun getAll(): Single<List<UserEntity>> {
+        return remoteDataSource.getAll()
+    }
+
+    override fun addDeleteField(id: String): Completable {
+        return remoteDataSource.addDeleteField(id)
     }
 
     override fun create(userEntity: UserEntity): Single<UserEntity> {
