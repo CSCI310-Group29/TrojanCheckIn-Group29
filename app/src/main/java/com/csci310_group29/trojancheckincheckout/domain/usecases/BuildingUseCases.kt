@@ -125,9 +125,9 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
     }
 
     open fun updateMultipleBuildingCapacities(buildings: HashMap<String, Double>): Completable {
-        TODO("This function does not meet the requirements." +
-                " If any of the updates to one of a building's " +
-                "capacity fails, none of the building capacities should be updated")
+//        TODO("This function does not meet the requirements." +
+//                " If any of the updates to one of a building's " +
+//                "capacity fails, none of the building capacities should be updated")
         /*
         Updates the capacity of multiple buildings. If the number of students in any of the
         requested buildings is less than the building's new respective capacity, then that building's

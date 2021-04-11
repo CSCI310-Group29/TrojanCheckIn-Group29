@@ -7,17 +7,18 @@
     android:layout_height="match_parent">
 
     <!-- Update capacity with CSV || commented out for assignment 3 -->
-<!--    <Button-->
-<!--        android:id="@+id/UpdateCapacityCSV"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:onClick="onUpdateWithCSV"-->
-<!--        android:text="Upload a File (CSV)"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.632" />-->
+
+    <Button
+        android:id="@+id/UpdateCapacityCSV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onUpdateWithCSV"
+        android:text="Upload a File (CSV)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.627" />
 
     <TextView
         android:id="@+id/TitleUpdateCapacity"

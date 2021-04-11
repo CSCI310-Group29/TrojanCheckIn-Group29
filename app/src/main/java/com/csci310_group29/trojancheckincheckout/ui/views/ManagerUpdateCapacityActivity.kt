@@ -1,5 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -97,7 +99,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, e.localizedMessage)
-                    makeToast("Unable to update capacity")
+                    makeToast("Unable to update capacity\n" + e.localizedMessage)
                 }
             }
         )
@@ -114,61 +116,53 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
      * Update capacities with CSV
      * Commented out for assignment 3
      */
-//    fun onUpdateWithCSV(view: View) {
-//        val mimetypes = arrayOf("text/csv", "text/comma-separated-values", "application/csv")
-//        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-//            addCategory(Intent.CATEGORY_OPENABLE)
-//            type = "text/csv"
-//            putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
-//        }
-//
-//        try {
-//            startActivityForResult(Intent.createChooser(intent, "Open CSV"), REQUEST_CSV)
-//        } catch(e: Exception) {
-//            Log.e(TAG, e.localizedMessage)
-//            makeToast("Invalid file")
-//        }
-//
-////        try {
-////            viewModel.updateWithCSV()
-////
-////        } catch(e: Exception) {
-////            Log.e(TAG, e.localizedMessage)
-////            val toast = Toast.makeText(this, "Unable to update capacity with file. Try again",Toast.LENGTH_SHORT)
-////            toast.show()
-////        }
-//    }
-//
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        when(requestCode) {
-//            REQUEST_CSV -> {
-//                if(resultCode == Activity.RESULT_OK) {
-//                    val csvUri = data!!.data!!
-//                    val observable = viewModel.updateWithCSV(csvUri)
-//                    Log.i(TAG, "CSV URI: " + csvUri)
-//                    observable.subscribe(
-//                        object: CompletableObserver {
-//                            override fun onComplete() {
-//                                makeToast("Successfully updated capacity")
-//                            }
-//
-//                            override fun onSubscribe(d: Disposable) {
-//
-//                            }
-//
-//                            override fun onError(e: Throwable) {
-//                                Log.e(TAG, e.localizedMessage)
-//                                makeToast("Unable to update capacity")
-//                            }
-//                        }
-//                    )
-//                }
-//                startActivity(Intent(this, ManagerUpdateCapacityActivity::class.java))
-//            }
-//        }
-//    }
+    fun onUpdateWithCSV(view: View) {
+        val mimetypes = arrayOf("text/csv", "text/comma-separated-values", "application/csv")
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/csv"
+            putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+        }
+
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Open CSV"), REQUEST_CSV)
+        } catch(e: Exception) {
+            Log.e(TAG, e.localizedMessage)
+            makeToast("Invalid file")
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when(requestCode) {
+            REQUEST_CSV -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    val csvUri = data!!.data!!
+                    val observable = viewModel.updateWithCSV(csvUri)
+                    Log.i(TAG, "CSV URI: " + csvUri)
+                    observable.subscribe(
+                        object: CompletableObserver {
+                            override fun onComplete() {
+                                makeToast("Successfully updated capacity")
+                            }
+
+                            override fun onSubscribe(d: Disposable) {
+
+                            }
+
+                            override fun onError(e: Throwable) {
+                                Log.e(TAG, e.localizedMessage)
+                                makeToast("Unable to update capacity\n" + e.localizedMessage)
+                            }
+                        }
+                    )
+                }
+                startActivity(Intent(this, ManagerUpdateCapacityActivity::class.java))
+            }
+        }
+    }
 
     fun makeToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
