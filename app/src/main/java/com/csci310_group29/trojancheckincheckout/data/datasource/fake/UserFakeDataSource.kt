@@ -35,6 +35,10 @@ class UserFakeDataSource @Inject constructor(): UserRepository {
         return Completable.complete()
     }
 
+    override fun getAll(): Single<List<UserEntity>> {
+        return Single.just(listOf(userEntity))
+    }
+
     override fun create(userEntity: UserEntity): Single<UserEntity> {
         return Single.just(userEntity)
     }

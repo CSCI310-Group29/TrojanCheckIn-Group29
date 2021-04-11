@@ -62,6 +62,8 @@ interface UserRepository {
      */
     fun delete(id: String): Completable
 
+    fun getAll(): Single<List<UserEntity>>
+
     /*
     Creates a user in the database using the fields in the UserEntity
 
