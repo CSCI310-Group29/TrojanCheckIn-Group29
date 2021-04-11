@@ -126,7 +126,7 @@ open class UserUseCases @Inject constructor(
             }
     }
 
-    open fun getUser(userId: String, authEntity: AuthEntity? = null, picture: Boolean = true): Single<User> {
+    open fun getUser(userId: String?, authEntity: AuthEntity? = null, picture: Boolean = true, userEntity: UserEntity? = null): Single<User> {
         /*
         Retrieves the user matching the userId
 
@@ -139,21 +139,34 @@ open class UserUseCases @Inject constructor(
             Returns:
                 User object matching the userId
          */
-        return userRepo.get(userId)
-            .flatMap { userEntity ->
+        if (userId != null) {
+            return userRepo.get(userId)
+                .flatMap { userEntity2 ->
 //                Log.d(TAG, "user exists: $userEntity")
-                if (userEntity.checkedInBuildingId != null) {
+                    if (userEntity2.checkedInBuildingId != null) {
 
-                    buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!)
-                        .flatMap { building ->
+                        buildingUseCases.getBuildingInfoById(userEntity?.checkedInBuildingId!!)
+                            .flatMap { building ->
 //                            Log.d(TAG, "getting user building: $building")
-                            getPictureAndUser(picture, authEntity, building, userEntity)
-                        }
-                } else {
+                                getPictureAndUser(picture, authEntity, building, userEntity2)
+                            }
+                    } else {
 //                    Log.d(TAG, "getting user without building")
-                    getPictureAndUser(picture, authEntity, null, userEntity)
+                        getPictureAndUser(picture, authEntity, null, userEntity2)
+                    }
                 }
+        } else {
+            if (userEntity?.checkedInBuildingId != null) {
+                return buildingUseCases.getBuildingInfoById(userEntity.checkedInBuildingId!!)
+                    .flatMap { building ->
+//                            Log.d(TAG, "getting user building: $building")
+                        getPictureAndUser(picture, authEntity, building, userEntity)
+                    }
+            } else {
+//                    Log.d(TAG, "getting user without building")
+                return getPictureAndUser(picture, authEntity, null, userEntity!!)
             }
+        }
     }
 
     open fun searchUsers(userQuery: UserQuery, visitQuery: VisitQuery, picture: Boolean = true): Single<List<User>> {
@@ -173,43 +186,53 @@ open class UserUseCases @Inject constructor(
                 Single emitting a list of User objects on success, or an error if an error occurred
                     during the querry
          */
-        if (visitQuery.buildingName != null) {
-            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
-                .flatMap { building ->
-                    visitQuery.buildingId = building.id
-                    visitRepo.query(visitQuery)
-                        .flatMap { visitEntities ->
-                            Observable.fromIterable(visitEntities)
-                                .flatMap { visitEntity ->
-                                    Observable.just(visitEntity.userId)
-                                }
-                                .distinct()
-                                .flatMap { userId ->
-                                    userRepo.get(userId).toObservable()
-                                }
-                                .filter { userEntity -> checkUser(userEntity, userQuery)}
-                                .flatMap { userEntity ->
-                                    getPictureAndUser(true, null, building, userEntity).toObservable()
-                                }.toList()
+        if (checkVisitQuery(visitQuery)) {
+            if (visitQuery.buildingName != null) {
+                return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
+                    .flatMap { building ->
+                        visitQuery.buildingId = building.id
+                        visitRepo.query(visitQuery)
+                            .flatMap { visitEntities ->
+                                Observable.fromIterable(visitEntities)
+                                    .flatMap { visitEntity ->
+                                        Observable.just(visitEntity.userId)
+                                    }
+                                    .distinct()
+                                    .flatMap { userId ->
+                                        userRepo.get(userId).toObservable()
+                                    }
+                                    .filter { userEntity -> checkUser(userEntity, userQuery)}
+                                    .flatMap { userEntity ->
+                                        getUser(null, null, true, userEntity).toObservable()
+                                    }.toList()
 
-                        }
-                }
+                            }
+                    }
+            } else {
+                return visitRepo.query(visitQuery)
+                    .flatMap { visitEntities ->
+                        Observable.fromIterable(visitEntities)
+                            .flatMap { visitEntity ->
+                                Observable.just(visitEntity.userId)
+                            }
+                            .distinct()
+                            .flatMap { userId ->
+                                userRepo.get(userId).toObservable()
+                            }
+                            .filter { userEntity -> checkUser(userEntity, userQuery)}
+                            .flatMap { userEntity ->
+                                getUser(null, null, true, userEntity).toObservable()
+                            }.toList()
+                    }
+            }
         } else {
-            return visitRepo.query(visitQuery)
-                .flatMap { visitEntities ->
-                    Observable.fromIterable(visitEntities)
-                        .flatMap { visitEntity ->
-                            Observable.just(visitEntity.userId)
-                        }
-                        .distinct()
-                        .flatMap { userId ->
-                            userRepo.get(userId).toObservable()
-                        }
-                        .filter { userEntity -> checkUser(userEntity, userQuery)}
-                        .flatMap { userEntity ->
-                            getPictureAndUser(true, null, null, userEntity).toObservable()
-                        }.toList()
+            return userRepo.getAll()
+                .flatMapObservable { userEntities ->
+                    Observable.fromIterable(userEntities)
                 }
+                .flatMap { userEntity ->
+                    getUser(null, null, true, userEntity).toObservable()
+                }.toList()
         }
     }
 
@@ -271,12 +294,12 @@ open class UserUseCases @Inject constructor(
             User(userEntity.id!!, userEntity.isStudent,
                 authEntity.email, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
-                building, userEntity.studentId, picture)
+                building, userEntity.studentId, userEntity.deleted, picture)
         } else {
             User(userEntity.id!!, userEntity.isStudent,
                 null, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
-                building, userEntity.studentId, picture)
+                building, userEntity.studentId, userEntity.deleted, picture)
         }
     }
 
@@ -300,6 +323,7 @@ open class UserUseCases @Inject constructor(
             truth.major ?: curr.major,
             truth.checkedInBuildingId ?: curr.checkedInBuildingId,
             truth.studentId ?: curr.studentId,
+            truth.deleted ?: curr.deleted,
             truth.photoUrl ?: curr.photoUrl
         )
     }
@@ -336,5 +360,13 @@ open class UserUseCases @Inject constructor(
         if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
             return false
         return true
+    }
+
+    private fun checkVisitQuery(visitQuery: VisitQuery): Boolean {
+        if (visitQuery.buildingName != null) return true
+        if (visitQuery.buildingId != null) return true
+        if (visitQuery.startCheckIn != null) return true
+        if (visitQuery.endCheckIn != null) return true
+        return false
     }
 }

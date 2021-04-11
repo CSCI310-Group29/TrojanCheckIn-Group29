@@ -35,6 +35,14 @@ class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSour
         return remoteDataSource.delete(id)
     }
 
+    override fun getAll(): Single<List<UserEntity>> {
+        return remoteDataSource.getAll()
+    }
+
+    override fun addDeleteField(id: String): Completable {
+        return remoteDataSource.addDeleteField(id)
+    }
+
     override fun create(userEntity: UserEntity): Single<UserEntity> {
         return remoteDataSource.create(userEntity)
     }

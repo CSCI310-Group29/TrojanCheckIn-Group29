@@ -50,17 +50,17 @@ class VisitUseCasesTest {
     @Test
     fun attemptCheckInTest() {
         val userEntity = UserEntity("12", false, "Tommy", "Trojan",
-            "Computer Science", null, "123", "exampleURL")
+            "Computer Science", null, "123", false, "exampleURL")
         val user = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, null, userEntity.studentId, userEntity.deleted,null)
         val buildingEntity = BuildingEntity("1", "building", "123",
             10, 5, "qrRef")
         val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
             buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
         val checkedInUser = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, building, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, building, userEntity.studentId, userEntity.deleted,null)
         val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date(), null)
         val visit = Visit(user, building, visitEntity.checkIn, visitEntity.checkOut)
         val newVisit = Visit(checkedInUser, building, visitEntity.checkIn, visitEntity.checkOut)
@@ -77,14 +77,14 @@ class VisitUseCasesTest {
     @Test
     fun attemptCheckInWhenAlreadyCheckedInTest() {
         val userEntity = UserEntity("12", false, "Tommy", "Trojan",
-            "Computer Science", "1", "123", "exampleURL")
+            "Computer Science", "1", "123", false, "exampleURL")
         val buildingEntity = BuildingEntity("1", "building", "123",
             10, 5, "qrRef")
         val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
             buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
         val user = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, building, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, building, userEntity.studentId, userEntity.deleted,null)
         val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date(), null)
         val visit = Visit(user, building, visitEntity.checkIn, visitEntity.checkOut)
 
@@ -101,17 +101,17 @@ class VisitUseCasesTest {
     @Test
     fun checkOutCorrectlyTest() {
         val userEntity = UserEntity("12", false, "Tommy", "Trojan",
-            "Computer Science", "1", "123", "exampleURL")
+            "Computer Science", "1", "123", false,"exampleURL")
         val buildingEntity = BuildingEntity("1", "building", "123",
             10, 5, "qrRef")
         val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
             buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
         val user = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, building, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, building, userEntity.studentId, userEntity.deleted,null)
         val checkOutUser = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, null, userEntity.studentId, userEntity.deleted,null)
         val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date())
         val checkOutDate = Date()
         val checkOutVisitEntity = VisitEntity(visitEntity.id, userEntity.id, buildingEntity.id, visitEntity.checkIn, checkOutDate)
@@ -130,17 +130,17 @@ class VisitUseCasesTest {
     @Test
     fun checkOutWhenNotCheckedInTest() {
         val userEntity = UserEntity("12", false, "Tommy", "Trojan",
-            "Computer Science", null, "123", "exampleURL")
+            "Computer Science", null, "123", false,"exampleURL")
         val buildingEntity = BuildingEntity("1", "building", "123",
             10, 5, "qrRef")
         val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
             buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
         val user = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, null, userEntity.studentId, userEntity.deleted,null)
         val checkOutUser = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, null, userEntity.studentId, userEntity.deleted,null)
         val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date())
         val checkOutDate = Date()
         val checkOutVisitEntity = VisitEntity(visitEntity.id, userEntity.id, buildingEntity.id, visitEntity.checkIn, checkOutDate)
@@ -159,17 +159,17 @@ class VisitUseCasesTest {
     @Test
     fun checkOutOfWrongBuildingTest() {
         val userEntity = UserEntity("12", false, "Tommy", "Trojan",
-            "Computer Science", null, "123", "exampleURL")
+            "Computer Science", null, "123", false,"exampleURL")
         val buildingEntity = BuildingEntity("1", "building", "123",
             10, 5, "qrRef")
         val building = Building(buildingEntity.id!!, buildingEntity.buildingName!!, buildingEntity.address,
             buildingEntity.capacity!!, buildingEntity.numPeople!!, buildingEntity.qrCodeRef!!)
         val user = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, null, userEntity.studentId, userEntity.deleted,null)
         val checkOutUser = User(
             userEntity.id!!, userEntity.isStudent, "tommy@usc.edu", userEntity.firstName,
-            userEntity.lastName, userEntity.major, null, userEntity.studentId,null)
+            userEntity.lastName, userEntity.major, null, userEntity.studentId, userEntity.deleted, null)
         val visitEntity = VisitEntity("12", userEntity.id, buildingEntity.id, Date())
         val checkOutDate = Date()
         val checkOutVisitEntity = VisitEntity(visitEntity.id, userEntity.id, buildingEntity.id, visitEntity.checkIn, checkOutDate)

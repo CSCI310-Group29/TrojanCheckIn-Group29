@@ -103,7 +103,7 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
         return userUseCases.getCurrentlyLoggedInUser()
             .flatMapCompletable { user ->
                 // call userRepository to delete the user document in the database
-                userRepo.delete(user.id)
+                userRepo.addDeleteField(user.id)
             }
                 // call AuthRepository to delete the user account
             .andThen(authRepo.deleteCurrentUser())
