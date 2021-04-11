@@ -30,7 +30,7 @@ class RegisterViewModelTest {
         val password = "password"
         val userEntity = UserEntity(
             null, true, "Tommy", "Trojan", "Computer Science",
-            null, "1234567890", null
+            null, "1234567890", null, null
         )
         `when`(mockAuthUseCases.signup(email, password, userEntity)).thenReturn(Completable.complete())
         register(email, password, userEntity)
@@ -42,7 +42,7 @@ class RegisterViewModelTest {
         val password = "password"
         val userEntity = UserEntity(
             null, true, "Tommy", "Trojan", "Computer Science",
-            null, "1234567890", null
+            null, "1234567890", null, null
         )
         `when`(mockAuthUseCases.signup(email, password, userEntity)).thenReturn(Completable.complete())
         register(email, password, userEntity, true)
@@ -54,7 +54,7 @@ class RegisterViewModelTest {
         val password = "password"
         val userEntity = UserEntity(
             null, true, "Tommy", "", "Computer Science",
-            null, "1234567890", null
+            null, "1234567890", null, null
         )
         `when`(mockAuthUseCases.signup(email, password, userEntity)).thenReturn(Completable.complete())
         register(email, password, userEntity, true)
@@ -66,7 +66,7 @@ class RegisterViewModelTest {
         val password = "password"
         val userEntity = UserEntity(
             null, true, "Tommy", "Trojan", "Computer Science",
-            null, "", null
+            null, "", null, null
         )
         `when`(mockAuthUseCases.signup(email, password, userEntity)).thenReturn(Completable.complete())
         register(email, password, userEntity, true)
@@ -78,7 +78,7 @@ class RegisterViewModelTest {
         val password = ""
         val userEntity = UserEntity(
             null, true, "Tommy", "Trojan", "Computer Science",
-            null, "1234567890", null
+            null, "1234567890", null,null
         )
         `when`(mockAuthUseCases.signup(email, password, userEntity)).thenReturn(Completable.complete())
         register(email, password, userEntity, true)
@@ -90,7 +90,7 @@ class RegisterViewModelTest {
         val password = "password"
         val userEntity = UserEntity(
             null, true, "Tommy", "Trojan", "Computer Science",
-            null, "123456789", null
+            null, "123456789", null, null
         )
         `when`(mockAuthUseCases.signup(email, password, userEntity)).thenReturn(Completable.complete())
         register(email, password, userEntity, true)
@@ -102,7 +102,7 @@ class RegisterViewModelTest {
         val password = "password"
         val userEntity = UserEntity(
             null, true, "Tommy", "Trojan", "Computer Science",
-            null, "123456789A", null
+            null, "123456789A", null, null
         )
         `when`(mockAuthUseCases.signup(email, password, userEntity)).thenReturn(Completable.complete())
         register(email, password, userEntity, true)

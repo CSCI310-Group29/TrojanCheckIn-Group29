@@ -12,8 +12,8 @@ data class User(val id: String,
                 val major: String? = null,
                 var checkedInBuilding: Building? = null,
                 val studentId: String? = null,
+                var deleted: Boolean? = null,
                 val profilePicture: ByteArray? = null) {
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -28,6 +28,7 @@ data class User(val id: String,
         if (major != other.major) return false
         if (checkedInBuilding != other.checkedInBuilding) return false
         if (studentId != other.studentId) return false
+        if (deleted != other.deleted) return false
         if (profilePicture != null) {
             if (other.profilePicture == null) return false
             if (!profilePicture.contentEquals(other.profilePicture)) return false
@@ -45,7 +46,10 @@ data class User(val id: String,
         result = 31 * result + (major?.hashCode() ?: 0)
         result = 31 * result + (checkedInBuilding?.hashCode() ?: 0)
         result = 31 * result + (studentId?.hashCode() ?: 0)
+        result = 31 * result + (deleted?.hashCode() ?: 0)
         result = 31 * result + (profilePicture?.contentHashCode() ?: 0)
         return result
     }
+
+
 }

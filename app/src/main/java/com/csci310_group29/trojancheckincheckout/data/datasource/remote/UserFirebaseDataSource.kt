@@ -131,6 +131,19 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
         }
     }
 
+    override fun addDeleteField(id: String): Completable {
+        return Completable.create { emitter ->
+            val userRef = db.collection("users").document(id)
+            userRef.update("deleted", true)
+                .addOnSuccessListener {
+                    emitter.onComplete()
+                }
+                .addOnFailureListener { e ->
+                    emitter.onError(e)
+                }
+        }
+    }
+
     override fun create(userEntity: UserEntity): Single<UserEntity> {
         return Single.create { emitter ->
             val userRef = db.collection("users").document(userEntity.id!!)

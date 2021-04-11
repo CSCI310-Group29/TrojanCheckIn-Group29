@@ -294,12 +294,12 @@ open class UserUseCases @Inject constructor(
             User(userEntity.id!!, userEntity.isStudent,
                 authEntity.email, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
-                building, userEntity.studentId, picture)
+                building, userEntity.studentId, userEntity.deleted, picture)
         } else {
             User(userEntity.id!!, userEntity.isStudent,
                 null, userEntity.firstName,
                 userEntity.lastName, userEntity.major,
-                building, userEntity.studentId, picture)
+                building, userEntity.studentId, userEntity.deleted, picture)
         }
     }
 
@@ -323,6 +323,7 @@ open class UserUseCases @Inject constructor(
             truth.major ?: curr.major,
             truth.checkedInBuildingId ?: curr.checkedInBuildingId,
             truth.studentId ?: curr.studentId,
+            truth.deleted ?: curr.deleted,
             truth.photoUrl ?: curr.photoUrl
         )
     }
