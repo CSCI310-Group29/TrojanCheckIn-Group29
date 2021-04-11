@@ -7,6 +7,7 @@ import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
+import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.LoginViewModel
@@ -24,8 +25,8 @@ import org.mockito.runners.MockitoJUnitRunner
 import java.lang.Exception
 
 
-private val userEntity = UserEntity("12", false, "Tommy", "Trojan", "Computer Science", null, "123", null)
-private val user = User("12", false, "test@usc.edu", "Tommy", "Trojan", "Computer Science", null, "123", null)
+private val userEntity = UserEntity("12", false, "Tommy", "Trojan", "Computer Science", null, "123", false,null)
+private val user = User("12", false, "test@usc.edu", "Tommy", "Trojan", "Computer Science", null, "123", false, null)
 private val authEntity = AuthEntity("12", "test@usc.edu")
 
 @RunWith(MockitoJUnitRunner::class)
@@ -49,6 +50,9 @@ class UserUseCasesGetLoggedInUserTestTest {
     @Mock
     private lateinit var buildingDomain: BuildingUseCases
 
+    @Mock
+    private lateinit var mockVisitRepo: VisitRepository
+
     private lateinit var userUseCases: UserUseCases
 
     @Before
@@ -63,7 +67,7 @@ class UserUseCasesGetLoggedInUserTestTest {
             `when`(mockPictureRepo.get("exampleURL")).thenReturn(Single.just(profileByteArray))
         }
         `when`(mockUserRepo.update(userEntity)).thenReturn(Completable.complete())
-        userUseCases = UserUseCases(mockAuthRepo, mockUserRepo, mockPictureRepo, mockBuildingUseCases)
+        userUseCases = UserUseCases(mockAuthRepo, mockUserRepo, mockPictureRepo, mockVisitRepo, mockBuildingUseCases)
     }
 
     @Test

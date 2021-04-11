@@ -1,5 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.data.datasource.fake
 
+import android.app.VoiceInteractor
 import android.graphics.Bitmap
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.User
@@ -12,7 +13,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 
-private val userEntity = UserEntity("12", true, "Tommy", "Trojan", "Compute Science", "building", "1234", "exampleURL")
+private val userEntity = UserEntity("12", true, "Tommy", "Trojan", "Compute Science", "building", "1234", false, "exampleURL")
 
 class UserFakeDataSource @Inject constructor(): UserRepository {
     override fun get(id: String): Single<UserEntity> {
@@ -32,6 +33,14 @@ class UserFakeDataSource @Inject constructor(): UserRepository {
     }
 
     override fun delete(id: String): Completable {
+        return Completable.complete()
+    }
+
+    override fun getAll(): Single<List<UserEntity>> {
+        return Single.just(listOf(userEntity))
+    }
+
+    override fun addDeleteField(id: String): Completable {
         return Completable.complete()
     }
 
