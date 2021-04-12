@@ -82,6 +82,7 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun onManualCheckout(view: View) {
+        Log.i(TAG, viewModel.currUser.value!!.checkedInBuilding.toString())
         if (viewModel.currUser.value!!.checkedInBuilding != null) {
             val yn = arrayOf("Yes", "No")
             val builder = android.app.AlertDialog.Builder(this)

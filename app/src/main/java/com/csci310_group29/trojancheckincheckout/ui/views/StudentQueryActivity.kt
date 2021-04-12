@@ -128,7 +128,8 @@ class StudentQueryActivity : AppCompatActivity() {
         observable.subscribe(object: SingleObserver<List<User>> {
             override fun onSuccess(t: List<User>) {
                 Log.i(TAG, "${t.size}")
-                val adapter = StudentQueryAdapter(t)
+                val list = t.sortedWith(compareBy{it.lastName!!.toLowerCase()})
+                val adapter = StudentQueryAdapter(list)
                 rv.adapter = adapter
                 adapter.notifyDataSetChanged()
                 if(t.size == 0)  makeToast("No results for this query")

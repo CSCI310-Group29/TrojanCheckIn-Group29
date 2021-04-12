@@ -60,7 +60,7 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
             startActivity(v.context, i, null)
         })
 
-        val observable = userDomain.observeUserById(user.id)
+        /*val observable = userDomain.observeUserById(user.id)
         observable.subscribe(object: Observer<User> {
             override fun onComplete() { }
 
@@ -79,7 +79,7 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
             override fun onError(e: Throwable) {
 
             }
-        })
+        })*/
 
     }
 
