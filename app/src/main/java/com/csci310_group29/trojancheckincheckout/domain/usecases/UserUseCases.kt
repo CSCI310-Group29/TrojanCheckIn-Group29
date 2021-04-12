@@ -145,7 +145,7 @@ open class UserUseCases @Inject constructor(
 //                Log.d(TAG, "user exists: $userEntity")
                     if (userEntity2.checkedInBuildingId != null) {
 
-                        buildingUseCases.getBuildingInfoById(userEntity?.checkedInBuildingId!!)
+                        buildingUseCases.getBuildingInfoById(userEntity2.checkedInBuildingId!!)
                             .flatMap { building ->
 //                            Log.d(TAG, "getting user building: $building")
                                 getPictureAndUser(picture, authEntity, building, userEntity2)
