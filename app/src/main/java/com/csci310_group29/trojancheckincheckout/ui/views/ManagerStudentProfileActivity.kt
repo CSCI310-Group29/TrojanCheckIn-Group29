@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerStudentProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_manager_student_profile.*
 import javax.inject.Inject
@@ -21,8 +23,10 @@ private const val TAG = "ManagerStudentProfileActivity"
 @AndroidEntryPoint
 class ManagerStudentProfileActivity : AppCompatActivity() {
 
-//    @Inject
-//    lateinit var viewModel: ManagerStudentProfileViewModel
+    @Inject
+    lateinit var userDomain: UserUseCases
+    @Inject
+    lateinit var viewModel: ManagerStudentProfileViewModel
 
     lateinit var pb: ProgressBar;
 
@@ -36,6 +40,8 @@ class ManagerStudentProfileActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
+        Log.i(TAG, "RECEIVED studentUID : " + intent.getStringExtra("studentUID").toString())
+//        val currUser = userDomain.observeUserById(intent.getStringExtra("studentId").toString())
         val userObserver = Observer<User> { newUser ->
             Log.i(TAG, "in Manager Student Profile")
             MSPfirstName.text = newUser.firstName
@@ -55,6 +61,9 @@ class ManagerStudentProfileActivity : AppCompatActivity() {
             loadingEnd()
 
         }
+
+        viewModel.userInit(intent.getStringExtra("studentUID").toString())
+        viewModel.currUser.observe(this, userObserver)
     }
 
     fun onViewHistory(view: View) {
