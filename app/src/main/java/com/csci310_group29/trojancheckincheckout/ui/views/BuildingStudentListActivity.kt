@@ -40,8 +40,8 @@ class BuildingStudentListActivity : AppCompatActivity() {
 
         try {
             val observable = userDomain.observeUsersInBuilding(intent.getStringExtra("buildingName").toString())
-            observable.subscribe(object : SingleObserver<List<User>> {
-                override fun onSuccess(t: List<User>) {
+            observable.subscribe(object : Observer<List<User>> {
+                override fun onNext(t: List<User>) {
                     studentList = initializeList(t)
                     initializeHashmap(t)
                     adapter = BuildingStudentListAdapter(userDomain, studentList)
@@ -56,13 +56,16 @@ class BuildingStudentListActivity : AppCompatActivity() {
 
                     throw Exception("Unable to get Student List")
                 }
+
+                override fun onComplete() {
+                }
             })
         } catch(e: Exception) {
             val toast = Toast.makeText(this, "Unable to get Student List", Toast.LENGTH_SHORT)
             toast.show()
         }
 
-        rv.LayoutManager = LinearLayoutManager(this)
+        rv.layoutManager = LinearLayoutManager(this)
     }
 
     fun initializeHashmap(list: List<User>) {
@@ -88,7 +91,7 @@ class BuildingStudentListActivity : AppCompatActivity() {
                             u.profilePicture))
 
 
-            val observable = userDomain.observeUserById(u.id)
+           /* val observable = userDomain.observeUserById(u.id)
             observable.subscribe(object: Observer<List<User>> {
                 override fun onComplete() { }
                 override fun onSubscribe(d: Disposable) { }
@@ -97,7 +100,7 @@ class BuildingStudentListActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: Throwable) { }
-            })
+            })*/
 
         }
 
