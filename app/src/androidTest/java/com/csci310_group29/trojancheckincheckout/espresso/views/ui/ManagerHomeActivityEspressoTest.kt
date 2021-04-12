@@ -81,13 +81,13 @@ class ManagerHomeActivityEspressoTest {
         Intents.intended(IntentMatchers.hasComponent(ManagerUpdateCapacityActivity::class.java.name))
     }
 
-    @Test
-    fun managerSearchStart() {
-        Espresso.onView(ViewMatchers.withId(R.id.button7)).perform(ViewActions.click())
-
-        // Should start StudentHomeActivity
-        Intents.intended(IntentMatchers.hasComponent(VisitQueryActivity::class.java.name))
-    }
+//    @Test
+//    fun managerSearchStart() {
+//        Espresso.onView(ViewMatchers.withId(R.id.button7)).perform(ViewActions.click())
+//
+//        // Should start StudentHomeActivity
+//        Intents.intended(IntentMatchers.hasComponent(VisitQueryActivity::class.java.name))
+//    }
 
     @Test
     fun managerProfileStart() {
