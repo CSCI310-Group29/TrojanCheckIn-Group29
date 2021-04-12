@@ -15,7 +15,7 @@ class PictureFirebaseDataSource @Inject constructor(private val storage: Firebas
     }
 
     override fun get(url: String): Single<ByteArray> {
-        Log.d(TAG, "Getting picture")
+        Log.d(TAG, "Getting picture at url $url")
         return Single.create { emitter ->
             val storageRef = storage.reference
             val pictureRef = storageRef.child(url)

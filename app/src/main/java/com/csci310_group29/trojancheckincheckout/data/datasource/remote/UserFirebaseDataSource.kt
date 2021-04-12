@@ -238,9 +238,9 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
         if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
             return false
         if (userQuery.isCheckedIn != null) {
-            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn!!)
                 return false
-            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn!!)
                 return false
         }
         if (userQuery.major != null && userQuery.major == userEntity.major)

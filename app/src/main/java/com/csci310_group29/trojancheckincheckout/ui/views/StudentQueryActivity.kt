@@ -121,7 +121,7 @@ class StudentQueryActivity : AppCompatActivity() {
         }
 
 
-        val userQ = UserQuery(null, null,major, id,null,null)
+        val userQ = UserQuery(null, null,major, id,null,true)
         val visitQ = VisitQuery(null,null, building,null)
 
         val observable = userDomain.searchUsers(userQ, visitQ)

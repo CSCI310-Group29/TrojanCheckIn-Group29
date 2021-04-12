@@ -186,6 +186,7 @@ open class UserUseCases @Inject constructor(
                 Single emitting a list of User objects on success, or an error if an error occurred
                     during the querry
          */
+        Log.d(TAG, "search users invoked")
         if (checkVisitQuery(visitQuery)) {
             if (visitQuery.buildingName != null) {
                 return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
@@ -193,6 +194,7 @@ open class UserUseCases @Inject constructor(
                         visitQuery.buildingId = building.id
                         visitRepo.query(visitQuery)
                             .flatMap { visitEntities ->
+                                Log.d(TAG, visitEntities.toString())
                                 Observable.fromIterable(visitEntities)
                                     .flatMap { visitEntity ->
                                         Observable.just(visitEntity.userId)
@@ -205,7 +207,6 @@ open class UserUseCases @Inject constructor(
                                     .flatMap { userEntity ->
                                         getUser(null, null, true, userEntity).toObservable()
                                     }.toList()
-
                             }
                     }
             } else {
@@ -230,6 +231,7 @@ open class UserUseCases @Inject constructor(
                 .flatMapObservable { userEntities ->
                     Observable.fromIterable(userEntities)
                 }
+                .filter { userEntity -> checkUser(userEntity, userQuery)}
                 .flatMap { userEntity ->
                     getUser(null, null, true, userEntity).toObservable()
                 }.toList()
@@ -347,25 +349,27 @@ open class UserUseCases @Inject constructor(
                 Boolean that returns true whether the userQuery matches the userEntity, or
                 false otherwise
          */
-        Log.d(TAG, userQuery.toString())
+        Log.d(TAG, "filtering users")
+        var result = true
         if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
-            return false
+            result = false
         if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
-            return false
+            result = false
         if (userQuery.isCheckedIn != null) {
-            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
-                return false
-            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
-                return false
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn!!)
+                result = false
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn!!)
+                result = false
         }
         Log.d(TAG, userQuery.studentId.toString())
-        if (userQuery.major != null && userQuery.major == userEntity.major)
-            return false
+        if (userQuery.major != null && userQuery.major != userEntity.major)
+            result = false
         if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
-            return false
+            result = false
         if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
-            return false
-        return true
+            result = false
+        Log.d(TAG, result.toString())
+        return result
     }
 
     private fun checkVisitQuery(visitQuery: VisitQuery): Boolean {

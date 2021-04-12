@@ -6,6 +6,6 @@ data class UserQuery(
     val major: String?,
     val studentId: String?,
     @JvmField
-    val isCheckedIn: Boolean?,
+    var isCheckedIn: Boolean?,
     val isStudent: Boolean?
 )

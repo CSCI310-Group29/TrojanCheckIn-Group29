@@ -231,9 +231,9 @@ open class VisitUseCases @Inject constructor(
         if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
             return false
         if (userQuery.isCheckedIn != null) {
-            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn!!)
                 return false
-            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn!!)
                 return false
         }
         Log.d(TAG, userQuery.studentId.toString())
