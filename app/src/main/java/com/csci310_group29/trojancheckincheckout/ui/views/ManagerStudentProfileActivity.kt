@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
@@ -57,7 +58,10 @@ class ManagerStudentProfileActivity : AppCompatActivity() {
     }
 
     fun onViewHistory(view: View) {
-        startActivity(Intent(this, StudentHistoryActivity::class.java))
+        val i = Intent(this, StudentHistoryActivity::class.java)
+        i.putExtra("studentUID", intent.getStringExtra("studentUID"))
+//        startActivity(Intent(this, StudentProfileActivity::class.java))
+        startActivity(i)
     }
 
 

@@ -55,7 +55,7 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
 
         holder.studentProfileButton.setOnClickListener(View.OnClickListener { v->
             val i = Intent(v.context, ManagerStudentProfileActivity::class.java)
-            i.putExtra("studentId", user.studentId)
+            i.putExtra("studentUID", user.id)
 
             startActivity(v.context, i, null)
         })
