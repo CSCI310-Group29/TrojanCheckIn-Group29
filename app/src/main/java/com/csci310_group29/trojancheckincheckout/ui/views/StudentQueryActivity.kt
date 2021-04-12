@@ -121,14 +121,15 @@ class StudentQueryActivity : AppCompatActivity() {
         }
 
 
-        val userQ = UserQuery(null, null,major, id,null,null)
+        val userQ = UserQuery(null, null,major, id,null,true)
         val visitQ = VisitQuery(null,null, building,null)
 
         val observable = userDomain.searchUsers(userQ, visitQ)
         observable.subscribe(object: SingleObserver<List<User>> {
             override fun onSuccess(t: List<User>) {
                 Log.i(TAG, "${t.size}")
-                val adapter = StudentQueryAdapter(t)
+                val list = t.sortedWith(compareBy{it.lastName!!.toLowerCase()})
+                val adapter = StudentQueryAdapter(list)
                 rv.adapter = adapter
                 adapter.notifyDataSetChanged()
                 if(t.size == 0)  makeToast("No results for this query")
