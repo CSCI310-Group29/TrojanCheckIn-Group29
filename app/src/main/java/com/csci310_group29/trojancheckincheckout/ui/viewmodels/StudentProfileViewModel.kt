@@ -11,6 +11,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
+import io.reactivex.Observer
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import java.io.ByteArrayOutputStream
@@ -24,7 +25,36 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
     private var listener: ListenerRegistration? = null
 
 
-    val currUser: MutableLiveData<User> = MutableLiveData<User>(Session.user)
+    var currUser: MutableLiveData<User> = getUserData();
+
+    private fun getUserData(): MutableLiveData<User> {
+
+        return object: MutableLiveData<User>() {
+            init {
+                //val observable1 = userDomain.getCurrentlyLoggedInUser(true);
+
+
+                val observable = userDomain.observeUserById(Session.uid, true);
+                observable.subscribe(object: Observer<User> {
+                    override fun onComplete() {
+
+                    }
+
+                    override fun onSubscribe(d: Disposable) {
+
+                    }
+
+                    override fun onNext(t: User) {
+                        currUser.setValue(t);
+                    }
+
+                    override fun onError(e: Throwable) {
+
+                    }
+                })
+            }
+        }
+    }
 
 
     /*fun getUserData(): MutableLiveData<User> {
