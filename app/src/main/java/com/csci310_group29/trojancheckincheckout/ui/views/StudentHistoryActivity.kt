@@ -57,6 +57,7 @@ class StudentHistoryActivity : AppCompatActivity() {
                 }
 
                 override fun onSubscribe(d: Disposable) {
+                    Log.i(TAG, "subscribed visit history")
 
                 }
 
