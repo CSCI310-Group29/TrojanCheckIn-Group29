@@ -43,11 +43,12 @@ class StudentHistoryActivity : AppCompatActivity() {
 
             val vQuery = VisitQuery(null,null,null,null)
             Log.i(TAG, Session.uid)
-            val observable = visitDomain.getUserVisitHistory(Session.uid,vQuery)
+            Log.i(TAG, "RECEIVED student ID: " + intent.getStringExtra("studentUID").toString())
+            val observable = visitDomain.getUserVisitHistory(intent.getStringExtra("studentUID").toString(), vQuery)
             observable.subscribe(object : SingleObserver<List<Visit>> {
                 override fun onSuccess(t: List<Visit>) {
-                    Log.i(TAG, "${Session.uid}")
-                    Log.i(TAG,"${t.size}")
+                    Log.i(TAG, "success: ${Session.uid}")
+                    Log.i(TAG,"success size: ${t.size}")
                     val visits = t;
                     val adapter =
                         VisitHistoryAdapter(
