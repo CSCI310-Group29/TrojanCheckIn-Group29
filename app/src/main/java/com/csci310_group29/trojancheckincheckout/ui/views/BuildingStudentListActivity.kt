@@ -24,10 +24,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BuildingStudentListActivity : AppCompatActivity() {
 
-    companion object {
-        private val TAG = "BuildingStudentListActivity"
-    }
-
     @Inject
     lateinit var userDomain: UserUseCases
 
@@ -37,18 +33,21 @@ class BuildingStudentListActivity : AppCompatActivity() {
     lateinit var studentList: ArrayList<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "activity started")
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_building_student_list)
 
+        var TAG = "BuildingStudentListActivity"
+
         rv = findViewById<View>(R.id.buildingStudentList) as RecyclerView
 
+        Log.i(TAG, "in buildingstudentlist in " + intent.getStringExtra("buildingName").toString())
+
         try {
-            Log.d(TAG, "observe users in building")
             val observable = userDomain.observeUsersInBuilding(intent.getStringExtra("buildingName").toString())
             observable.subscribe(object : Observer<List<User>> {
                 override fun onNext(t: List<User>) {
-                    Log.d(TAG, "Found ${t.size} Users")
+                    Log.i(TAG, "size ${t.size}")
                     studentList = initializeList(t)
                     initializeHashmap(t)
                     adapter = BuildingStudentListAdapter(userDomain, studentList)
@@ -56,16 +55,17 @@ class BuildingStudentListActivity : AppCompatActivity() {
                 }
 
                 override fun onSubscribe(d: Disposable) {
-
+                    Log.i(TAG, "subscribed to building student list");
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.i(TAG, "error in building student list")
 
                     throw Exception("Unable to get Student List")
                 }
 
                 override fun onComplete() {
-                    Log.d(TAG, "observe users complete")
+                    Log.i(TAG, "completed building student list")
                 }
             })
         } catch(e: Exception) {

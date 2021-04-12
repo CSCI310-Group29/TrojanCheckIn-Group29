@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrojanCheckInCheckOut"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.views.VisitQueryActivity"
+        <activity android:name=".ui.views.StudentQueryActivity"
             android:parentActivityName=".ui.views.ManagerHomeActivity"
             android:windowSoftInputMode="adjustNothing"
             ></activity>
