@@ -1,6 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BuildingStudentListActivity : AppCompatActivity() {
 
+    companion object {
+        private val TAG = "BuildingStudentListActivity"
+    }
+
     @Inject
     lateinit var userDomain: UserUseCases
 
@@ -32,16 +37,18 @@ class BuildingStudentListActivity : AppCompatActivity() {
     lateinit var studentList: ArrayList<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
+        Log.d(TAG, "activity started")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_building_student_list)
 
         rv = findViewById<View>(R.id.buildingStudentList) as RecyclerView
 
         try {
+            Log.d(TAG, "observe users in building")
             val observable = userDomain.observeUsersInBuilding(intent.getStringExtra("buildingName").toString())
             observable.subscribe(object : Observer<List<User>> {
                 override fun onNext(t: List<User>) {
+                    Log.d(TAG, "Found ${t.size} Users")
                     studentList = initializeList(t)
                     initializeHashmap(t)
                     adapter = BuildingStudentListAdapter(userDomain, studentList)
@@ -58,6 +65,7 @@ class BuildingStudentListActivity : AppCompatActivity() {
                 }
 
                 override fun onComplete() {
+                    Log.d(TAG, "observe users complete")
                 }
             })
         } catch(e: Exception) {

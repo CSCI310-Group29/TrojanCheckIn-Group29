@@ -237,16 +237,22 @@ open class UserUseCases @Inject constructor(
     }
 
     open fun observeUsersInBuilding(buildingName: String): Observable<List<User>> {
+        Log.d(TAG, "observe users in building")
         return buildingUseCases.getBuildingInfo(buildingName)
             .flatMapObservable { building ->
                 userRepo.observeUsersInBuilding(building.id)
                     .flatMap { userEntities ->
                         Observable.fromIterable(userEntities)
+                            .flatMap { userEntity ->
+                                Log.d(TAG, "calling get picture and user for ${userEntity.id}")
+                                getPictureAndUser(true, null, building, userEntity).toObservable()
+                            }
+                            .flatMap { userEntity ->
+                                Log.d(TAG, "got user ${userEntity.id}")
+                                Observable.just(userEntity)
+                            }
+                            .toList().toObservable()
                     }
-                    .flatMap { userEntity ->
-                        getPictureAndUser(true, null, building, userEntity).toObservable()
-                    }
-                    .toList().toObservable()
             }
     }
 
