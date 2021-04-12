@@ -1,5 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -148,8 +150,7 @@ class VisitQueryActivity : AppCompatActivity() {
     fun makeToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
-
-    /*fun onClickStart(view: View) {
+    fun onClickStart(view: View) {
         if(startDate != null) {
             startDateView.text = "Start Date"
             startDateView.textSize =  24F
@@ -194,5 +195,5 @@ class VisitQueryActivity : AppCompatActivity() {
                 }
             }, startHour, startMinute, false).show()
         }, startYear, startMonth, startDay).show()
-    }*/
+    }
 }
