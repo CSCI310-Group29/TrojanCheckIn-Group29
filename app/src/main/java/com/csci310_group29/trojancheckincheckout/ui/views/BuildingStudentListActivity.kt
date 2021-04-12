@@ -1,6 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,12 +37,17 @@ class BuildingStudentListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_building_student_list)
 
+        var TAG = "BuildingStudentListActivity"
+
         rv = findViewById<View>(R.id.buildingStudentList) as RecyclerView
+
+        Log.i(TAG, "in buildingstudentlist in " + intent.getStringExtra("buildingName").toString())
 
         try {
             val observable = userDomain.observeUsersInBuilding(intent.getStringExtra("buildingName").toString())
             observable.subscribe(object : Observer<List<User>> {
                 override fun onNext(t: List<User>) {
+                    Log.i(TAG, "size ${t.size}")
                     studentList = initializeList(t)
                     initializeHashmap(t)
                     adapter = BuildingStudentListAdapter(userDomain, studentList)
@@ -49,15 +55,17 @@ class BuildingStudentListActivity : AppCompatActivity() {
                 }
 
                 override fun onSubscribe(d: Disposable) {
-
+                    Log.i(TAG, "subscribed to building student list");
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.i(TAG, "error in building student list")
 
                     throw Exception("Unable to get Student List")
                 }
 
                 override fun onComplete() {
+                    Log.i(TAG, "completed building student list")
                 }
             })
         } catch(e: Exception) {

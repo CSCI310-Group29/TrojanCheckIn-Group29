@@ -55,7 +55,7 @@ class ManagerHomeActivity : AppCompatActivity() {
     }
 
     fun onSearch(view: View) {
-        startActivity(Intent(this, VisitQueryActivity::class.java))
+        startActivity(Intent(this, StudentQueryActivity::class.java))
     }
 
 

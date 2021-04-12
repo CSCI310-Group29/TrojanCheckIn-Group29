@@ -68,8 +68,8 @@ class BuildingListAdapter @Inject constructor(private val buildingDomain: Buildi
         studentListButton.setOnClickListener(View.OnClickListener { v ->
             val i = Intent(v.context, BuildingStudentListActivity::class.java)
             i.putExtra("buildingName", building.buildingName)
-            //startActivity(v.context, i, null)
-            Toast.makeText(v.context,"Student List Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
+            startActivity(v.context, i, null)
+            //Toast.makeText(v.context,"Student List Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
         })
 
         qrCodeButton.setOnClickListener(View.OnClickListener {v ->
