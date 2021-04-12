@@ -82,7 +82,7 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun onManualCheckout(view: View) {
-        if (Session.checkedInBuilding != null) {
+        if (viewModel.currUser.value!!.checkedInBuilding != null) {
             val yn = arrayOf("Yes", "No")
             val builder = android.app.AlertDialog.Builder(this)
             builder.setTitle("Are you sure you want to check out?")
@@ -101,7 +101,7 @@ class StudentHomeActivity : AppCompatActivity() {
 
                                 override fun onError(e: Throwable) {
                                     Log.i(TAG,e.localizedMessage)
-                                    if(Session.checkedInBuilding != null) {
+                                    if(viewModel.currUser.value!!.checkedInBuilding != null) {
                                         makeToast("Unable to Checkout. Try again")
                                     } else {
                                         makeToast("Must check into building before checking out")
@@ -144,7 +144,7 @@ class StudentHomeActivity : AppCompatActivity() {
                     Log.i(TAG, "back in student home")
                     val yn = arrayOf("Yes", "No")
                     val builder = android.app.AlertDialog.Builder(this)
-                    if (Session.checkedInBuilding == null) {
+                    if (viewModel.currUser.value!!.checkedInBuilding == null) {
                         builder.setTitle("Are you sure you want to check in?")
                     } else {
                         builder.setTitle("Are you sure you want to check out?")
@@ -156,7 +156,7 @@ class StudentHomeActivity : AppCompatActivity() {
                                 val observable = viewModel.decodeQR(imgBitmap)
                                 observable.subscribe(object: SingleObserver<Visit> {
                                     override fun onSuccess(t: Visit) {
-                                        if(Session.checkedInBuilding != null) {
+                                        if(viewModel.currUser.value!!.checkedInBuilding != null) {
                                             makeToast("Successfully checked into ${t.building!!.buildingName}")
                                         } else {
                                             makeToast("Successfully checked out of ${t.building!!.buildingName}")

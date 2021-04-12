@@ -57,7 +57,7 @@ class ManagerStudentProfileActivity : AppCompatActivity() {
     }
 
     fun onViewHistory(view: View) {
-        startActivity(Intent(this, StudentProfileActivity::class.java))
+        startActivity(Intent(this, StudentHistoryActivity::class.java))
     }
 
 

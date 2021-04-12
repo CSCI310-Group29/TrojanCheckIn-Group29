@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
@@ -67,8 +68,8 @@ class BuildingListAdapter @Inject constructor(private val buildingDomain: Buildi
         studentListButton.setOnClickListener(View.OnClickListener { v ->
             val i = Intent(v.context, BuildingStudentListActivity::class.java)
             i.putExtra("buildingName", building.buildingName)
-            startActivity(v.context, i, null)
-            //Toast.makeText(v.context,"Student List Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
+            //startActivity(v.context, i, null)
+            Toast.makeText(v.context,"Student List Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
         })
 
         qrCodeButton.setOnClickListener(View.OnClickListener {v ->
