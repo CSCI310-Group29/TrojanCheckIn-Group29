@@ -382,7 +382,7 @@ open class UserUseCases @Inject constructor(
             result = false
         if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
             result = false
-        if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
+        if (userQuery.studentId != null && (!userQuery.studentId.equals(userEntity.studentId)))
             result = false
         return result
     }
