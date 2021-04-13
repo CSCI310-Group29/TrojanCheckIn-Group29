@@ -138,11 +138,6 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
                 Completable that emits completion if the capacities were successfully updated,
                 or an error if at least one of the capacities were not updated.
          */
-//        val completables: MutableList<Completable> = mutableListOf()
-//
-//        // for each building, update that building's capacity and add it to the list of completables
-//        buildings.forEach { (buildingName, capacity) -> completables.add(updateSingleBuildingCapacity(buildingName, capacity)) }
-//        return Completable.merge(completables)
         val buildingNames = buildings.keys
         return Observable.fromIterable(buildingNames)
             .flatMap { buildingName ->
