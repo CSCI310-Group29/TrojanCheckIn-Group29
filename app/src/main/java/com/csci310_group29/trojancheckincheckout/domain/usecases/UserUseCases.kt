@@ -239,13 +239,13 @@ open class UserUseCases @Inject constructor(
             }
         } else {
             return userRepo.getAll()
-                .flatMapObservable { userEntities ->
+                .flatMap { userEntities ->
                     Observable.fromIterable(userEntities)
+                        .filter { userEntity -> checkUser(userEntity, userQuery)}
+                        .flatMap { userEntity ->
+                            getUser(null, null, true, userEntity).toObservable()
+                        }.toList()
                 }
-                .filter { userEntity -> checkUser(userEntity, userQuery)}
-                .flatMap { userEntity ->
-                    getUser(null, null, true, userEntity).toObservable()
-                }.toList()
         }
     }
 
