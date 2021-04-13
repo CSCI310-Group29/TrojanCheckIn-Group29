@@ -1,5 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -99,12 +101,18 @@ class StudentQueryActivity : AppCompatActivity() {
         }
 
         val id = if(SearchId.text.toString().isBlank()) null else SearchId.text.toString()
+        val first = if(SearchFirst.text.toString().isBlank()) null else SearchFirst.text.toString()
+        val last = if(SearchLast.text.toString().isBlank()) null else SearchLast.text.toString()
         val building = if(building_spinner.selectedItem.toString() == "Building") null
         else building_spinner.selectedItem.toString()
         val major = if(major_spinner.selectedItem.toString() == "Major") null else major_spinner.selectedItem.toString()
 
         Log.i(TAG, "Id is null: " + id.isNullOrBlank().toString())
         Log.i(TAG, id.toString())
+        Log.i(TAG, "First is null: " + last.isNullOrBlank().toString())
+        Log.i(TAG, first.toString())
+        Log.i(TAG, "Last is null: " + last.isNullOrBlank().toString())
+        Log.i(TAG, last.toString())
         Log.i(TAG, "building is null: " + building.isNullOrBlank().toString())
         Log.i(TAG, building.toString())
         Log.i(TAG, "major is null: " + major.isNullOrBlank().toString())
@@ -121,7 +129,7 @@ class StudentQueryActivity : AppCompatActivity() {
         }
 
 
-        val userQ = UserQuery(null, null,major, id,null,true)
+        val userQ = UserQuery(first, last,major, id,null,true)
         val visitQ = VisitQuery(null,null, building,null)
 
         val observable = userDomain.searchUsers(userQ, visitQ)
@@ -152,10 +160,9 @@ class StudentQueryActivity : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    /*fun onClickStart(view: View) {
+    fun onClickStart(view: View) {
         if(startDate != null) {
-            startDateView.text = "Start Date"
-            startDateView.textSize =  24F
+            StartDateView.text = "Start Date"
             startDate = null
         } else {
             dateTimePicker(true)
@@ -164,8 +171,7 @@ class StudentQueryActivity : AppCompatActivity() {
 
     fun onClickEnd(view: View) {
         if(endDate != null) {
-            endDateView.text = "End Date"
-            endDateView.textSize =  24F
+            EndDateView.text = "End Date"
             endDate = null
         } else {
             dateTimePicker(false)
@@ -180,22 +186,22 @@ class StudentQueryActivity : AppCompatActivity() {
         val startHour = currentDateTime.get(Calendar.HOUR_OF_DAY)
         val startMinute = currentDateTime.get(Calendar.MINUTE)
 
-        DatePickerDialog(this@VisitQueryActivity, DatePickerDialog.OnDateSetListener { _, year, month, day ->
-            TimePickerDialog(this@VisitQueryActivity, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+        DatePickerDialog(this@StudentQueryActivity, DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            TimePickerDialog(this@StudentQueryActivity, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 val pickedDateTime = Calendar.getInstance()
                 pickedDateTime.set(year, month, day, hour, minute)
                 if(isStart) {
                     startDate = pickedDateTime.time
                     Log.i(TAG, startDate.toString())
-                    startDateView.text = startDate.toString()
-                    startDateView.textSize =  16F
+                    StartDateView.text = startDate.toString()
+                    //startDateView.textSize =  16F
                 } else {
                     endDate = pickedDateTime.time
                     Log.i(TAG,endDate.toString())
-                    endDateView.text = endDate.toString()
-                    endDateView.textSize =  16F
+                    EndDateView.text = endDate.toString()
+                    //endDateView.textSize =  16F
                 }
             }, startHour, startMinute, false).show()
         }, startYear, startMonth, startDay).show()
-    }*/
+    }
 }
