@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +23,7 @@ import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_student_profile.*
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class StudentProfileActivity : AppCompatActivity() {
@@ -40,6 +43,7 @@ class StudentProfileActivity : AppCompatActivity() {
         pb = findViewById(R.id.indeterminateBar)
         loadingEnd()
         observeViewModel()
+
     }
 
     private fun observeViewModel() {
@@ -110,15 +114,42 @@ class StudentProfileActivity : AppCompatActivity() {
     }
 
     fun onUpdateProfilePic(view: View) {
-        try {
-            val i = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            )
-            Log.i(TAG, " image pick activity start")
-            startActivityForResult(i, SELECT_PHOTO)
-        } catch(e: java.lang.Exception) {
-            Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT).show()
+
+        //initialize variables for handling user input
+        val arrayListCollection: ArrayList<CharSequence> = ArrayList()
+        var adapter: ArrayAdapter<CharSequence?>
+        var txt: EditText // user input bar
+
+        //box user will type link into
+        val editTextName1 = EditText(this)
+
+        val yn = arrayOf("Gallery", "Link")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("")
+
+        builder.setItems(yn) { dialog, which ->
+            when (which) {
+                0 -> {
+                    try {
+                        val i = Intent(
+                            Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        )
+                        Log.i(TAG, " image pick activity start")
+                        startActivityForResult(i, SELECT_PHOTO)
+                    } catch (e: java.lang.Exception) {
+                        Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                1 -> {
+
+                    val builder1 = AlertDialog.Builder(this)
+                    //set up user input box
+                    builder1.setView(editTextName1)
+
+                }
+            }
         }
     }
 
