@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -65,17 +66,64 @@ class ManagerProfileActivity : AppCompatActivity() {
     }
 
     fun onUpdateProfilePic(view: View) {
-        try {
-            val i = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            )
-            i.setType("image/*");
-            Log.i(TAG, " image pick activity start")
-            startActivityForResult(i, SELECT_PHOTO)
-        } catch(e: java.lang.Exception) {
-            Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT).show()
+        Log.i(TAG, "In onUpdateProfilePic")
+        val yn = arrayOf("Gallery", "Link")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("")
+
+        builder.setItems(yn) { dialog, which ->
+            when (which) {
+                0 -> {
+                    // Gallery
+                    Log.i(TAG, "Chose GALLERY")
+                    try {
+                        val i = Intent(
+                            Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        )
+                        Log.i(TAG, " image pick activity start")
+                        startActivityForResult(i, SELECT_PHOTO)
+                    } catch (e: java.lang.Exception) {
+                        Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                1 -> {
+                    // Link
+                    Log.i(TAG, "Chose LINK")
+                    //initialize variables for handling user input
+                    var link: String
+
+                    // Box user will type link into
+                    val editTextName1 = EditText(this)
+
+                    val builderLink = AlertDialog.Builder(this)
+                    // Set up user input box
+                    builderLink.setTitle("Choose Image Link")
+                    builderLink.setView(editTextName1)
+
+
+                    builderLink.setPositiveButton("OK") { dialog, which ->
+                        link = editTextName1.getText().toString()
+                        Log.i(TAG, "Chose LINK: " + link)
+
+                        try {
+                            viewModel.updateProfilePicWithLink(link)
+                        } catch (e: java.lang.Exception) {
+                            Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                    builderLink.setNegativeButton("Cancel") { dialog, which ->
+                        dialog.cancel()
+                        Log.i(TAG, "LINK canceled")
+                    }
+
+                    builderLink.show()
+                }
+            }
         }
+        builder.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
