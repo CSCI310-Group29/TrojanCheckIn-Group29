@@ -87,7 +87,7 @@ open class UserUseCases @Inject constructor(
 
     open fun updateProfilePictureByUrl(url: String): Single<User> {
         return pictureRepo.getFromExternalUrl(url)
-            .subscribeOn(Schedulers.newThread())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap { picture ->
                 updateProfilePicture(picture)
