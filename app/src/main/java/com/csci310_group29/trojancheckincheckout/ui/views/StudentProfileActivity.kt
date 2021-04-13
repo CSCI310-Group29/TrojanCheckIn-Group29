@@ -41,7 +41,7 @@ class StudentProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_student_profile)
 
         pb = findViewById(R.id.indeterminateBar)
-        loadingEnd()
+        loadingStart()
         observeViewModel()
 
     }
@@ -70,7 +70,7 @@ class StudentProfileActivity : AppCompatActivity() {
                 0 -> {
                     val observable = viewModel.deleteAccount()
                     observable.subscribe(
-                        object: CompletableObserver {
+                        object : CompletableObserver {
                             override fun onComplete() {
                                 goToStarter();
                             }
@@ -87,7 +87,7 @@ class StudentProfileActivity : AppCompatActivity() {
                     )
 
                 }
-                1-> {
+                1 -> {
                     dialog!!.cancel()
                 }
             }
@@ -114,15 +114,7 @@ class StudentProfileActivity : AppCompatActivity() {
     }
 
     fun onUpdateProfilePic(view: View) {
-
-        //initialize variables for handling user input
-        val arrayListCollection: ArrayList<CharSequence> = ArrayList()
-        var adapter: ArrayAdapter<CharSequence?>
-        var txt: EditText // user input bar
-
-        //box user will type link into
-        val editTextName1 = EditText(this)
-
+        Log.i(TAG, "In onUpdateProfilePic")
         val yn = arrayOf("Gallery", "Link")
         val builder = AlertDialog.Builder(this)
         builder.setTitle("")
@@ -130,6 +122,8 @@ class StudentProfileActivity : AppCompatActivity() {
         builder.setItems(yn) { dialog, which ->
             when (which) {
                 0 -> {
+                    // Gallery
+                    Log.i(TAG, "Chose GALLERY")
                     try {
                         val i = Intent(
                             Intent.ACTION_PICK,
@@ -143,14 +137,39 @@ class StudentProfileActivity : AppCompatActivity() {
                     }
                 }
                 1 -> {
+                    // Link
+                    Log.i(TAG, "Chose LINK")
+                    //initialize variables for handling user input
+                    val arrayListCollection: ArrayList<CharSequence> = ArrayList()
+                    var adapter: ArrayAdapter<CharSequence?>
+                    var txt: EditText // user input bar
+                    var link: String
 
-                    val builder1 = AlertDialog.Builder(this)
-                    //set up user input box
-                    builder1.setView(editTextName1)
+                    // Box user will type link into
+                    val editTextName1 = EditText(this)
 
+                    val builderLink = AlertDialog.Builder(this)
+                    // Set up user input box
+                    builderLink.setTitle("Choose Image Link")
+                    builderLink.setView(editTextName1)
+
+
+                    builderLink.setPositiveButton("OK") { dialog, which ->
+                        link = editTextName1.getText().toString()
+                        Log.i(TAG, "Chose LINK: " + link)
+
+
+                    }
+                    builderLink.setNegativeButton("Cancel") { dialog, which ->
+                        dialog.cancel()
+                        Log.i(TAG, "LINK canceled")
+                    }
+
+                    builderLink.show()
                 }
             }
         }
+        builder.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -158,14 +177,15 @@ class StudentProfileActivity : AppCompatActivity() {
         Log.i(TAG, "image pick activity returned")
         when(requestCode) {
             SELECT_PHOTO -> {
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     val uri = data!!.data!!
                     val stream = applicationContext.contentResolver.openInputStream(data!!.data!!)
                     val bitmap = BitmapFactory.decodeStream(stream)
                     loadingStart()
                     viewModel.updateProfilePic(bitmap)
                 } else {
-                    Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -183,7 +203,7 @@ class StudentProfileActivity : AppCompatActivity() {
         if(bArray == null) {
             return null;
         }
-        return BitmapFactory.decodeByteArray(bArray,0, bArray.size)
+        return BitmapFactory.decodeByteArray(bArray, 0, bArray.size)
     }
 
 }
