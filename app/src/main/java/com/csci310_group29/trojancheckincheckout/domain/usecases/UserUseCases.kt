@@ -207,6 +207,7 @@ open class UserUseCases @Inject constructor(
                             .flatMap { visitEntities ->
                                 Log.d(TAG, visitEntities.toString())
                                 Observable.fromIterable(visitEntities)
+                                    .filter { visitEntity -> checkVisit(visitEntity, visitQuery)}
                                     .flatMap { visitEntity ->
                                         Observable.just(visitEntity.userId)
                                     }
@@ -225,6 +226,7 @@ open class UserUseCases @Inject constructor(
                 return visitRepo.query(visitQuery)
                     .flatMap { visitEntities ->
                         Observable.fromIterable(visitEntities)
+                            .filter { visitEntity -> checkVisit(visitEntity, visitQuery) }
                             .flatMap { visitEntity ->
                                 Observable.just(visitEntity.userId)
                             }
@@ -388,11 +390,24 @@ open class UserUseCases @Inject constructor(
         return result
     }
 
+    private fun checkVisit(visitEntity: VisitEntity, visitQuery: VisitQuery): Boolean {
+        if (visitQuery.buildingId != null) {
+            if (visitEntity.buildingId != visitQuery.buildingId) return false
+        }
+        if (visitQuery.start != null) {
+            if (visitEntity.checkOut != null && visitEntity.checkOut < visitQuery.start) return false
+        }
+        if (visitQuery.end != null) {
+            if (visitEntity.checkIn != null && visitEntity.checkIn > visitQuery.end) return false
+        }
+        return true
+    }
+
     private fun checkVisitQuery(visitQuery: VisitQuery): Boolean {
         if (visitQuery.buildingName != null) return true
         if (visitQuery.buildingId != null) return true
-        if (visitQuery.startCheckIn != null) return true
-        if (visitQuery.endCheckIn != null) return true
+        if (visitQuery.start != null) return true
+        if (visitQuery.end != null) return true
         return false
     }
 }

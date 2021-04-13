@@ -128,10 +128,9 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
             .document(userId)
             .collection("visits")
             .orderBy("checkOut", Query.Direction.DESCENDING)
-        if (visitQuery.startCheckIn != null) query =
-            query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
-        if (visitQuery.endCheckIn != null) query =
-            query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
+        if (visitQuery.start != null) query =
+            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.start!!)
+        else if (visitQuery.end != null) query = query.whereLessThanOrEqualTo("checkIn", visitQuery.end!!)
         if (visitQuery.buildingId != null) query =
             query.whereEqualTo("buildingId", visitQuery.buildingId)
         return Single.create { emitter ->
@@ -210,10 +209,10 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
     override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
         Log.d(TAG, "querying for visits")
         var query = db.collectionGroup("visits")
-        if (visitQuery.startCheckIn != null) query =
-            query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
-        if (visitQuery.endCheckIn != null) query =
-            query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
+        if (visitQuery.start != null) query =
+            query.whereGreaterThanOrEqualTo("checkOut", visitQuery.start!!)
+        else if (visitQuery.end != null) query =
+            query.whereLessThanOrEqualTo("checkIn", visitQuery.end!!)
         if (visitQuery.buildingId != null) query =
             query.whereEqualTo("buildingId", visitQuery.buildingId)
         return Single.create { emitter ->

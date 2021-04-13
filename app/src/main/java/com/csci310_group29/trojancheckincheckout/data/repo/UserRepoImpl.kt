@@ -54,8 +54,4 @@ class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSour
     override fun updatePhotoUrl(id: String, url: String): Completable {
         return remoteDataSource.updatePhotoUrl(id, url)
     }
-
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<UserEntity> {
-        return remoteDataSource.query(userQuery, visitQuery)
-    }
 }
