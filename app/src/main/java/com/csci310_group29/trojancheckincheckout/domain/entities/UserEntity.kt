@@ -10,7 +10,7 @@ data class UserEntity(var id: String? = null,
                       var checkedInBuildingId: String? = null,
                       var studentId: String? = null,
                       var deleted: Boolean? = null,
-                      var photoUrl: String? = null) {
+                      var photoUrl: String? = null): Comparable<UserEntity> {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -41,6 +41,12 @@ data class UserEntity(var id: String? = null,
         result = 31 * result + (deleted?.hashCode() ?: 0)
         result = 31 * result + (photoUrl?.hashCode() ?: 0)
         return result
+    }
+
+    override fun compareTo(other: UserEntity): Int {
+        if (this.lastName == null || other.lastName == null) {
+            return 0;
+        } else return this.lastName!!.compareTo(other.lastName!!)
     }
 
 

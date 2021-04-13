@@ -215,6 +215,7 @@ open class UserUseCases @Inject constructor(
                                         userRepo.get(userId).toObservable()
                                     }
                                     .filter { userEntity -> checkUser(userEntity, userQuery)}
+                                    .sorted()
                                     .flatMap { userEntity ->
                                         getUser(null, null, true, userEntity).toObservable()
                                     }.toList()
@@ -239,13 +240,13 @@ open class UserUseCases @Inject constructor(
             }
         } else {
             return userRepo.getAll()
-                .flatMapObservable { userEntities ->
+                .flatMap { userEntities ->
                     Observable.fromIterable(userEntities)
+                        .filter { userEntity -> checkUser(userEntity, userQuery)}
+                        .flatMap { userEntity ->
+                            getUser(null, null, true, userEntity).toObservable()
+                        }.toList()
                 }
-                .filter { userEntity -> checkUser(userEntity, userQuery)}
-                .flatMap { userEntity ->
-                    getUser(null, null, true, userEntity).toObservable()
-                }.toList()
         }
     }
 
@@ -382,7 +383,7 @@ open class UserUseCases @Inject constructor(
             result = false
         if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
             result = false
-        if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
+        if (userQuery.studentId != null && (!userQuery.studentId.equals(userEntity.studentId)))
             result = false
         return result
     }
