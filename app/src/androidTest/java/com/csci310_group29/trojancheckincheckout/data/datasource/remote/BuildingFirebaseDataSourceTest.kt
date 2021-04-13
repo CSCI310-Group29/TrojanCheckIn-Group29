@@ -132,6 +132,26 @@ class BuildingFirebaseDataSourceTest {
 
     }
 
+    @Test
+    fun updateCapacitiesTest() {
+        val buildingEntities = mutableListOf<BuildingEntity>()
+        val sampleBuildingEntity = BuildingEntity(
+            "1", "A", "A", 10, 5, "ref"
+        )
+        for (capacity in 1..4) {
+            buildingEntities.add(sampleBuildingEntity)
+        }
+        val buildingCapacities = hashMapOf<String, Double>()
+        for (entity in buildingEntities) {
+            val id = createBuilding(entity)
+            buildingCapacities[id] = 20.0
+        }
+        updateCapacities(buildingCapacities)
+        for (id in buildingCapacities.keys) {
+            delete(id)
+        }
+    }
+
 
 
     private fun createBuilding(buildingEntity: BuildingEntity): String {
@@ -177,6 +197,34 @@ class BuildingFirebaseDataSourceTest {
             if (!expectError) {
                 fail("Attempted to get a building by its name. Got an exception instead: ${e.localizedMessage}")
             }
+        }
+    }
+
+    private fun updateCapacities(buildingCapacities: HashMap<String, Double>, expectError: Boolean = false) {
+        val completable = dataSource.updateCapacities(buildingCapacities)
+        try {
+            completable.blockingAwait()
+            buildingCapacities.forEach { buildingId, capacity ->
+                testCapacity(buildingId, capacity.toInt(), expectError)
+            }
+        } catch(e: Exception) {
+            if (!expectError) {
+                fail("got an exception when trying to update building capacities: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    private fun testCapacity(buildingId: String, capacity: Int, expectError: Boolean = false) {
+        val single = dataSource.get(buildingId)
+        try {
+            val buildingEntity = single.blockingGet()
+            if (expectError) {
+                assertNotEquals(capacity, buildingEntity.capacity)
+            } else {
+                assertEquals(capacity, buildingEntity.capacity)
+            }
+        } catch(e: Exception) {
+            fail("got an error when testing capacity")
         }
     }
 

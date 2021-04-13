@@ -113,7 +113,7 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.i(TAG, "Building Domain returned error")
+                    Log.i(TAG, "Building Domain returned error: ${e.localizedMessage}")
                     emitter.onError(e)
                 }
             })

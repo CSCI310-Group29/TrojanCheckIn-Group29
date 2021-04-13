@@ -126,7 +126,7 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                 .addOnSuccessListener { documentSnapshot ->
                     val buildingEntities = documentSnapshot.toObjects<BuildingEntity>()
                     if (buildingEntities.isEmpty()) {
-                        emitter.onError(FirebaseFirestoreException("no building found", FirebaseFirestoreException.Code.UNAVAILABLE))
+                        emitter.onError(FirebaseFirestoreException("building $buildingName not found", FirebaseFirestoreException.Code.UNAVAILABLE))
                     } else {
                         emitter.onSuccess(buildingEntities[0])
                     }
@@ -173,20 +173,23 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                 buildingCapacities.forEach { (buildingId, capacity) ->
                     val buildingRef = db.collection("buildings").document(buildingId)
                     val snapshot = transaction.get(buildingRef)
+                    if (snapshot.getDouble("numPeople")!! > capacity) {
+                        throw FirebaseFirestoreException("capacity is too low for building ${snapshot.getString("buildingName")}", FirebaseFirestoreException.Code.ABORTED)
+                    }
                     snapshots[snapshot] = capacity
                 }
                 snapshots.forEach { (snapshot, capacity) ->
                     val ref = snapshot.reference
-                    if (snapshot.getDouble("numPeople")!! > capacity) {
-                        throw FirebaseFirestoreException("capacity is too low", FirebaseFirestoreException.Code.ABORTED)
-                    }
-                    transaction.update(ref, "capaacity", capacity)
+                    transaction.update(ref, "capacity", capacity)
                 }
             }
                 .addOnSuccessListener { transaction ->
                     emitter.onComplete()
                 }
-                .addOnFailureListener { e -> emitter.onError(e) }
+                .addOnFailureListener { e ->
+                    Log.d(TAG, e.localizedMessage)
+                    emitter.onError(e)
+                }
         }
     }
 

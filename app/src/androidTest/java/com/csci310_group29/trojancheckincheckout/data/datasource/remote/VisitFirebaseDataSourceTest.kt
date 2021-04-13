@@ -199,8 +199,8 @@ class VisitFirebaseDataSourceTest {
         val visitId3 = runCheckInTransaction(userId, buildingId)
         val visit2 = getVisit(userId, visitId2)
         val visit3 = getVisit(userId, visitId3)
-        val visitQuery = VisitQuery(buildingId = buildingId, startCheckIn = visit2?.checkIn,
-            endCheckIn = visit3?.checkIn)
+        val visitQuery = VisitQuery(buildingId = buildingId, start = visit2?.checkIn,
+            end = visit3?.checkIn)
         searchVisits(visitQuery, 2)
         deleteVisit(userId, visitId)
         deleteVisit(userId, visitId2)
