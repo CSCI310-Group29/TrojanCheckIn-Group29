@@ -146,6 +146,33 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
         }
     }
 
+    fun updateProfilePicWithLink(link: String) {
+        Log.i(TAG, "view model received link")
+//        val byteArray = toByteArray(bitmap)
+        try {
+            val observable = userDomain.updateProfilePictureByUrl(link)
+            observable.subscribe(object: SingleObserver<User> {
+                override fun onSuccess(t: User) {
+                    Log.i(TAG, "successful upload by link")
+                    //Log.i(TAG, Session.user!!.profilePicture.toString())
+                    Session.user = t
+                    //Log.i(TAG, Session.user!!.profilePicture.toString())
+                    currUser.postValue(t)
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.i(TAG, e.localizedMessage)
+                }
+            })
+        } catch(e:Exception) {
+            Log.e(TAG, e.localizedMessage)
+        }
+    }
+
     private fun toByteArray(bitmap: Bitmap): ByteArray? {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)

@@ -145,9 +145,6 @@ class StudentProfileActivity : AppCompatActivity() {
                     // Link
                     Log.i(TAG, "Chose LINK")
                     //initialize variables for handling user input
-                    val arrayListCollection: ArrayList<CharSequence> = ArrayList()
-                    var adapter: ArrayAdapter<CharSequence?>
-                    var txt: EditText // user input bar
                     var link: String
 
                     // Box user will type link into
@@ -163,7 +160,12 @@ class StudentProfileActivity : AppCompatActivity() {
                         link = editTextName1.getText().toString()
                         Log.i(TAG, "Chose LINK: " + link)
 
-
+                        try {
+                            viewModel.updateProfilePicWithLink(link)
+                        } catch (e: java.lang.Exception) {
+                            Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                     builderLink.setNegativeButton("Cancel") { dialog, which ->
                         dialog.cancel()
