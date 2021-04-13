@@ -21,6 +21,8 @@ import com.google.rpc.context.AttributeContext
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -81,6 +83,15 @@ open class UserUseCases @Inject constructor(
                 }
             .toSingleDefault(false)
             .flatMap { getCurrentlyLoggedInUser()}
+    }
+
+    open fun updateProfilePictureByUrl(url: String): Single<User> {
+        return pictureRepo.getFromExternalUrl(url)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap { picture ->
+                updateProfilePicture(picture)
+            }
     }
 
     open fun updateProfile(userEntity: UserEntity): Single<User> {
@@ -343,7 +354,7 @@ open class UserUseCases @Inject constructor(
             Params:
                 userEntity: UserEntity object to check
                 userQuery: UserQuery object whose non-null fields will be used to check
-                    whether it matches the userEntity
+                    whether it matches the userEnti21ec4abd2cbd62e5330af29bfe74fc3beb737d58ty
 
             Returns:
                 Boolean that returns true whether the userQuery matches the userEntity, or
@@ -351,9 +362,15 @@ open class UserUseCases @Inject constructor(
          */
         Log.d(TAG, "filtering users")
         var result = true
-        if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
-            result = false
-        if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
+        if (userQuery.firstName != null) {
+            if (userEntity.firstName == null) result = false
+            else if (userQuery.firstName !in userEntity.firstName!!) result = false
+        }
+        if (userQuery.lastName != null) {
+            if (userEntity.lastName == null) result = false
+            else if (userQuery.lastName !in userEntity.lastName!!) result = false
+        }
+        if (userQuery.lastName != null && userQuery.lastName !in userEntity.lastName!!)
             result = false
         if (userQuery.isCheckedIn != null) {
             if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn!!)
@@ -361,14 +378,12 @@ open class UserUseCases @Inject constructor(
             if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn!!)
                 result = false
         }
-        Log.d(TAG, userQuery.studentId.toString())
         if (userQuery.major != null && userQuery.major != userEntity.major)
             result = false
         if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
             result = false
         if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
             result = false
-        Log.d(TAG, result.toString())
         return result
     }
 

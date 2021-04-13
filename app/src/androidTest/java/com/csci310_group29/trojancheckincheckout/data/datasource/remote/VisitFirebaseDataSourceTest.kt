@@ -56,7 +56,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun createGetDeleteTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false, "ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 2, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
@@ -71,7 +71,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun createCheckoutTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false,"ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 2, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
@@ -85,7 +85,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun getLatestVisitTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false,"ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 2, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
@@ -102,7 +102,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun checkInWithOpenCapacityTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false,"ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 2, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
@@ -118,7 +118,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun checkInAtFullCapacityTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false,"ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 10, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
@@ -133,7 +133,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun checkOutSuccessfullyTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false,"ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 8, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
@@ -150,7 +150,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun visitHistorySingleVisitTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false,"ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 8, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
@@ -167,7 +167,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun visitHistoryTwoVisitsTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false,"ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 8, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)
@@ -188,7 +188,7 @@ class VisitFirebaseDataSourceTest {
     @Test
     fun searchVisitsOneVisitTest() {
         val userEntity = UserEntity("1", true, "Tommy",
-            "Trojan", "Computer Science", null, "2", "ref")
+            "Trojan", "Computer Science", null, "2", false,"ref")
         val buildingEntity = BuildingEntity("2", "A", "A", 10, 0, "ref")
         val userId = createUser(userEntity)
         val buildingId = createBuilding(buildingEntity)

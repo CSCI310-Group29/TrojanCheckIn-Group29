@@ -1,11 +1,11 @@
 package com.csci310_group29.trojancheckincheckout.domain.query
 
 data class UserQuery(
-    val firstName: String?,
-    val lastName: String?,
-    val major: String?,
-    val studentId: String?,
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val major: String? = null,
+    val studentId: String? = null,
     @JvmField
-    var isCheckedIn: Boolean?,
-    val isStudent: Boolean?
+    var isCheckedIn: Boolean? = null,
+    val isStudent: Boolean? = null
 )
