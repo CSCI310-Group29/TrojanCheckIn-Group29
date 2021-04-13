@@ -25,7 +25,7 @@ class ManagerStudentProfileViewModel @Inject constructor(private val userDomain:
 
         return object: MutableLiveData<User>() {
             init {
-                val observable = userDomain.observeUserById(sUID, false);
+                val observable = userDomain.observeUserById(sUID, true);
                 observable.subscribe(object: Observer<User> {
                     override fun onComplete() {
 

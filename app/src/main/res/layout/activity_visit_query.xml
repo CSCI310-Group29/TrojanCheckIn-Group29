@@ -30,8 +30,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/queryRecyclerView"
-        android:layout_width="378dp"
-        android:layout_height="418dp"
+        android:layout_width="383dp"
+        android:layout_height="386dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.466"
@@ -47,10 +47,10 @@
         android:text="Search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/queryRecyclerView"
-        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.316" />
+        app:layout_constraintVertical_bias="0.364" />
 
     <EditText
         android:id="@+id/SearchId"
@@ -85,7 +85,7 @@
         android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Building"
+        android:text="First"
         app:layout_constraintBottom_toTopOf="@+id/queryRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.312"
@@ -97,7 +97,7 @@
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Checked In"
+        android:text="Last"
         app:layout_constraintBottom_toTopOf="@+id/queryRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.590"
@@ -109,7 +109,7 @@
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Checked Out"
+        android:text="Profile"
         app:layout_constraintBottom_toTopOf="@+id/queryRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.871"
@@ -119,10 +119,10 @@
 
     <TextView
         android:id="@+id/StartDateView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Time"
+        android:layout_width="92dp"
+        android:layout_height="57dp"
         android:onClick="onClickStart"
+        android:text="Start Time"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.136"
@@ -132,16 +132,16 @@
 
     <TextView
         android:id="@+id/EndDateView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="End Time"
+        android:layout_width="96dp"
+        android:layout_height="54dp"
         android:onClick="onClickEnd"
+        android:text="End Time"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.821"
+        app:layout_constraintHorizontal_bias="0.86"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.265" />
+        app:layout_constraintVertical_bias="0.267" />
 
     <EditText
         android:id="@+id/SearchFirst"
@@ -160,7 +160,7 @@
     <EditText
         android:id="@+id/SearchLast"
         android:layout_width="192dp"
-        android:layout_height="37dp"
+        android:layout_height="50dp"
         android:ems="10"
         android:hint="Last"
         android:inputType="textPersonName"
@@ -169,7 +169,7 @@
         app:layout_constraintHorizontal_bias="0.913"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.044" />
+        app:layout_constraintVertical_bias="0.026" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
