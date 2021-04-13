@@ -215,6 +215,7 @@ open class UserUseCases @Inject constructor(
                                         userRepo.get(userId).toObservable()
                                     }
                                     .filter { userEntity -> checkUser(userEntity, userQuery)}
+                                    .sorted()
                                     .flatMap { userEntity ->
                                         getUser(null, null, true, userEntity).toObservable()
                                     }.toList()
