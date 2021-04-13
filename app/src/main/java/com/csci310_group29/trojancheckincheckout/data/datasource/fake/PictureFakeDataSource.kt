@@ -11,6 +11,10 @@ class PictureFakeDataSource @Inject constructor(): PicturesRepository {
         return Single.just(ByteArray(1024))
     }
 
+    override fun getFromExternalUrl(url: String): Single<ByteArray> {
+        return Single.just(ByteArray(1024))
+    }
+
     override fun create(url: String, picture: ByteArray): Completable {
         return Completable.complete()
     }

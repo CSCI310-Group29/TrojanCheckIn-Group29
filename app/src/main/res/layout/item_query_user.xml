@@ -9,32 +9,31 @@
     >
 
     <TextView
-        android:id="@+id/querySID"
-        android:layout_width="0dp"
+        android:id="@+id/queryStudentId"
+        android:layout_width="23dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textAlignment="textStart" />
+        android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/queryBuilding"
+        android:id="@+id/queryFirstName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textAlignment="textStart" />
+        android:textAlignment="center" />
 
     <TextView
-        android:id="@+id/queryCheckIn"
-        android:layout_width="0dp"
+        android:id="@+id/queryLastName"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textAlignment="textStart" />
+        android:textAlignment="center" />
 
-    <TextView
-        android:id="@+id/queryCheckOut"
-        android:layout_width="0dp"
+    <Button
+        android:id="@+id/queryStudentProfile"
+        android:layout_width="49dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textAlignment="textStart" />
+        android:text="Profile" />
 
 
 </LinearLayout>

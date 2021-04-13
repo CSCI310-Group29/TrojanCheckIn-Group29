@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
+import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
-import com.csci310_group29.trojancheckincheckout.ui.viewmodels.VisitQueryAdapter
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentQueryAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -30,15 +32,15 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class VisitQueryActivity : AppCompatActivity() {
+class StudentQueryActivity : AppCompatActivity() {
 
-    val TAG = "VisitQueryActivity"
+    val TAG = "StudentQueryActivity"
 
     private var startDate: Date? = null
     private var endDate: Date? = null
 
     @Inject
-    lateinit var visitDomain: VisitUseCases
+    lateinit var userDomain: UserUseCases
     @Inject
     lateinit var buildingDomain: BuildingUseCases
 
@@ -99,12 +101,18 @@ class VisitQueryActivity : AppCompatActivity() {
         }
 
         val id = if(SearchId.text.toString().isBlank()) null else SearchId.text.toString()
+        val first = if(SearchFirst.text.toString().isBlank()) null else SearchFirst.text.toString()
+        val last = if(SearchLast.text.toString().isBlank()) null else SearchLast.text.toString()
         val building = if(building_spinner.selectedItem.toString() == "Building") null
         else building_spinner.selectedItem.toString()
-        val major = if(major_spinner.selectedItem.toString().isEmpty()) null else major_spinner.selectedItem.toString()
+        val major = if(major_spinner.selectedItem.toString() == "Major") null else major_spinner.selectedItem.toString()
 
         Log.i(TAG, "Id is null: " + id.isNullOrBlank().toString())
         Log.i(TAG, id.toString())
+        Log.i(TAG, "First is null: " + last.isNullOrBlank().toString())
+        Log.i(TAG, first.toString())
+        Log.i(TAG, "Last is null: " + last.isNullOrBlank().toString())
+        Log.i(TAG, last.toString())
         Log.i(TAG, "building is null: " + building.isNullOrBlank().toString())
         Log.i(TAG, building.toString())
         Log.i(TAG, "major is null: " + major.isNullOrBlank().toString())
@@ -121,14 +129,15 @@ class VisitQueryActivity : AppCompatActivity() {
         }
 
 
-        val userQ = UserQuery(null, null,major, id,null,null)
-        val visitQ = VisitQuery(null,null, building,null)
+        val userQ = UserQuery(first, last,major, id,null,true)
+        val visitQ = VisitQuery(startDate,endDate, building,null)
 
-        val observable = visitDomain.searchVisits(userQ, visitQ)
-        observable.subscribe(object: SingleObserver<List<Visit>> {
-            override fun onSuccess(t: List<Visit>) {
+        val observable = userDomain.searchUsers(userQ, visitQ)
+        observable.subscribe(object: SingleObserver<List<User>> {
+            override fun onSuccess(t: List<User>) {
                 Log.i(TAG, "${t.size}")
-                val adapter = VisitQueryAdapter(t)
+                val list = t.sortedWith(compareBy{it.lastName!!.toLowerCase()})
+                val adapter = StudentQueryAdapter(t)
                 rv.adapter = adapter
                 adapter.notifyDataSetChanged()
                 if(t.size == 0)  makeToast("No results for this query")
@@ -139,6 +148,7 @@ class VisitQueryActivity : AppCompatActivity() {
             }
 
             override fun onError(e: Throwable) {
+                Log.i(TAG, e.localizedMessage)
                 Log.i(TAG,  "error query")
             }
         })
@@ -150,10 +160,10 @@ class VisitQueryActivity : AppCompatActivity() {
     fun makeToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
+
     fun onClickStart(view: View) {
         if(startDate != null) {
-            startDateView.text = "Start Date"
-            startDateView.textSize =  24F
+            StartDateView.text = "Start Date"
             startDate = null
         } else {
             dateTimePicker(true)
@@ -162,8 +172,7 @@ class VisitQueryActivity : AppCompatActivity() {
 
     fun onClickEnd(view: View) {
         if(endDate != null) {
-            endDateView.text = "End Date"
-            endDateView.textSize =  24F
+            EndDateView.text = "End Date"
             endDate = null
         } else {
             dateTimePicker(false)
@@ -178,20 +187,20 @@ class VisitQueryActivity : AppCompatActivity() {
         val startHour = currentDateTime.get(Calendar.HOUR_OF_DAY)
         val startMinute = currentDateTime.get(Calendar.MINUTE)
 
-        DatePickerDialog(this@VisitQueryActivity, DatePickerDialog.OnDateSetListener { _, year, month, day ->
-            TimePickerDialog(this@VisitQueryActivity, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+        DatePickerDialog(this@StudentQueryActivity, DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            TimePickerDialog(this@StudentQueryActivity, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 val pickedDateTime = Calendar.getInstance()
                 pickedDateTime.set(year, month, day, hour, minute)
                 if(isStart) {
                     startDate = pickedDateTime.time
                     Log.i(TAG, startDate.toString())
-                    startDateView.text = startDate.toString()
-                    startDateView.textSize =  16F
+                    StartDateView.text = startDate.toString()
+                    //startDateView.textSize =  16F
                 } else {
                     endDate = pickedDateTime.time
                     Log.i(TAG,endDate.toString())
-                    endDateView.text = endDate.toString()
-                    endDateView.textSize =  16F
+                    EndDateView.text = endDate.toString()
+                    //endDateView.textSize =  16F
                 }
             }, startHour, startMinute, false).show()
         }, startYear, startMonth, startDay).show()

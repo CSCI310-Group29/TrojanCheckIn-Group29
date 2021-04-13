@@ -17,10 +17,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
+import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.CompletableObserver
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_manager_student_profile.*
 import kotlinx.android.synthetic.main.activity_student_profile.*
 import javax.inject.Inject
 
@@ -110,7 +112,10 @@ class StudentProfileActivity : AppCompatActivity() {
     }
 
     fun onViewHistory(view: View) {
-        startActivity(Intent(this, StudentHistoryActivity::class.java))
+        val i = Intent(this, StudentHistoryActivity::class.java)
+        i.putExtra("studentUID", Session.uid)
+//        startActivity(Intent(this, StudentHistoryActivity::class.java))
+        startActivity(i)
     }
 
     fun onUpdateProfilePic(view: View) {

@@ -76,7 +76,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                     for(barcode in barcodes) {
                         val rawValue = barcode.rawValue as String
                         Log.i(TAG, "raw value: $rawValue")
-                        if(Session.checkedInBuilding == null) {
+                        if(currUser.value!!.checkedInBuilding == null) {
                             Log.i(TAG,"checking in")
                             attemptCheckInEmit(emitter,rawValue)
                         } else {
@@ -114,7 +114,7 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
                 Log.i(TAG, e.localizedMessage)
                 Log.i(TAG, "error domain check out")
                 val wrongBuilding = Exception("Check out before you can check into another building")
-                if(Session.checkedInBuilding!!.id != buildingId) {
+                if(currUser.value!!.checkedInBuilding!!.id != buildingId) {
                     emitter.onError(wrongBuilding)
                 } else {
                     emitter.onError(Exception("Could not check out of the building"))
@@ -146,9 +146,9 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
 
     fun checkOutManual(): Single<Visit> {
         return Single.create{ emitter ->
-            if(Session.checkedInBuilding == null) emitter.onError(Exception("Not Checked In"))
+            if(currUser.value!!.checkedInBuilding == null) emitter.onError(Exception("Not Checked In"))
             else {
-                val observable = visitDomain.checkOut(Session.checkedInBuilding!!.id)
+                val observable = visitDomain.checkOut(currUser.value!!.checkedInBuilding!!.id)
                 observable.subscribe(object : SingleObserver<Visit> {
                     override fun onSuccess(t: Visit) {
                         Session.checkedInBuilding = null

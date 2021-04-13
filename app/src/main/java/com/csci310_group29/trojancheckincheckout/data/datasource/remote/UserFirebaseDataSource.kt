@@ -49,6 +49,7 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
     }
 
     override fun observeUsersInBuilding(buildingId: String): Observable<List<UserEntity>> {
+        Log.d(TAG, "observe users in building executed")
         return Observable.create { emitter ->
             val query = db.collection("users").whereEqualTo("checkedInBuildingId", buildingId)
             query.addSnapshotListener { snapshots, e ->
@@ -58,6 +59,7 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
                 }
                 if (snapshots != null) {
                     val userEntities: List<UserEntity> = snapshots.toObjects<UserEntity>()
+                    Log.d(TAG, "Found ${snapshots.size()} Users")
                     emitter.onNext(userEntities)
                 } else emitter.onError(Exception("no users found in building"))
             }
@@ -236,9 +238,9 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
         if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
             return false
         if (userQuery.isCheckedIn != null) {
-            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn!!)
                 return false
-            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn!!)
                 return false
         }
         if (userQuery.major != null && userQuery.major == userEntity.major)

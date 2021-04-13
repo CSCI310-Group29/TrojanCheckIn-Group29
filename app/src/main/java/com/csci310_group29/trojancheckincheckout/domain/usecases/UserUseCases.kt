@@ -21,6 +21,8 @@ import com.google.rpc.context.AttributeContext
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -81,6 +83,15 @@ open class UserUseCases @Inject constructor(
                 }
             .toSingleDefault(false)
             .flatMap { getCurrentlyLoggedInUser()}
+    }
+
+    open fun updateProfilePictureByUrl(url: String): Single<User> {
+        return pictureRepo.getFromExternalUrl(url)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap { picture ->
+                updateProfilePicture(picture)
+            }
     }
 
     open fun updateProfile(userEntity: UserEntity): Single<User> {
@@ -186,6 +197,7 @@ open class UserUseCases @Inject constructor(
                 Single emitting a list of User objects on success, or an error if an error occurred
                     during the querry
          */
+        Log.d(TAG, "search users invoked")
         if (checkVisitQuery(visitQuery)) {
             if (visitQuery.buildingName != null) {
                 return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
@@ -193,6 +205,7 @@ open class UserUseCases @Inject constructor(
                         visitQuery.buildingId = building.id
                         visitRepo.query(visitQuery)
                             .flatMap { visitEntities ->
+                                Log.d(TAG, visitEntities.toString())
                                 Observable.fromIterable(visitEntities)
                                     .flatMap { visitEntity ->
                                         Observable.just(visitEntity.userId)
@@ -202,10 +215,10 @@ open class UserUseCases @Inject constructor(
                                         userRepo.get(userId).toObservable()
                                     }
                                     .filter { userEntity -> checkUser(userEntity, userQuery)}
+                                    .sorted()
                                     .flatMap { userEntity ->
                                         getUser(null, null, true, userEntity).toObservable()
                                     }.toList()
-
                             }
                     }
             } else {
@@ -227,26 +240,33 @@ open class UserUseCases @Inject constructor(
             }
         } else {
             return userRepo.getAll()
-                .flatMapObservable { userEntities ->
+                .flatMap { userEntities ->
                     Observable.fromIterable(userEntities)
+                        .filter { userEntity -> checkUser(userEntity, userQuery)}
+                        .flatMap { userEntity ->
+                            getUser(null, null, true, userEntity).toObservable()
+                        }.toList()
                 }
-                .flatMap { userEntity ->
-                    getUser(null, null, true, userEntity).toObservable()
-                }.toList()
         }
     }
 
     open fun observeUsersInBuilding(buildingName: String): Observable<List<User>> {
+        Log.d(TAG, "observe users in building")
         return buildingUseCases.getBuildingInfo(buildingName)
             .flatMapObservable { building ->
                 userRepo.observeUsersInBuilding(building.id)
                     .flatMap { userEntities ->
                         Observable.fromIterable(userEntities)
+                            .flatMap { userEntity ->
+                                Log.d(TAG, "calling get picture and user for ${userEntity.id}")
+                                getPictureAndUser(true, null, building, userEntity).toObservable()
+                            }
+                            .flatMap { userEntity ->
+                                Log.d(TAG, "got user ${userEntity.id}")
+                                Observable.just(userEntity)
+                            }
+                            .toList().toObservable()
                     }
-                    .flatMap { userEntity ->
-                        getPictureAndUser(true, null, building, userEntity).toObservable()
-                    }
-                    .toList().toObservable()
             }
     }
 
@@ -335,31 +355,37 @@ open class UserUseCases @Inject constructor(
             Params:
                 userEntity: UserEntity object to check
                 userQuery: UserQuery object whose non-null fields will be used to check
-                    whether it matches the userEntity
+                    whether it matches the userEnti21ec4abd2cbd62e5330af29bfe74fc3beb737d58ty
 
             Returns:
                 Boolean that returns true whether the userQuery matches the userEntity, or
                 false otherwise
          */
-        Log.d(TAG, userQuery.toString())
-        if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
-            return false
-        if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
-            return false
-        if (userQuery.isCheckedIn != null) {
-            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
-                return false
-            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
-                return false
+        Log.d(TAG, "filtering users")
+        var result = true
+        if (userQuery.firstName != null) {
+            if (userEntity.firstName == null) result = false
+            else if (userQuery.firstName !in userEntity.firstName!!) result = false
         }
-        Log.d(TAG, userQuery.studentId.toString())
-        if (userQuery.major != null && userQuery.major == userEntity.major)
-            return false
+        if (userQuery.lastName != null) {
+            if (userEntity.lastName == null) result = false
+            else if (userQuery.lastName !in userEntity.lastName!!) result = false
+        }
+        if (userQuery.lastName != null && userQuery.lastName !in userEntity.lastName!!)
+            result = false
+        if (userQuery.isCheckedIn != null) {
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn!!)
+                result = false
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn!!)
+                result = false
+        }
+        if (userQuery.major != null && userQuery.major != userEntity.major)
+            result = false
         if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
-            return false
-        if (userQuery.studentId.toBoolean() && userQuery.studentId != userEntity.studentId)
-            return false
-        return true
+            result = false
+        if (userQuery.studentId != null && (!userQuery.studentId.equals(userEntity.studentId)))
+            result = false
+        return result
     }
 
     private fun checkVisitQuery(visitQuery: VisitQuery): Boolean {
