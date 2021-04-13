@@ -46,7 +46,7 @@ data class UserEntity(var id: String? = null,
     override fun compareTo(other: UserEntity): Int {
         if (this.lastName == null || other.lastName == null) {
             return 0;
-        } else return this.lastName!!.compareTo(other.lastName!!)
+        } else return this.lastName!!.toLowerCase().compareTo(other.lastName!!.toLowerCase())
     }
 
 
