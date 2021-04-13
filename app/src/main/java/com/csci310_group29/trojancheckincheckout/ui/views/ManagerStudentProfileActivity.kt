@@ -54,7 +54,7 @@ class ManagerStudentProfileActivity : AppCompatActivity() {
                 if (newUser.checkedInBuilding != null) {
                     MSPcurrBuilding.text = newUser.checkedInBuilding!!.buildingName
                 } else {
-                    MSPcurrBuilding.text = ""
+                    MSPcurrBuilding.text = "Not Checked In"
                 }
             }
             MSPsProfilePic.setImageBitmap(toBitmap(newUser.profilePicture))

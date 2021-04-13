@@ -4,6 +4,7 @@ package com.csci310_group29.trojancheckincheckout.ui.views
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,11 +28,14 @@ class StudentHistoryActivity : AppCompatActivity() {
     @Inject
     lateinit var visitDomain: VisitUseCases
 
+    var pb: ProgressBar? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_history)
 
         val rv = findViewById<View>(R.id.visitHistory) as RecyclerView
+        pb = findViewById<ProgressBar>(R.id.indeterminateBarHistory)
 
         Log.i(TAG, "in student history")
         Log.i(TAG, Session.uid)
@@ -55,9 +59,11 @@ class StudentHistoryActivity : AppCompatActivity() {
                             visits
                         )
                     rv.adapter = adapter
+                    loadingEnd()
                 }
 
                 override fun onSubscribe(d: Disposable) {
+                    loadingStart()
                     Log.i(TAG, "subscribed visit history")
 
                 }
@@ -75,6 +81,14 @@ class StudentHistoryActivity : AppCompatActivity() {
         rv.layoutManager = LinearLayoutManager(this)
 
 
+    }
+
+    fun loadingStart() {
+        pb!!.visibility = ProgressBar.VISIBLE
+    }
+
+    fun loadingEnd() {
+        pb!!.visibility = ProgressBar.INVISIBLE
     }
 
 }
