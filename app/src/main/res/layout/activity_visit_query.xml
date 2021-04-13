@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.views.VisitQueryActivity">
+    tools:context=".ui.views.StudentQueryActivity">
 
     <Spinner
         android:id="@+id/major_spinner"
@@ -30,8 +30,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/queryRecyclerView"
-        android:layout_width="383dp"
-        android:layout_height="386dp"
+        android:layout_width="385dp"
+        android:layout_height="353dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.466"
@@ -49,8 +49,8 @@
         app:layout_constraintEnd_toEndOf="@id/queryRecyclerView"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.364" />
+        app:layout_constraintTop_toBottomOf="@+id/SearchId"
+        app:layout_constraintVertical_bias="0.21" />
 
     <EditText
         android:id="@+id/SearchId"
@@ -74,8 +74,8 @@
         android:layout_marginTop="68dp"
         android:text="Student ID"
         app:layout_constraintBottom_toTopOf="@+id/queryRecyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.046"
+        app:layout_constraintEnd_toStartOf="@+id/textView12"
+        app:layout_constraintHorizontal_bias="0.29"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button6"
         app:layout_constraintVertical_bias="1.0"
