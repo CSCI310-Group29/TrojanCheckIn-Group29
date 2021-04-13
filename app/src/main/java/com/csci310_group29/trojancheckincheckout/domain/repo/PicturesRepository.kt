@@ -16,6 +16,8 @@ interface PicturesRepository {
      */
     fun get(url: String): Single<ByteArray>
 
+    fun getFromExternalUrl(url: String): Single<ByteArray>
+
     /*
     Creates a picture in a specified location in online storage
 

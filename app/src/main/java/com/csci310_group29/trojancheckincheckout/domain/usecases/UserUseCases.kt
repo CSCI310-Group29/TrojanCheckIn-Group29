@@ -21,6 +21,8 @@ import com.google.rpc.context.AttributeContext
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -81,6 +83,15 @@ open class UserUseCases @Inject constructor(
                 }
             .toSingleDefault(false)
             .flatMap { getCurrentlyLoggedInUser()}
+    }
+
+    open fun updateProfilePictureByUrl(url: String): Single<User> {
+        return pictureRepo.getFromExternalUrl(url)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap { picture ->
+                updateProfilePicture(picture)
+            }
     }
 
     open fun updateProfile(userEntity: UserEntity): Single<User> {
