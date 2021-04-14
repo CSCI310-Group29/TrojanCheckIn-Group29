@@ -44,3 +44,7 @@ Note: May need to take a picture of the QR code to scan with computer webcam and
 CSV should be formatted as  
 ```[buildling],[new capacity]```  
 with each building-capacity pair on a new line. 
+
+### Updating Profile Pictures
+When updating profile picture with a link, the only extensions the image of the link can have are "png", "jpeg", "tiff", or "jpg".
+Otherwise the link is invalid.
