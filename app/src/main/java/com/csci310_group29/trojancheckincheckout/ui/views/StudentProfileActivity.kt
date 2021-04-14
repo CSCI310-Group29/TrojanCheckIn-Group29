@@ -21,6 +21,7 @@ import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.CompletableObserver
+import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_manager_student_profile.*
 import kotlinx.android.synthetic.main.activity_student_profile.*
@@ -170,7 +171,18 @@ class StudentProfileActivity : AppCompatActivity() {
                         Log.i(TAG, "Chose LINK: " + link)
 
                         try {
-                            viewModel.updateProfilePicWithLink(link)
+                            val observable = viewModel.updateProfilePicWithLink(link)
+                            observable.subscribe(object: SingleObserver<User> {
+                                override fun onSuccess(t: User) {
+                                }
+
+                                override fun onSubscribe(d: Disposable) {
+                                }
+
+                                override fun onError(e: Throwable) {
+                                    makeToast("Invalid link. Unable to update profile picture")
+                                }
+                            })
                         } catch (e: java.lang.Exception) {
                             Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT)
                                 .show()

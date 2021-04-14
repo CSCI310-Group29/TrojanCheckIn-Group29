@@ -7,10 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
-import io.reactivex.Completable
-import io.reactivex.CompletableObserver
-import io.reactivex.Observer
-import io.reactivex.SingleObserver
+import io.reactivex.*
 import io.reactivex.disposables.Disposable
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
@@ -99,31 +96,36 @@ class ManagerProfileViewModel @Inject constructor(private val userDomain: UserUs
         }
     }
 
-    fun updateProfilePicWithLink(link: String) {
-        Log.i(TAG, "view model received link")
+    fun updateProfilePicWithLink(link: String): Single<User> {
+        return Single.create { emitter ->
+            Log.i(TAG, "view model received link")
 //        val byteArray = toByteArray(bitmap)
-        try {
-            val observable = userDomain.updateProfilePictureByUrl(link)
-            observable.subscribe(object: SingleObserver<User> {
-                override fun onSuccess(t: User) {
-                    Log.i(TAG, "successful upload by link")
-                    //Log.i(TAG, Session.user!!.profilePicture.toString())
-                    Session.user = t
-                    //Log.i(TAG, Session.user!!.profilePicture.toString())
-                    currUser.postValue(t)
-                }
+            try {
+                val observable = userDomain.updateProfilePictureByUrl(link)
+                observable.subscribe(object: SingleObserver<User> {
+                    override fun onSuccess(t: User) {
+                        Log.i(TAG, "successful upload by link")
+                        //Log.i(TAG, Session.user!!.profilePicture.toString())
+                        Session.user = t
+                        //Log.i(TAG, Session.user!!.profilePicture.toString())
+                        currUser.postValue(t)
+                        emitter.onSuccess(t)
+                    }
 
-                override fun onSubscribe(d: Disposable) {
+                    override fun onSubscribe(d: Disposable) {
 
-                }
+                    }
 
-                override fun onError(e: Throwable) {
-                    Log.i(TAG, e.localizedMessage)
-                }
-            })
-        } catch(e:Exception) {
-            Log.e(TAG, e.localizedMessage)
+                    override fun onError(e: Throwable) {
+                        emitter.onError(e)
+                        Log.i(TAG, e.localizedMessage)
+                    }
+                })
+            } catch(e:Exception) {
+                Log.e(TAG, e.localizedMessage)
+            }
         }
+
     }
 
     private fun toByteArray(bitmap: Bitmap): ByteArray? {
