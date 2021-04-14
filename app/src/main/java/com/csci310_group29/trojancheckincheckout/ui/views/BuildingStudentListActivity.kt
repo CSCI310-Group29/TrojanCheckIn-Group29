@@ -3,6 +3,7 @@ package com.csci310_group29.trojancheckincheckout.ui.views
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,8 @@ class BuildingStudentListActivity : AppCompatActivity() {
     lateinit var adapter: BuildingStudentListAdapter
     lateinit var studentList: ArrayList<User>
 
+    var pb: ProgressBar? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -40,6 +43,7 @@ class BuildingStudentListActivity : AppCompatActivity() {
         var TAG = "BuildingStudentListActivity"
 
         rv = findViewById<View>(R.id.buildingStudentList) as RecyclerView
+        pb = findViewById<ProgressBar>(R.id.indeterminateBarBuilding)
 
         Log.i(TAG, "in buildingstudentlist in " + intent.getStringExtra("buildingName").toString())
 
@@ -47,6 +51,7 @@ class BuildingStudentListActivity : AppCompatActivity() {
             val observable = userDomain.observeUsersInBuilding(intent.getStringExtra("buildingName").toString())
             observable.subscribe(object : Observer<List<User>> {
                 override fun onNext(t: List<User>) {
+                    loadingEnd()
                     Log.i(TAG, "size ${t.size}")
                     studentList = initializeList(t)
                     initializeHashmap(t)
@@ -55,6 +60,7 @@ class BuildingStudentListActivity : AppCompatActivity() {
                 }
 
                 override fun onSubscribe(d: Disposable) {
+                    loadingStart()
                     Log.i(TAG, "subscribed to building student list");
                 }
 
@@ -82,6 +88,14 @@ class BuildingStudentListActivity : AppCompatActivity() {
             map.put(b.id, i)
             i++
         }
+    }
+
+    fun loadingStart() {
+        pb!!.visibility = ProgressBar.VISIBLE
+    }
+
+    fun loadingEnd() {
+        pb!!.visibility = ProgressBar.INVISIBLE
     }
 
     fun initializeList(list: List<User>): ArrayList<User> {
