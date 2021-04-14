@@ -38,3 +38,8 @@ App should build and open in the Android emulator shortly.
 
 Database will be initialized with buildings and capacities.  
 Note: May need to take a picture of the QR code to scan with computer webcam and sign in
+
+##### CSV Format for Updating Building Capacity
+CSV should be formatted as  
+```[buildling],[new capacity]```  
+with each building-capacity pair on a new line. 
