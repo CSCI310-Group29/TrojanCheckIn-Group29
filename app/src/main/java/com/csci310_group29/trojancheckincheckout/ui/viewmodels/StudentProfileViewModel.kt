@@ -116,31 +116,38 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
     }
 
 
-    fun updateProfilePic(bitmap: Bitmap) {
-        Log.i(TAG, "view model received bitmap")
-        val byteArray = toByteArray(bitmap)
-        try {
-            val observable = userDomain.updateProfilePicture(byteArray!!)
-            observable.subscribe(object: SingleObserver<User> {
-                override fun onSuccess(t: User) {
-                    Log.i(TAG, "successful upload")
-                    //Log.i(TAG, Session.user!!.profilePicture.toString())
-                    Session.user = t
-                    //Log.i(TAG, Session.user!!.profilePicture.toString())
-                    currUser.postValue(t)
-                }
+    fun updateProfilePic(bitmap: Bitmap): Single<User> {
+        return Single.create { emitter ->
+            Log.i(TAG, "view model received bitmap")
 
-                override fun onSubscribe(d: Disposable) {
+            try {
+                val byteArray = toByteArray(bitmap)
+                val observable = userDomain.updateProfilePicture(byteArray!!)
+                observable.subscribe(object: SingleObserver<User> {
+                    override fun onSuccess(t: User) {
+                        Log.i(TAG, "successful upload")
+                        //Log.i(TAG, Session.user!!.profilePicture.toString())
+                        Session.user = t
+                        //Log.i(TAG, Session.user!!.profilePicture.toString())
+                        currUser.postValue(t)
+                        emitter.onSuccess(t)
+                    }
 
-                }
+                    override fun onSubscribe(d: Disposable) {
 
-                override fun onError(e: Throwable) {
-                    Log.i(TAG, e.localizedMessage)
-                }
-            })
-        } catch(e:Exception) {
-            Log.e(TAG, e.localizedMessage)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        emitter.onError(e)
+                        Log.i(TAG, e.localizedMessage)
+                    }
+                })
+            } catch(e:Exception) {
+                Log.e(TAG, e.localizedMessage)
+                throw e
+            }
         }
+
     }
 
     fun updateProfilePicWithLink(link: String): Single<User> {
@@ -177,11 +184,15 @@ class StudentProfileViewModel @Inject constructor(private val userDomain: UserUs
 
 
     private fun toByteArray(bitmap: Bitmap): ByteArray? {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val data = baos.toByteArray()
+        try {
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val data = baos.toByteArray()
 
-        return data
+            return data
+        } catch(error: Exception) {
+            throw error
+        }
 
     }
 

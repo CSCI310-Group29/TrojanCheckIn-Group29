@@ -209,8 +209,26 @@ class StudentProfileActivity : AppCompatActivity() {
                     val uri = data!!.data!!
                     val stream = applicationContext.contentResolver.openInputStream(data!!.data!!)
                     val bitmap = BitmapFactory.decodeStream(stream)
-                    loadingStart()
-                    viewModel.updateProfilePic(bitmap)
+
+                    try {
+                        val observable = viewModel.updateProfilePic(bitmap)
+                        observable.subscribe(object : SingleObserver<User> {
+                            override fun onSuccess(t: User) {
+                                loadingEnd()
+                            }
+
+                            override fun onSubscribe(d: Disposable) {
+                                loadingStart()
+                            }
+
+                            override fun onError(e: Throwable) {
+                                loadingEnd()
+                                makeToast("Invalid image. Unable to update profile picture")
+                            }
+                        })
+                    } catch(e: Exception) {
+                        makeToast("Invalid image. Unable to update profile picture")
+                    }
                 } else {
                     Toast.makeText(this, "Unable to update profile picture", Toast.LENGTH_SHORT)
                         .show()
