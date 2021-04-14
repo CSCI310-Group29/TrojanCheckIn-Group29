@@ -125,9 +125,6 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
     }
 
     open fun updateMultipleBuildingCapacities(buildings: HashMap<String, Double>): Completable {
-        TODO("This function does not meet the requirements." +
-                " If any of the updates to one of a building's " +
-                "capacity fails, none of the building capacities should be updated")
         /*
         Updates the capacity of multiple buildings. If the number of students in any of the
         requested buildings is less than the building's new respective capacity, then that building's
@@ -141,11 +138,15 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
                 Completable that emits completion if the capacities were successfully updated,
                 or an error if at least one of the capacities were not updated.
          */
-        val completables: MutableList<Completable> = mutableListOf()
-
-        // for each building, update that building's capacity and add it to the list of completables
-        buildings.forEach { (buildingName, capacity) -> completables.add(updateSingleBuildingCapacity(buildingName, capacity)) }
-        return Completable.merge(completables)
+        val buildingNames = buildings.keys
+        return Observable.fromIterable(buildingNames)
+            .flatMap { buildingName ->
+                buildingRepo.getByName(buildingName).toObservable()
+            }
+            .collectInto(hashMapOf<String, Double>(), { map, buildingEntity ->
+                map[buildingEntity.id!!] = buildings[buildingEntity.buildingName]!!
+            })
+            .flatMapCompletable { buildingIdCapacities ->  buildingRepo.updateCapacities(buildingIdCapacities) }
     }
 
     open fun getQrCode(buildingName: String): Single<ByteArray> {

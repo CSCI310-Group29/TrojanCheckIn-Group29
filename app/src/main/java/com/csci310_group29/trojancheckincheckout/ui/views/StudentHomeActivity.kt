@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.models.Visit
@@ -21,6 +20,7 @@ import io.reactivex.CompletableObserver
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_student_home.*
+import java.util.jar.Attributes
 import javax.inject.Inject
 
 private const val TAG = "StudentHomeActivity"
@@ -42,9 +42,14 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        val userObserver = Observer<User> { newUser ->
+        val userObserver = androidx.lifecycle.Observer<User> { newUser ->
             Log.i(TAG, "in Student Home")
             Name.text = newUser.firstName
+            if(newUser.checkedInBuilding == null) {
+                currBuilding.text = "None"
+            } else {
+                currBuilding.text = newUser.checkedInBuilding!!.buildingName
+            }
 
         }
 
@@ -77,26 +82,46 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun onManualCheckout(view: View) {
-        val observable = viewModel.checkOutManual()
-        observable.subscribe(
-            object: SingleObserver<Visit> {
-                override fun onSuccess(t: Visit) {
-                    makeToast("Checked out of ${t.building!!.buildingName}")
-                }
+        Log.i(TAG, viewModel.currUser.value!!.checkedInBuilding.toString())
+        if (viewModel.currUser.value!!.checkedInBuilding != null) {
+            val yn = arrayOf("Yes", "No")
+            val builder = android.app.AlertDialog.Builder(this)
+            builder.setTitle("Are you sure you want to check out?")
+            builder.setItems(yn) { dialog, which ->
+                when(which) {
+                    0 -> {
+                        val observable = viewModel.checkOutManual()
+                        observable.subscribe(
+                            object: SingleObserver<Visit> {
+                                override fun onSuccess(t: Visit) {
+                                    makeToast("Checked out of ${t.building!!.buildingName}")
+                                }
 
-                override fun onSubscribe(d: Disposable) {
-                }
+                                override fun onSubscribe(d: Disposable) {
+                                }
 
-                override fun onError(e: Throwable) {
-                    Log.i(TAG,e.localizedMessage)
-                    if(Session.checkedInBuilding != null) {
-                        makeToast("Unable to Checkout. Try again")
-                    } else {
-                        makeToast("Must check into building before checking out")
+                                override fun onError(e: Throwable) {
+                                    Log.i(TAG,e.localizedMessage)
+                                    if(viewModel.currUser.value!!.checkedInBuilding != null) {
+                                        makeToast("Unable to Checkout. Try again")
+                                    } else {
+                                        makeToast("Must check into building before checking out")
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    1-> {
+                        dialog.cancel()
                     }
                 }
+
             }
-        )
+            builder.show()
+        } else {
+            makeToast("Must check into building before checking out")
+        }
+
     }
 
     fun onScan(view: View) {
@@ -117,25 +142,46 @@ class StudentHomeActivity : AppCompatActivity() {
             REQUEST_IMAGE_CAPTURE -> {
                 if(resultCode == Activity.RESULT_OK) {
                     val imgBitmap = data!!.extras!!.get("data") as Bitmap
-                    val observable = viewModel.decodeQR(imgBitmap)
-                    observable.subscribe(object: SingleObserver<Visit> {
-                        override fun onSuccess(t: Visit) {
-                            if(Session.checkedInBuilding != null) {
-                                makeToast("Successfully checked into ${t.building!!.buildingName}")
-                            } else {
-                                makeToast("Successfully checked out of ${t.building!!.buildingName}")
+                    Log.i(TAG, "back in student home")
+                    val yn = arrayOf("Yes", "No")
+                    val builder = android.app.AlertDialog.Builder(this)
+                    if (viewModel.currUser.value!!.checkedInBuilding == null) {
+                        builder.setTitle("Are you sure you want to check in?")
+                    } else {
+                        builder.setTitle("Are you sure you want to check out?")
+                    }
+                    builder.setItems(yn) {dialog, which ->
+                        when(which) {
+                            0 -> {
+                                Log.i(TAG,"yes checkin/out")
+                                val observable = viewModel.decodeQR(imgBitmap)
+                                observable.subscribe(object: SingleObserver<Visit> {
+                                    override fun onSuccess(t: Visit) {
+                                        if(viewModel.currUser.value!!.checkedInBuilding != null) {
+                                            makeToast("Successfully checked into ${t.building!!.buildingName}")
+                                        } else {
+                                            makeToast("Successfully checked out of ${t.building!!.buildingName}")
+                                        }
+                                    }
+
+                                    override fun onSubscribe(d: Disposable) {
+
+                                    }
+
+                                    override fun onError(e: Throwable) {
+                                        Log.i(TAG,"Error return check in/out activity")
+                                        makeToast(e.localizedMessage)
+                                    }
+                                })
                             }
-                        }
+                            1 -> {
+                                dialog!!.cancel()
+                            }
 
-                        override fun onSubscribe(d: Disposable) {
-
                         }
+                    }
+                    builder.show()
 
-                        override fun onError(e: Throwable) {
-                            Log.i(TAG,"Error return check in/out activity")
-                            makeToast(e.localizedMessage)
-                        }
-                    })
                 }
             }
         }

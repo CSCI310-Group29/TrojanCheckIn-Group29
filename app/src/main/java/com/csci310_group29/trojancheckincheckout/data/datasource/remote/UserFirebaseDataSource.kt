@@ -49,6 +49,7 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
     }
 
     override fun observeUsersInBuilding(buildingId: String): Observable<List<UserEntity>> {
+        Log.d(TAG, "observe users in building executed")
         return Observable.create { emitter ->
             val query = db.collection("users").whereEqualTo("checkedInBuildingId", buildingId)
             query.addSnapshotListener { snapshots, e ->
@@ -58,6 +59,7 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
                 }
                 if (snapshots != null) {
                     val userEntities: List<UserEntity> = snapshots.toObjects<UserEntity>()
+                    Log.d(TAG, "Found ${snapshots.size()} Users")
                     emitter.onNext(userEntities)
                 } else emitter.onError(Exception("no users found in building"))
             }
@@ -188,65 +190,5 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
                 .addOnSuccessListener { emitter.onComplete() }
                 .addOnFailureListener { exception -> emitter.onError(exception)}
         }
-    }
-
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<UserEntity> {
-        var query = db.collectionGroup("visits")
-        if (visitQuery.startCheckIn != null) query =
-            query.whereGreaterThanOrEqualTo("checkIn", visitQuery.startCheckIn!!)
-        if (visitQuery.endCheckIn != null) query =
-            query.whereLessThanOrEqualTo("checkIn", visitQuery.endCheckIn!!)
-        if (visitQuery.buildingId != null) query =
-            query.whereEqualTo("buildingId", visitQuery.buildingId)
-        return Observable.create { emitter ->
-            query.get()
-                .addOnSuccessListener { snapshots ->
-                    Observable.fromIterable(snapshots)
-                        .concatMap { visitSnap ->
-                            val userRef = visitSnap.reference.parent
-                            Observable.create { emitter2: ObservableEmitter<UserEntity> ->
-                                userRef.get()
-                                    .addOnSuccessListener { userSnap ->
-                                        val userEntities = userSnap.toObjects<UserEntity>()
-                                        if (userEntities.isNotEmpty()) {
-                                            val userEntity = userSnap.toObjects<UserEntity>()[0]
-                                            emitter2.onNext(userEntity)
-                                            emitter2.onComplete()
-                                        }
-                                    }
-                                    .addOnFailureListener { e -> emitter.onError(e) }
-                            }
-                        }
-                        .filter { userEntity ->
-                            checkUser(userEntity, userQuery)
-                        }
-                        .flatMapCompletable { userEntity ->
-                            emitter.onNext(userEntity)
-                            Completable.complete()
-                        }.doOnComplete { emitter.onComplete() }
-                        .doOnError { e -> emitter.onError(e) }
-                }
-                .addOnFailureListener { e -> emitter.onError(e) }
-        }
-    }
-
-    private fun checkUser(userEntity: UserEntity, userQuery: UserQuery): Boolean {
-        if (userQuery.firstName != null && userQuery.firstName != userEntity.firstName)
-            return false
-        if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
-            return false
-        if (userQuery.isCheckedIn != null) {
-            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
-                return false
-            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
-                return false
-        }
-        if (userQuery.major != null && userQuery.major == userEntity.major)
-            return false
-        if (userQuery.isStudent != null && userQuery.isStudent != userEntity.isStudent)
-            return false
-        if (userQuery.studentId != null && userQuery.studentId != userEntity.studentId)
-            return false
-        return true
     }
 }

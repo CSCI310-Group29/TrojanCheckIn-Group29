@@ -1,6 +1,5 @@
 package com.csci310_group29.trojancheckincheckout.espresso.views.ui
 
-import android.content.ClipData.Item
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario

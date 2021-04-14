@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.models.MutableBuilding
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
+import com.csci310_group29.trojancheckincheckout.ui.views.BuildingStudentListActivity
 import com.csci310_group29.trojancheckincheckout.ui.views.QrCodeActivity
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -28,6 +30,7 @@ class BuildingListAdapter @Inject constructor(private val buildingDomain: Buildi
         val buildingNameText = itemView.findViewById<TextView>(R.id.buildingName)
         val numOfPeopleText = itemView.findViewById<TextView>(R.id.numOfPeople)
         val numOfCapacityText = itemView.findViewById<TextView>(R.id.numOfCapacity)
+        val studentListButton = itemView.findViewById<Button>(R.id.student_list)
         val qrCodeButton = itemView.findViewById<Button>(R.id.qr_code)
 
     }
@@ -56,14 +59,24 @@ class BuildingListAdapter @Inject constructor(private val buildingDomain: Buildi
         val numOfCap = buildingHolding.numOfCapacityText
         numOfCap.setText(building.capacity.toString())
 
-        val button = buildingHolding.qrCodeButton
-        button.text = "Qr Code"
+        val studentListButton = buildingHolding.studentListButton
+        studentListButton.text = "Students"
 
-        button.setOnClickListener(View.OnClickListener {v ->
+        val qrCodeButton = buildingHolding.qrCodeButton
+        qrCodeButton.text = "Qr Code"
+
+        studentListButton.setOnClickListener(View.OnClickListener { v ->
+            val i = Intent(v.context, BuildingStudentListActivity::class.java)
+            i.putExtra("buildingName", building.buildingName)
+            startActivity(v.context, i, null)
+            //Toast.makeText(v.context,"Student List Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
+        })
+
+        qrCodeButton.setOnClickListener(View.OnClickListener {v ->
             val i = Intent(v.context, QrCodeActivity::class.java)
             i.putExtra("buildingName", building.buildingName)
             startActivity(v.context,i,null)
-            //Toast.makeText(v.context,"Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(v.context,"QR Code Button clicked: ${building.buildingName}", Toast.LENGTH_SHORT).show()
         })
 
         val observable = buildingDomain.observeBuildingById(building.id)

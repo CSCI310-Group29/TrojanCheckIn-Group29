@@ -6,6 +6,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import io.reactivex.Completable
 import io.reactivex.Single
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.URL
 import javax.inject.Inject
 
 class PictureFirebaseDataSource @Inject constructor(private val storage: FirebaseStorage): PicturesRepository {
@@ -15,7 +18,7 @@ class PictureFirebaseDataSource @Inject constructor(private val storage: Firebas
     }
 
     override fun get(url: String): Single<ByteArray> {
-        Log.d(TAG, "Getting picture")
+        Log.d(TAG, "Getting picture at url $url")
         return Single.create { emitter ->
             val storageRef = storage.reference
             val pictureRef = storageRef.child(url)
@@ -30,6 +33,32 @@ class PictureFirebaseDataSource @Inject constructor(private val storage: Firebas
                     Log.d(TAG, e.message.toString())
                     emitter.onError(e)
                 }
+        }
+    }
+
+    override fun getFromExternalUrl(url: String): Single<ByteArray> {
+        return Single.create { emitter ->
+            try {
+                val urlPath = URL(url)
+                val split = urlPath.path.split(".")
+                val extension = split[split.size - 1]
+                if (extension !in setOf<String>("jpeg", "tiff", "png", "jpg")) {
+                    emitter.onError(Exception("invalid image extension"))
+                } else {
+                    val buffer = ByteArrayOutputStream()
+                    val inputStream = urlPath.openStream()
+                    val data = ByteArray(4096)
+                    var n = inputStream.read(data, 0, data.size)
+                    while (n != -1) {
+                        buffer.write(data, 0, n)
+                        n = inputStream.read(data, 0, data.size)
+                    }
+                    emitter.onSuccess(buffer.toByteArray())
+                }
+            } catch(e: Exception) {
+                Log.d(TAG, e.toString())
+                emitter.onError(e)
+            }
         }
     }
 

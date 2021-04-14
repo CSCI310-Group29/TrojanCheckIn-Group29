@@ -106,67 +106,6 @@ open class VisitUseCases @Inject constructor(
             })
     }
 
-    open fun searchVisits(userQuery: UserQuery, visitQuery: VisitQuery): Single<List<Visit>> {
-        /*
-        Searches visits according to the visit fields specified by the visitQuery, and the user fields
-        according to the userQuery. The visits will be queried first, and then they will be filtered
-        based on their corresponding users in the userQuery.
-
-            Params:
-                userQuery: UserQuery specifying user fields to query. Any fields that are not null
-                    will be queried for.
-                visitQuery: VisitQuery specifying visit fields to query. Any fields that are not
-                    null will be queried for.
-
-            Returns:
-                Single that emits a list of visits if the query was successful, or an error otherwise
-         */
-        if (visitQuery.buildingName != null) {
-            return buildingUseCases.getBuildingInfo(visitQuery.buildingName!!)
-                .flatMap { building ->
-                    visitQuery.buildingId = building.id
-                    visitRepo.query(visitQuery)
-                        .flatMap { visitEntities ->
-                            Observable.fromIterable(visitEntities)
-                                .flatMap { visitEntity ->
-                                    Observable.zip(Observable.just(visitEntity), userRepo.get(visitEntity.userId!!).toObservable(),
-                                        {visitEntity2, userEntity -> Pair(visitEntity2, userEntity)})
-                                }
-                                .filter { pair -> checkUser(pair.second, userQuery)}
-                                .flatMap { pair ->
-                                    Observable.just(pair.first)
-                                }
-                                .flatMap {visitEntity ->
-                                    Log.d(TAG, "$visitEntity")
-                                    getVisit(visitEntity).toObservable()
-                                }.toList()
-
-                        }
-                }
-        } else {
-            return visitRepo.query(visitQuery)
-                .flatMap { visitEntities ->
-                    Observable.fromIterable(visitEntities)
-                        .flatMap { visitEntity ->
-                            Observable.zip(Observable.just(visitEntity), userRepo.get(visitEntity.userId!!).toObservable(),
-                                {visitEntity2, userEntity -> Pair(visitEntity2, userEntity)})
-                        }
-                        .filter { pair ->
-                            Log.d(TAG, pair.first.toString())
-                            checkUser(pair.second, userQuery)
-                        }
-                        .flatMap { pair ->
-                            Log.d(TAG, pair.first.toString())
-                            Observable.just(pair.first)
-                        }
-                        .flatMap {visitEntity ->
-                            getVisit(visitEntity).toObservable()
-                        }.toList()
-                }
-            }
-        }
-
-
     open fun getUserVisitHistory(userId: String, visitQuery: VisitQuery): Single<List<Visit>> {
         /*
         Gets and filters the visit history of a specific user based on the userId
@@ -231,9 +170,9 @@ open class VisitUseCases @Inject constructor(
         if (userQuery.lastName != null && userQuery.lastName != userEntity.lastName)
             return false
         if (userQuery.isCheckedIn != null) {
-            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn)
+            if (userEntity.checkedInBuildingId == null && userQuery.isCheckedIn!!)
                 return false
-            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn)
+            if (userEntity.checkedInBuildingId != null && !userQuery.isCheckedIn!!)
                 return false
         }
         Log.d(TAG, userQuery.studentId.toString())

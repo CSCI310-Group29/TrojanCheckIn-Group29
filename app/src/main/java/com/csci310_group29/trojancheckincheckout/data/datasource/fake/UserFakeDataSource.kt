@@ -56,8 +56,4 @@ class UserFakeDataSource @Inject constructor(): UserRepository {
         return Completable.complete()
     }
 
-    override fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<UserEntity> {
-        return Observable.just(userEntity)
-    }
-
 }

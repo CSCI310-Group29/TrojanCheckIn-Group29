@@ -102,8 +102,4 @@ interface UserRepository {
      */
     fun updatePhotoUrl(id: String, url: String): Completable
 
-    /*
-    BUGGY: Needs revision
-     */
-    fun query(userQuery: UserQuery, visitQuery: VisitQuery): Observable<UserEntity>
 }
