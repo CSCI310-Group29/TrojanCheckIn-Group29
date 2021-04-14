@@ -56,6 +56,11 @@ class StudentProfileActivity : AppCompatActivity() {
             Major.text = newUser.major
             StudentId.text = newUser.studentId
             SProfilePic.setImageBitmap(toBitmap(newUser.profilePicture))
+            if (newUser.checkedInBuilding != null) {
+                profileCurrBuilding.text = newUser.checkedInBuilding!!.buildingName
+            } else {
+                profileCurrBuilding.text = "Not Checked In"
+            }
             loadingEnd()
 
         }

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -45,12 +46,15 @@ class StudentQueryActivity : AppCompatActivity() {
     lateinit var buildingDomain: BuildingUseCases
 
     lateinit var rv: RecyclerView
+    lateinit var pb: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_visit_query)
 
         rv = findViewById(R.id.queryRecyclerView)
+        pb = findViewById<ProgressBar>(R.id.indeterminateBarSearch)
+        loadingEnd()
         val spinner = findViewById<Spinner>(R.id.building_spinner) as Spinner
 
         val spinnerMajor = findViewById<Spinner>(R.id.major_spinner) as Spinner
@@ -137,6 +141,7 @@ class StudentQueryActivity : AppCompatActivity() {
             override fun onSuccess(t: List<User>) {
                 Log.i(TAG, "${t.size}")
                 val list = t.sortedWith(compareBy{it.lastName!!.toLowerCase()})
+                loadingEnd()
                 val adapter = StudentQueryAdapter(list)
                 rv.adapter = adapter
                 adapter.notifyDataSetChanged()
@@ -144,6 +149,7 @@ class StudentQueryActivity : AppCompatActivity() {
             }
 
             override fun onSubscribe(d: Disposable) {
+                loadingStart()
                 Log.i(TAG, "subscribed query")
             }
 
@@ -177,6 +183,14 @@ class StudentQueryActivity : AppCompatActivity() {
         } else {
             dateTimePicker(false)
         }
+    }
+
+    fun loadingStart() {
+        pb!!.visibility = ProgressBar.VISIBLE
+    }
+
+    fun loadingEnd() {
+        pb!!.visibility = ProgressBar.INVISIBLE
     }
 
     private fun dateTimePicker(isStart: Boolean) {
