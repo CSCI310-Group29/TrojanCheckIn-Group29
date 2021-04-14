@@ -86,6 +86,7 @@ class AuthFirebaseDataSource @Inject constructor(private val auth: FirebaseAuth)
         return Completable.create { emitter ->
             val user = auth.currentUser
             if (user == null) {
+                Log.d(TAG, "user not signed in")
                 emitter.onError(Exception("user is not currently signed in"))
             }
             else {
