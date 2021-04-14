@@ -216,10 +216,13 @@ open class UserUseCases @Inject constructor(
                                         userRepo.get(userId).toObservable()
                                     }
                                     .filter { userEntity -> checkUser(userEntity, userQuery)}
-                                    .sorted()
                                     .flatMap { userEntity ->
                                         getUser(null, null, true, userEntity).toObservable()
-                                    }.toList()
+                                    }
+                                    .toList()
+                                    .flatMap { userEntities2 ->
+                                        Single.just(userEntities2.sorted())
+                                    }
                             }
                     }
             } else {
@@ -237,7 +240,11 @@ open class UserUseCases @Inject constructor(
                             .filter { userEntity -> checkUser(userEntity, userQuery)}
                             .flatMap { userEntity ->
                                 getUser(null, null, true, userEntity).toObservable()
-                            }.toList()
+                            }
+                            .toList()
+                            .flatMap { userEntities2 ->
+                                Single.just(userEntities2.sorted())
+                            }
                     }
             }
         } else {
@@ -246,8 +253,13 @@ open class UserUseCases @Inject constructor(
                     Observable.fromIterable(userEntities)
                         .filter { userEntity -> checkUser(userEntity, userQuery)}
                         .flatMap { userEntity ->
+                            Log.d(TAG, userEntity.toString())
                             getUser(null, null, true, userEntity).toObservable()
-                        }.toList()
+                        }
+                        .toList()
+                        .flatMap { userEntities2 ->
+                            Single.just(userEntities2.sorted())
+                        }
                 }
         }
     }
@@ -363,7 +375,6 @@ open class UserUseCases @Inject constructor(
                 Boolean that returns true whether the userQuery matches the userEntity, or
                 false otherwise
          */
-        Log.d(TAG, "filtering users")
         var result = true
         if (userQuery.firstName != null) {
             if (userEntity.firstName == null) result = false

@@ -13,7 +13,7 @@ data class User(val id: String,
                 var checkedInBuilding: Building? = null,
                 val studentId: String? = null,
                 var deleted: Boolean? = null,
-                val profilePicture: ByteArray? = null) {
+                val profilePicture: ByteArray? = null): Comparable<User> {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -49,6 +49,11 @@ data class User(val id: String,
         result = 31 * result + (deleted?.hashCode() ?: 0)
         result = 31 * result + (profilePicture?.contentHashCode() ?: 0)
         return result
+    }
+
+    override fun compareTo(other: User): Int {
+        return if (this.lastName == null || other.lastName == null) 0
+        else this.lastName.toLowerCase().compareTo(other.lastName.toLowerCase())
     }
 
 
