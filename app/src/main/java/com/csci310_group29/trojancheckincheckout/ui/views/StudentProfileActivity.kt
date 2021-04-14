@@ -87,7 +87,11 @@ class StudentProfileActivity : AppCompatActivity() {
                             }
 
                             override fun onError(e: Throwable) {
-                                makeToast("Unable to delete Account")
+                                if(viewModel.currUser!!.value!!.checkedInBuilding != null) {
+                                    makeToast("Must check out before deleting your account")
+                                } else {
+                                    makeToast("Unable to delete account")
+                                }
                             }
                         }
 
