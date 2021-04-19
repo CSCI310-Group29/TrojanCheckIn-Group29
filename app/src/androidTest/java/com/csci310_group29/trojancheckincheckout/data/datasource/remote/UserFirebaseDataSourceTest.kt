@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 import java.lang.Exception
 
 
-private val userEntity = UserEntity("12", true, "Tommy", "Trojan", "Computer Science", null, "123", "exampleURL")
+private val userEntity = UserEntity("12", true, "Tommy", "Trojan", "Computer Science", null, "123", false, "exampleURL")
 @RunWith(AndroidJUnit4::class)
 class UserFirebaseDataSourceTest {
 
@@ -71,7 +71,7 @@ class UserFirebaseDataSourceTest {
         val buildingId = createBuilding(buildingEntity)
         val user1 =  UserEntity("12", true,
             "Tommy", "Trojan", "Computer Science",
-            buildingId, "123", "exampleURL")
+            buildingId, "123", false, "exampleURL")
         val user1Id = createUser(user1)
         getUsersInBuilding(buildingId, 1)
         deleteUser(user1Id)
@@ -91,10 +91,10 @@ class UserFirebaseDataSourceTest {
         val buildingId = createBuilding(buildingEntity)
         val user1 =  UserEntity("12", true,
             "Tommy", "Trojan", "Computer Science",
-            buildingId, "123", "exampleURL")
+            buildingId, "123", false, "exampleURL")
         val user2 = UserEntity("13", true,
             "Tommy", "Trojan", "Computer Science",
-            buildingId, "123", "exampleURL")
+            buildingId, "123", false, "exampleURL")
         val user1Id = createUser(user1)
         val user2Id = createUser(user2)
         getUsersInBuilding(buildingId, 2)
@@ -116,10 +116,10 @@ class UserFirebaseDataSourceTest {
         val buildingId = createBuilding(buildingEntity)
         val user1 =  UserEntity("12", true,
             "Tommy", "Trojan", "Computer Science",
-            buildingId, "123", "exampleURL")
+            buildingId, "123", false, "exampleURL")
         val user2 = UserEntity("13", true,
             "Tommy", "Trojan", "Computer Science",
-            null, "123", "exampleURL")
+            null, "123", false, "exampleURL")
         val user1Id = createUser(user1)
         val user2Id = createUser(user2)
         getUsersInBuilding(buildingId, 1)

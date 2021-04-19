@@ -1,6 +1,7 @@
 package com.csci310_group29.trojancheckincheckout.domain.usecases
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
 import com.csci310_group29.trojancheckincheckout.data.repo.AuthRepoImpl
 import com.csci310_group29.trojancheckincheckout.data.repo.PicturesRepoImpl
@@ -18,6 +19,10 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
                                             @Named("Repo") private val pictureRepo: PicturesRepository,
                                             @Named("Repo") private val userRepo: UserRepository,
                                             private val userUseCases: UserUseCases) {
+
+    companion object {
+        private val TAG = "AuthUseCases"
+    }
 
     open fun getUserAuth(): Single<AuthEntity> {
         /*
@@ -103,7 +108,9 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
         return userUseCases.getCurrentlyLoggedInUser()
             .flatMapCompletable { user ->
                 // call userRepository to delete the user document in the database
-                userRepo.addDeleteField(user.id)
+                Log.d(TAG, user.checkedInBuilding.toString())
+                if (user.checkedInBuilding != null) throw Exception("user is currently checked in")
+                else userRepo.addDeleteField(user.id)
             }
                 // call AuthRepository to delete the user account
             .andThen(authRepo.deleteCurrentUser())

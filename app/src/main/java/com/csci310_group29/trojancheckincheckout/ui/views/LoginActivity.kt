@@ -83,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.i(TAG, e.localizedMessage)
+                    //Log.i(TAG, e.localizedMessage)
                     loadingEnd()
 
                     EspressoIdlingResource.decrement()
