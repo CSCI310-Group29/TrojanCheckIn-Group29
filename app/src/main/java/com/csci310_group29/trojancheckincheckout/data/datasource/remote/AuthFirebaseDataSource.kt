@@ -78,7 +78,19 @@ class AuthFirebaseDataSource @Inject constructor(private val auth: FirebaseAuth)
 
     override fun resetPassword(): Completable {
         return Completable.create { emitter ->
-            emitter.onComplete()
+            val user = auth.currentUser
+            if(user == null) {
+                Log.d(TAG, "Cannot reset password, user is not signed in")
+                emitter.onError(Exception("Cannot reset password, user is not signed in"))
+            }
+            else {
+                Firebase.auth.sendPasswordResetEmail(user.email)
+                    .addOnCompleteListener { task->
+                        if(task.isSuccessful) {
+                            Log.d(TAG, "Reset password email sent")
+                        }
+                    }
+            }
         }
     }
 
