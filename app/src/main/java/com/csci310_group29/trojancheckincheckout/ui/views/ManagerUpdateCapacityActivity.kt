@@ -42,7 +42,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        val spinner = findViewById<View>(R.id.BuildingInput) as Spinner
+        val spinner = findViewById<View>(R.id.UpdateBuildingInput) as Spinner
 
         val observable = buildingDomain.getAllBuildings()
         observable.subscribe(object: SingleObserver<List<Building>> {
@@ -73,9 +73,9 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
     }
 
     fun onUpdateWithUI(view: View) {
-        val bSpinner = findViewById<Spinner>(R.id.BuildingInput)
+        val bSpinner = findViewById<Spinner>(R.id.UpdateBuildingInput)
         val buildingCode = bSpinner.selectedItem.toString()
-        val newCap = findViewById<EditText>(R.id.NewCapacityInput)
+        val newCap = findViewById<EditText>(R.id.UpdateCapacityInput)
         val newCapacity = newCap.text.toString().toDouble()
         // Check if fields are populated
 //        if(NewCapacityInput.isEmpty || BuildingInput.isEmpty()) {
