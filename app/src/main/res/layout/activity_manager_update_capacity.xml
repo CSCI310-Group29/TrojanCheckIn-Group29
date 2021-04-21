@@ -9,7 +9,7 @@
     <!-- Update capacity with CSV || commented out for assignment 3 -->
 
     <Button
-        android:id="@+id/updateCapacityUI"
+        android:id="@+id/AddCapacityUI"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onUpdateWithUI"
@@ -143,7 +143,7 @@
         app:layout_constraintVertical_bias="0.701" />
 
     <Button
-        android:id="@+id/button8"
+        android:id="@+id/RemoveBuildingUI"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Remove Building"
