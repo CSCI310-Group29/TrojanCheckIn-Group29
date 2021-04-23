@@ -1,20 +1,15 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
-import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
-import com.google.firebase.ktx.Firebase
 import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject

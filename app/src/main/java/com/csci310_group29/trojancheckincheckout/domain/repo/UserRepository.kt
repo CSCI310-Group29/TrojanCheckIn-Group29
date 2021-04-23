@@ -102,4 +102,6 @@ interface UserRepository {
      */
     fun updatePhotoUrl(id: String, url: String): Completable
 
+    fun updateDeviceToken(id: String, token: String): Completable
+
 }

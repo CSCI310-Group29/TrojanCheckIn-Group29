@@ -1,56 +1,60 @@
-package com.csci310_group29.trojancheckincheckout.data.repo
+package com.csci310_group29.trojancheckincheckout.data.datasource.rest
 
+import com.csci310_group29.trojancheckincheckout.data.retrofit.UserWebService
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
-import javax.inject.Named
 
-class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: UserRepository): UserRepository {
+private val userEntity = UserEntity("12", true,
+    "Tommy", "Trojan", "Compute Science",
+    "building", "1234", false, "exampleURL")
 
+open class UserRestDataSource @Inject constructor(private val webService: UserWebService): UserRepository {
     override fun get(id: String): Single<UserEntity> {
-        return remoteDataSource.get(id)
+        return webService.testService()
     }
 
     override fun observeUsersInBuilding(buildingId: String): Observable<List<UserEntity>> {
-        return remoteDataSource.observeUsersInBuilding(buildingId)
+        TODO("Not yet implemented")
     }
 
     override fun observeUserById(userId: String): Observable<UserEntity> {
-        return remoteDataSource.observeUserById(userId)
+        TODO("Not yet implemented")
     }
 
     override fun update(userEntity: UserEntity): Completable {
-        return remoteDataSource.update(userEntity)
+        TODO("Not yet implemented")
     }
 
     override fun delete(id: String): Completable {
-        return remoteDataSource.delete(id)
+        TODO("Not yet implemented")
     }
 
     override fun getAll(): Single<List<UserEntity>> {
-        return remoteDataSource.getAll()
+        TODO("Not yet implemented")
     }
 
     override fun addDeleteField(id: String): Completable {
-        return remoteDataSource.addDeleteField(id)
+        TODO("Not yet implemented")
     }
 
     override fun create(userEntity: UserEntity): Single<UserEntity> {
-        return remoteDataSource.create(userEntity)
+        TODO("Not yet implemented")
     }
 
     override fun setCheckedInBuilding(userId: String, buildingId: String?): Single<UserEntity> {
-        return remoteDataSource.setCheckedInBuilding(userId, buildingId)
+        TODO("Not yet implemented")
     }
 
     override fun updatePhotoUrl(id: String, url: String): Completable {
-        return remoteDataSource.updatePhotoUrl(id, url)
+        TODO("Not yet implemented")
     }
 
     override fun updateDeviceToken(id: String, token: String): Completable {
-        return remoteDataSource.updateDeviceToken(id, token)
+        TODO("Not yet implemented")
     }
+
 }

@@ -1,16 +1,11 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
-import android.graphics.Bitmap
-import android.os.Build
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
-import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
-import com.google.firebase.ktx.Firebase
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

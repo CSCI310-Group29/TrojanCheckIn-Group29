@@ -1,23 +1,15 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import android.util.Log
-import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
-import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
-import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
-import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
-import com.google.firebase.ktx.Firebase
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import io.reactivex.Single
-import java.util.*
 import javax.inject.Inject
 
 class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFirestore): UserRepository {
@@ -190,5 +182,9 @@ class UserFirebaseDataSource @Inject constructor(private val db: FirebaseFiresto
                 .addOnSuccessListener { emitter.onComplete() }
                 .addOnFailureListener { exception -> emitter.onError(exception)}
         }
+    }
+
+    override fun updateDeviceToken(id: String, token: String): Completable {
+        return Completable.complete()
     }
 }

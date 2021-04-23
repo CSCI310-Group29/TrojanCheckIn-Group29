@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import org.junit.Test
 

@@ -56,4 +56,8 @@ class UserFakeDataSource @Inject constructor(): UserRepository {
         return Completable.complete()
     }
 
+    override fun updateDeviceToken(id: String, token: String): Completable {
+        return Completable.complete()
+    }
+
 }

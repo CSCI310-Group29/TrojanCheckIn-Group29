@@ -414,6 +414,10 @@ open class UserUseCases @Inject constructor(
         return true
     }
 
+    open fun sendDeviceToken(token: String): Completable {
+        return Completable.complete()
+    }
+
     private fun checkVisitQuery(visitQuery: VisitQuery): Boolean {
         if (visitQuery.buildingName != null) return true
         if (visitQuery.buildingId != null) return true

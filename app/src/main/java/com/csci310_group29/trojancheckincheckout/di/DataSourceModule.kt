@@ -1,6 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.di
 
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.*
+import com.csci310_group29.trojancheckincheckout.data.datasource.firebase.*
 import com.csci310_group29.trojancheckincheckout.domain.repo.*
 import dagger.Binds
 import dagger.Module
