@@ -47,6 +47,45 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
             // convert the buildingEntity returned to a Building object
             .flatMap { building -> Single.just(buildModel(building)) }
     }
+  
+    open fun processCSVBuilding(command: ArrayList<String>): Single<List<Building>> {
+        /*
+        command array list should contain:
+            0 - command code (u = update building, a = add building, r = remove building)
+            1 - name of the building
+            3 - capacity of the building (not needed if command code is 'r'=remove)
+        */
+
+        // Check which command it is if not empty
+        if(!command.isEmpty()) {
+            if(command.elementAtOrNull(0) == "u") { // Update capacity of the building
+                // Save building name as String
+                val buildingName = command.elementAt(1)
+                // Save capacity as Double
+                val capacity = command.elementAt(2).toDouble()
+                // Update capacity function takes in HashMap so let's create one
+                val map: HashMap<String, Double> = hashMapOf(buildingName to capacity)
+                // Call update capacities function
+                buildingRepo.updateCapacities(map)
+            } else if(command.elementAtOrNull(1) == "a") { // Add the building
+                // Create new building entity
+                val addedBuilding = BuildingEntity(buildingName = command.elementAt(1),
+                    capacity = command.elementAt(2).toInt())
+                // Add it
+                buildingRepo.create(addedBuilding)
+            } else if(command.elementAtOrNull(2) == "r") { // Remove the building
+                // Call delete function to remove the building
+                buildingRepo.delete(command.elementAt(1))
+            }
+        }
+
+        // Return either modified or unmodified building list
+        return buildingRepo.getAll()
+            // convert buildingEntities to buildings
+            .flatMap { buildingEntities ->
+                buildModels(buildingEntities)
+            }
+    }
 
     open fun getAllBuildings(): Single<List<Building>> {
         /*
