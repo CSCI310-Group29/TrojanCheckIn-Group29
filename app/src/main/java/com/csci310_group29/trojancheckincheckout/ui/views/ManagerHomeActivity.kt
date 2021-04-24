@@ -33,8 +33,6 @@ class ManagerHomeActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModel: ManagerHomeViewModel
 
-    private val disposables = CompositeDisposable()
-
     fun onGetBuildings(view: View) {
         startActivity(Intent(this, BuildingInfoActivity::class.java))
     }
@@ -74,36 +72,26 @@ class ManagerHomeActivity : AppCompatActivity() {
         EspressoIdlingResource.increment()
         Log.d(TAG, "trying to log out")
         val observable = viewModel.logout()
-//        val disposable = observable.subscribe(object: CompletableObserver {
-//            override fun onComplete() {
-//                EspressoIdlingResource.decrement()
-//
-//                startActivity(Intent(this@ManagerHomeActivity, AppHomeActivity::class.java))
-//                finishAffinity()
-//            }
-//
-//            override fun onSubscribe(d: Disposable) {
-//
-//            }
-//
-//            override fun onError(e: Throwable) {
-//                Log.d(TAG, "error: ${e.localizedMessage}")
-//                EspressoIdlingResource.decrement()
-//
-//                val toast = Toast.makeText(this@ManagerHomeActivity, "Unable to logout. Try again",Toast.LENGTH_SHORT)
-//                toast.show()
-//            }
-//        })
-        disposables.add(observable.subscribe({
-            EspressoIdlingResource.decrement()
-            startActivity(Intent(this@ManagerHomeActivity, AppHomeActivity::class.java))
-            finishAffinity()
-        }, { e ->
-            Log.d(TAG, "error: ${e.localizedMessage}")
+        observable.subscribe(object: CompletableObserver {
+            override fun onComplete() {
                 EspressoIdlingResource.decrement()
+
+                startActivity(Intent(this@ManagerHomeActivity, AppHomeActivity::class.java))
+                finishAffinity()
+            }
+
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onError(e: Throwable) {
+                Log.d(TAG, "error: ${e.localizedMessage}")
+                EspressoIdlingResource.decrement()
+
                 val toast = Toast.makeText(this@ManagerHomeActivity, "Unable to logout. Try again",Toast.LENGTH_SHORT)
                 toast.show()
-        }))
+            }
+        })
 
     }
 

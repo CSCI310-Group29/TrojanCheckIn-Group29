@@ -12,6 +12,7 @@ import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import java.lang.Exception
@@ -56,7 +57,7 @@ open class VisitUseCases @Inject constructor(
             }
     }
 
-    open fun checkOut(buildingId: String, force: Boolean = false): Single<Visit> {
+    open fun checkOut(buildingId: String): Single<Visit> {
         /*
         Checks out the currently logged in user out of the building specified by the building id. If the building id
         does not correspond the checked in building id of the user, there will be an error. If the
@@ -73,7 +74,7 @@ open class VisitUseCases @Inject constructor(
                 if (user.checkedInBuilding != null && user.checkedInBuilding?.id == buildingId) {
                     visitRepo.getLatestVisit(user.id)
                         .flatMap { visitEntity ->
-                            visitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, user.checkedInBuilding?.id!!, force)
+                            visitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, user.checkedInBuilding?.id!!, false)
                                 .flatMap { visitEntityCheckOut ->
                                     buildingUseCases.getBuildingInfoById(user.checkedInBuilding!!.id)
                                         .flatMap {building ->
@@ -82,6 +83,20 @@ open class VisitUseCases @Inject constructor(
                                         }
                                 }
                         }
+                } else {
+                    throw Exception("User is not checked in or is checking out of the wrong building")
+                }
+            }
+    }
+
+    open fun checkOutForce(userId: String): Completable {
+        return userRepo.get(userId)
+            .flatMapCompletable { userEntity ->
+                if (userEntity.checkedInBuildingId != null) {
+                    visitRepo.getLatestVisit(userEntity.id!!)
+                        .flatMap { visitEntity ->
+                            visitRepo.runCheckOutTransaction(userEntity.id!!, visitEntity.id!!, userEntity.checkedInBuildingId!!, true)
+                        }.ignoreElement()
                 } else {
                     throw Exception("User is not checked in or is checking out of the wrong building")
                 }
