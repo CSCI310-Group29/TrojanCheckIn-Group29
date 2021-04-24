@@ -37,4 +37,9 @@ abstract class RepositoryModule {
     @Singleton
     @Named("Repo")
     abstract fun bindBuildingRepo(buildingRepo: BuildingRepoImpl): BuildingRepository
+
+    @Binds
+    @Singleton
+    @Named("Repo")
+    abstract fun bindMessagingRepo(messagingRepo: MessagingRepoImpl): MessagingRepository
 }

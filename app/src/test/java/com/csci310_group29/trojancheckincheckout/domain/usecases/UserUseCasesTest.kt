@@ -14,8 +14,8 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCase
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.LoginViewModel
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerHomeViewModel
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test

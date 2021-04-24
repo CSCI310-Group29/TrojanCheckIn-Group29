@@ -1,9 +1,9 @@
 package com.csci310_group29.trojancheckincheckout.domain.repo
 
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 interface BuildingRepository {
 

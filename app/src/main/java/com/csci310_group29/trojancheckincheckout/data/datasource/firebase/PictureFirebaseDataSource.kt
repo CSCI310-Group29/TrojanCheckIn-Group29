@@ -1,13 +1,11 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
 import java.net.URL
 import javax.inject.Inject
 
