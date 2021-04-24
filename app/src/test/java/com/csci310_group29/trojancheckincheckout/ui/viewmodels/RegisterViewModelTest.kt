@@ -2,7 +2,7 @@ package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test

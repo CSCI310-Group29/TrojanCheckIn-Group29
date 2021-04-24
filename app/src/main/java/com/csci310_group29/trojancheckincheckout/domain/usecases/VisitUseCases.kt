@@ -12,8 +12,8 @@ import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -56,7 +56,7 @@ open class VisitUseCases @Inject constructor(
             }
     }
 
-    open fun checkOut(buildingId: String): Single<Visit> {
+    open fun checkOut(buildingId: String, force: Boolean = false): Single<Visit> {
         /*
         Checks out the currently logged in user out of the building specified by the building id. If the building id
         does not correspond the checked in building id of the user, there will be an error. If the
@@ -73,7 +73,7 @@ open class VisitUseCases @Inject constructor(
                 if (user.checkedInBuilding != null && user.checkedInBuilding?.id == buildingId) {
                     visitRepo.getLatestVisit(user.id)
                         .flatMap { visitEntity ->
-                            visitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, user.checkedInBuilding?.id!!)
+                            visitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, user.checkedInBuilding?.id!!, force)
                                 .flatMap { visitEntityCheckOut ->
                                     buildingUseCases.getBuildingInfoById(user.checkedInBuilding!!.id)
                                         .flatMap {building ->

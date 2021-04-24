@@ -8,9 +8,9 @@
 //import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 //import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 //import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
-//import io.reactivex.CompletableObserver
-//import io.reactivex.SingleObserver
-//import io.reactivex.disposables.Disposable
+//import io.reactivex.rxjava3.core.CompletableObserver
+//import io.reactivex.rxjava3.core.SingleObserver
+//import io.reactivex.rxjava3.disposables.Disposable
 //import javax.inject.Inject
 //
 //abstract class UserProfileViewModel @Inject constructor(private val userDomain: UserUseCases,

@@ -25,8 +25,8 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentQueryAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_visit_query.*
 import java.util.*
 import javax.inject.Inject

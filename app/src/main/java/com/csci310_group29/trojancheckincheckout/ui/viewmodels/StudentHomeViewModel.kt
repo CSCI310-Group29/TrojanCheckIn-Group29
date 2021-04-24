@@ -14,8 +14,8 @@ import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-import io.reactivex.*
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 
@@ -170,20 +170,23 @@ class StudentHomeViewModel @Inject constructor(private val authDomain: AuthUseCa
     }
 
     fun logout(): Completable {
+        Log.d(TAG, "trying to log out")
         return Completable.create { emitter ->
             val observable = authDomain.logout();
             observable.subscribe(object: CompletableObserver {
                 override fun onComplete() {
                     Session.uid = ""
                     Session.user = null
+                    Log.d(TAG, "successfully logged out")
                     emitter.onComplete()
                 }
 
                 override fun onSubscribe(d: Disposable) {
-
+                    Log.d(TAG, "successfully logged out")
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.d(TAG, "error logging out: ${e.localizedMessage}")
                     emitter.onError(e)
                 }
             })

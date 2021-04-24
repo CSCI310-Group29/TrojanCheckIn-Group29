@@ -15,8 +15,8 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.RegisterViewModel
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.CompletableObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 @AndroidEntryPoint

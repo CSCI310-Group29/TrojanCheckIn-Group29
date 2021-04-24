@@ -18,11 +18,11 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.google.rpc.context.AttributeContext
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -213,7 +213,7 @@ open class UserUseCases @Inject constructor(
                                     }
                                     .distinct()
                                     .flatMap { userId ->
-                                        userRepo.get(userId).toObservable()
+                                        userRepo.get(userId!!).toObservable()
                                     }
                                     .filter { userEntity -> checkUser(userEntity, userQuery)}
                                     .flatMap { userEntity ->
@@ -235,7 +235,7 @@ open class UserUseCases @Inject constructor(
                             }
                             .distinct()
                             .flatMap { userId ->
-                                userRepo.get(userId).toObservable()
+                                userRepo.get(userId!!).toObservable()
                             }
                             .filter { userEntity -> checkUser(userEntity, userQuery)}
                             .flatMap { userEntity ->

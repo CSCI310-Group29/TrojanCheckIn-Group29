@@ -2,8 +2,7 @@ package com.csci310_group29.trojancheckincheckout.data.datasource.rest
 
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.csci310_group29.trojancheckincheckout.data.retrofit.UserWebService
-import com.csci310_group29.trojancheckincheckout.di.RetrofitModule
+import com.csci310_group29.trojancheckincheckout.data.retrofit.MessagingWebService
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,31 +14,31 @@ import retrofit2.converter.gson.GsonConverterFactory
 class UserRestDataSourceTest {
 
     companion object {
-        private val LOCAL_URL = "http://localhost:5001/trojancheckin/us-central1/api/"
+        private val LOCAL_URL = "http://10.0.2.2:5001/trojancheckin/us-central1/api/"
         private val TAG = "UserRestDataSourceTest"
     }
 
-    private lateinit var dataSource: UserRestDataSource
+    private lateinit var service: MessagingWebService
 
     @Before
     fun setup() {
-        dataSource = UserRestDataSource(buildService())
+        service = buildService()
     }
 
-    fun buildService(): UserWebService {
+    fun buildService(): MessagingWebService {
         return Retrofit.Builder()
             .baseUrl(LOCAL_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
-            .create(UserWebService::class.java)
+            .create(MessagingWebService::class.java)
     }
 
     @Test
     fun test() {
-        val single = dataSource.get("1")
+        val completable = service.helloworld()
         try {
-            val user = single.blockingGet()
+            completable.blockingAwait()
         } catch(e: Exception) {
             Log.d(TAG, e.localizedMessage)
         }

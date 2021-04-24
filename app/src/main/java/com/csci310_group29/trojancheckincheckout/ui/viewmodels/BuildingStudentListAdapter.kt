@@ -17,8 +17,8 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCase
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.csci310_group29.trojancheckincheckout.ui.views.ManagerStudentProfileActivity
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.item_buildingstudentlist.view.*
 import javax.inject.Inject
 

@@ -9,8 +9,8 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import java.util.*
 import javax.inject.Inject
 
@@ -175,7 +175,7 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
         }
     }
 
-    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String): Single<VisitEntity> {
+    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, force: Boolean): Single<VisitEntity> {
         return Single.create { emitter ->
             val userRef = db.collection("users").document(userId)
             val visitRef = userRef.collection("visits").document(visitId)
@@ -184,6 +184,7 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
                 batch.update(buildingRef, "numPeople", FieldValue.increment(-1.0))
                 batch.update(userRef, "checkedInBuildingId", null)
                 batch.update(visitRef, "checkOut", Date())
+                batch.update(visitRef, "force", force)
             }
                 .addOnSuccessListener {
                     visitRef.get()

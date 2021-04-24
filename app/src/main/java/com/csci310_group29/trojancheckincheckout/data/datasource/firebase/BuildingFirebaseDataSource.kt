@@ -6,9 +6,9 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFirestore): BuildingRepository {
