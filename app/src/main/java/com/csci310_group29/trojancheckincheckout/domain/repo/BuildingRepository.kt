@@ -117,7 +117,21 @@ interface BuildingRepository {
     emit an error.
 
         Params:
+            HashMap containing building names and capacities.
+
+        Returns:
             Completable that emits completion if the capacity was updated, or an error otherwise.
-     */
+    */
     fun updateSingleCapacity(buildingId: String, capacity: Double): Completable
+    
+    /*
+    Checks if building exists.
+
+        Params:
+            Name of the building.
+
+        Return:
+            True if building exists, false if it does not.
+    */
+    fun buildingExists(buildingName: String): Boolean
 }
