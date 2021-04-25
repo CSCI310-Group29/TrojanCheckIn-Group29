@@ -131,6 +131,12 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                 }
         }
     }
+    
+    override fun buildingExists(buildingName: String): Boolean {
+        val toFind = db.collection("buildings").whereEqualTo("buildingName", buildingName)
+        val found = toFind.toString()
+        return found.isNotEmpty()
+    }
 
     override fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity> {
         return Single.create { emitter ->
