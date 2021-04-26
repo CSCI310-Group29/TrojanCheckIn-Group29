@@ -1,15 +1,13 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
-import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class AuthFirebaseDataSource @Inject constructor(private val auth: FirebaseAuth): AuthRepository {
@@ -31,12 +29,23 @@ class AuthFirebaseDataSource @Inject constructor(private val auth: FirebaseAuth)
     }
 
     override fun logoutCurrentUser(): Completable {
+        Log.d(TAG, "logging out user")
         return Completable.create { emitter ->
+            Log.d(TAG, "logging out user")
             if (auth.currentUser == null) {
                 emitter.onError(Exception("User is not signed in"))
             } else {
                 auth.signOut()
-                emitter.onComplete()
+                auth.addAuthStateListener(object: FirebaseAuth.AuthStateListener {
+                    override fun onAuthStateChanged(p0: FirebaseAuth) {
+                        if (p0.currentUser == null) {
+                            Log.d(TAG, "user was logged out")
+                            emitter.onComplete()
+                        }
+                    }
+
+                })
+
             }
 
         }
@@ -78,7 +87,19 @@ class AuthFirebaseDataSource @Inject constructor(private val auth: FirebaseAuth)
 
     override fun resetPassword(): Completable {
         return Completable.create { emitter ->
-            emitter.onComplete()
+            val user = auth.currentUser
+            if(user == null) {
+                Log.d(TAG, "Cannot reset password, user is not signed in")
+                emitter.onError(Exception("Cannot reset password, user is not signed in"))
+            }
+            else {
+                Firebase.auth.sendPasswordResetEmail(user.email)
+                    .addOnCompleteListener { task->
+                        if(task.isSuccessful) {
+                            Log.d(TAG, "Reset password email sent")
+                        }
+                    }
+            }
         }
     }
 

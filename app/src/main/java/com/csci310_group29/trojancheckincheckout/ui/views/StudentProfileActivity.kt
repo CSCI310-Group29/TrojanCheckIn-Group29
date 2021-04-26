@@ -20,9 +20,9 @@ import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.CompletableObserver
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_manager_student_profile.*
 import kotlinx.android.synthetic.main.activity_student_profile.*
 import javax.inject.Inject

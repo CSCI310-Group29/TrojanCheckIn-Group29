@@ -5,9 +5,9 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -46,6 +46,48 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
         return buildingRepo.get(buildingId)
             // convert the buildingEntity returned to a Building object
             .flatMap { building -> Single.just(buildModel(building)) }
+    }
+  
+    open fun processCSVBuilding(command: ArrayList<String>): Completable {
+        /*
+        Processes csv file to either: update, add, or remove building.
+        
+            Params: 
+                Command array list will contain:
+                    0 - command code (u = update building, a = add building, r = remove building)
+                    1 - name of the building
+                    3 - capacity of the building (not needed if command code is 'r'=remove)
+            
+            Returns:
+                Completable once operation is completed.
+        */
+
+        // Check which command it is if not empty
+        if(command.isNotEmpty()) {
+            if(command.elementAtOrNull(0) == "u") { // Update capacity of the building
+                // Save building name as String
+                val buildingName = command.elementAt(1)
+                // Save capacity as Double
+                val capacity = command.elementAt(2).toDouble()
+                // Update capacity function takes in HashMap so let's create one
+                val map: HashMap<String, Double> = hashMapOf(buildingName to capacity)
+                // Call update capacities function if building exists
+                if(buildingRepo.buildingExists(buildingName)) {
+                    buildingRepo.updateCapacities(map)
+                }
+            } else if(command.elementAtOrNull(1) == "a") { // Add the building
+                // Create new building entity
+                val addedBuilding = BuildingEntity(buildingName = command.elementAt(1),
+                    capacity = command.elementAt(2).toInt())
+                // Add it
+                buildingRepo.create(addedBuilding)
+            } else if(command.elementAtOrNull(2) == "r") { // Remove the building
+                // Call delete function to remove the building
+                buildingRepo.delete(command.elementAt(1))
+            } // otherwise do nothing
+        }
+
+        return Completable.complete()
     }
 
     open fun getAllBuildings(): Single<List<Building>> {

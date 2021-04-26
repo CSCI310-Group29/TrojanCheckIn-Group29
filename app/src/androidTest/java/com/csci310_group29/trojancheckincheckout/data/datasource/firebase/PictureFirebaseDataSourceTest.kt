@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -7,9 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.csci310_group29.trojancheckincheckout.R
 import com.google.firebase.FirebaseApp
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import org.junit.After
 import org.junit.Assert.*

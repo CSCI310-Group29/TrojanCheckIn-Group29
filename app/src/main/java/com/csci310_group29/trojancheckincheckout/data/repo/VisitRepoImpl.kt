@@ -1,13 +1,10 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.VisitFirebaseDataSource
-import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -41,8 +38,8 @@ class VisitRepoImpl @Inject constructor(@Named("Data") private val remoteDataSou
         return remoteDataSource.runCheckInTransaction(userId, buildingId)
     }
 
-    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String): Single<VisitEntity> {
-        return remoteDataSource.runCheckOutTransaction(userId, visitId, buildingId)
+    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, force: Boolean): Single<VisitEntity> {
+        return remoteDataSource.runCheckOutTransaction(userId, visitId, buildingId, force)
     }
 
     override fun query(visitQuery: VisitQuery): Single<List<VisitEntity>> {
