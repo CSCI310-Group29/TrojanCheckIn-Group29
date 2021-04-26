@@ -1,12 +1,10 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
-import android.graphics.Bitmap
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.BuildingFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 import javax.inject.Named
 

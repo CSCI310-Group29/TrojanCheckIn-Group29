@@ -8,8 +8,8 @@ import com.csci310_group29.trojancheckincheckout.R
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 @AndroidEntryPoint

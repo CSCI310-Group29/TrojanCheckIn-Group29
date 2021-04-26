@@ -17,8 +17,9 @@ import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.ui.util.EspressoIdlingResource
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.CompletableObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_manager_home.*
 import kotlinx.android.synthetic.main.activity_student_home.*
 import javax.inject.Inject
@@ -69,7 +70,7 @@ class ManagerHomeActivity : AppCompatActivity() {
 
     fun onLogout(view: View)  {
         EspressoIdlingResource.increment()
-
+        Log.d(TAG, "trying to log out")
         val observable = viewModel.logout()
         observable.subscribe(object: CompletableObserver {
             override fun onComplete() {
@@ -84,6 +85,7 @@ class ManagerHomeActivity : AppCompatActivity() {
             }
 
             override fun onError(e: Throwable) {
+                Log.d(TAG, "error: ${e.localizedMessage}")
                 EspressoIdlingResource.decrement()
 
                 val toast = Toast.makeText(this@ManagerHomeActivity, "Unable to logout. Try again",Toast.LENGTH_SHORT)

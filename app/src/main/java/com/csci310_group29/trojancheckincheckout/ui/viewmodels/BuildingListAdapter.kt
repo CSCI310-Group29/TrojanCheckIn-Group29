@@ -15,8 +15,8 @@ import com.csci310_group29.trojancheckincheckout.domain.models.MutableBuilding
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.ui.views.BuildingStudentListActivity
 import com.csci310_group29.trojancheckincheckout.ui.views.QrCodeActivity
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 
