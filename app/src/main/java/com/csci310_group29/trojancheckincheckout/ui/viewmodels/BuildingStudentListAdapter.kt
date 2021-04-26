@@ -32,6 +32,7 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
         val lName = itemView.findViewById<TextView>(R.id.buildingStudentList_lastName)
         var fName = itemView.findViewById<TextView>(R.id.buildingStudentList_firstName)
         val studentProfileButton = itemView.findViewById<Button>(R.id.buildingStudentList_viewProfile)
+        val kickOutButton = itemView.findViewById<Button>(R.id.buildingStudentListKickOut)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,12 +53,17 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
         holder.lName.text = user.lastName
         holder.fName.text = user.firstName
         holder.studentProfileButton.text = "Profile"
+        holder.kickOutButton.text = "Kick Out"
 
         holder.studentProfileButton.setOnClickListener(View.OnClickListener { v->
             val i = Intent(v.context, ManagerStudentProfileActivity::class.java)
             i.putExtra("studentUID", user.id)
 
             startActivity(v.context, i, null)
+        })
+
+        holder.kickOutButton.setOnClickListener(View.OnClickListener {v ->
+            //TODO: connect to UI
         })
 
         /*val observable = userDomain.observeUserById(user.id)
