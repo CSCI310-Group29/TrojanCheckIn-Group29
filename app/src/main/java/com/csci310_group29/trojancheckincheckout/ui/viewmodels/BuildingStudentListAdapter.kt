@@ -17,15 +17,17 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCase
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.csci310_group29.trojancheckincheckout.ui.views.ManagerStudentProfileActivity
+import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.core.CompletableObserver
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.item_buildingstudentlist.view.*
 import javax.inject.Inject
 
-class BuildingStudentListAdapter @Inject constructor(private val userDomain: UserUseCases, private val sList: List<User>): RecyclerView.Adapter<BuildingStudentListAdapter.ViewHolder>() {
+class BuildingStudentListAdapter @Inject constructor(private val userDomain: UserUseCases,
+                                                     private val visitDomain: VisitUseCases,
+                                                     private val sList: List<User>): RecyclerView.Adapter<BuildingStudentListAdapter.ViewHolder>() {
 
-    @Inject
-    lateinit var visitDomain: VisitUseCases
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
         val studentId = itemView.findViewById<TextView>(R.id.buildingStudentList_SID)
@@ -63,7 +65,21 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
         })
 
         holder.kickOutButton.setOnClickListener(View.OnClickListener {v ->
-            //TODO: connect to UI
+
+            val observable = visitDomain.checkOutForce(user.id);
+            observable.subscribe(object: CompletableObserver {
+                override fun onComplete() {
+                    Log.i(TAG, "kicked out student")
+                }
+
+                override fun onSubscribe(d: Disposable?) {
+                    Log.i(TAG, "subscribed kicked out student")
+                }
+
+                override fun onError(e: Throwable?) {
+                    Log.i(TAG, "error kicking out student")
+                }
+            })
         })
 
         /*val observable = userDomain.observeUserById(user.id)
