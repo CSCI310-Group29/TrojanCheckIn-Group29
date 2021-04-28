@@ -21,8 +21,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
-    private val LOCAL_URL = "http://10.0.2.2:5001/trojancheckin/us-central1/api/"
-    private val PROD_URL = "https://us-central1-trojancheckin.cloudfunctions.net/api/"
+    val EMULATOR = false
+    val LOCAL_URL = "http://10.0.2.2:5001/trojancheckin/us-central1/api/"
+    val PROD_URL = "https://us-central1-trojancheckin.cloudfunctions.net/api/"
+    val SELECT_URL = if (EMULATOR) LOCAL_URL else PROD_URL
 
 
     @Singleton
@@ -32,7 +34,7 @@ object RetrofitModule {
             .setLenient()
             .create()
         return Retrofit.Builder()
-            .baseUrl(PROD_URL)
+            .baseUrl(SELECT_URL)
             .client(getHttpClient())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
