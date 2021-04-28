@@ -44,6 +44,46 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 
     }
 
+    fun removeWithUI(buildingId: String): Completable {
+        return Completable.create { emitter ->
+            //need arian's function
+           // val observe = buildingDomain.updateSingleBuildingCapacity(buildingId)
+            observe.subscribe(object: CompletableObserver {
+                override fun onComplete() {
+                    emitter.onComplete()
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onError(e: Throwable) {
+                    emitter.onError(e)
+                }
+            })
+        }
+
+    }
+
+    fun addWithUI(buildingId: String, newCapacity: Double): Completable {
+        return Completable.create { emitter ->
+            //need arian's function
+            //val observe = buildingDomain.updateSingleBuildingCapacity(buildingId, newCapacity)
+            observe.subscribe(object: CompletableObserver {
+                override fun onComplete() {
+                    emitter.onComplete()
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onError(e: Throwable) {
+                    emitter.onError(e)
+                }
+            })
+        }
+
+    }
+
     /**
      * Update Capacity with CSV
      * commented out for assignment 3

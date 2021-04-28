@@ -1,5 +1,6 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -44,12 +45,16 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
     private fun observeViewModel() {
         val spinner = findViewById<View>(R.id.UpdateBuildingInput) as Spinner
 
+        val spinner2 = findViewById<View>(R.id.RemoveBuildingInput) as Spinner
+
         val observable = buildingDomain.getAllBuildings()
         observable.subscribe(object: SingleObserver<List<Building>> {
             override fun onSuccess(t: List<Building>) {
                 val adapter = ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,t)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
+                spinner2.adapter = adapter
+
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -88,7 +93,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
         val observable = viewModel.updateWithUI(buildingCode, newCapacity)
         observable.subscribe(
-            object: CompletableObserver {
+            object : CompletableObserver {
                 override fun onComplete() {
                     makeToast("Successfully updated capacity")
                 }
@@ -103,14 +108,71 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
                 }
             }
         )
+    }
 
+
+    @SuppressLint("WrongViewCast")
+    fun onRemoveWithUI(view: View) {
+        val RSpinner = findViewById<Spinner>(R.id.RemoveBuildingUI)
+        val buildingCode = RSpinner.selectedItem.toString()
+
+        val str = "Attempting to remove Building "
+        Log.i(TAG, str)
+
+        val observable = viewModel.removeWithUI(buildingCode)
+        observable.subscribe(
+            object : CompletableObserver {
+                override fun onComplete() {
+                    makeToast("Successfully updated capacity")
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, e.localizedMessage)
+                    makeToast("Unable to update capacity\n" + e.localizedMessage)
+                }
+            }
+        )
+    }
+
+    @SuppressLint("WrongViewCast")
+    fun onAddWithUI(view: View) {
+        val newBuilding = findViewById<EditText>(R.id.AddCapacityUI)
+        val building = newBuilding.text.toString()
+        val newCapA = findViewById<EditText>(R.id.AddCapacityUI)
+        val newCapacity = newCapA.text.toString().toDouble()
+
+        val str = "Attempting to add Building "
+        Log.i(TAG, str)
+
+        val observable = viewModel.addWithUI(building, newCapacity)
+        observable.subscribe(
+            object : CompletableObserver {
+                override fun onComplete() {
+                    makeToast("Successfully updated capacity")
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, e.localizedMessage)
+                    makeToast("Unable to update capacity\n" + e.localizedMessage)
+                }
+            }
+        )
+    }
 //        try {
 //            viewModel.updateWithUI()
 //
 //        } catch(e: Exception) {
 //            makeToast("Unable to update capacity. Try again")
 //        }
-    }
+
 
     /**
      * Update capacities with CSV
