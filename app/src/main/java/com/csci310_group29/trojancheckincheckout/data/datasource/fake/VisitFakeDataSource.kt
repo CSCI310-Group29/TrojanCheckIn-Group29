@@ -42,7 +42,7 @@ class VisitFakeDataSource @Inject constructor(): VisitRepository {
         return Single.just(visitEntity)
     }
 
-    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, force: Boolean): Single<VisitEntity> {
+    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, managerId: String?): Single<VisitEntity> {
         return Single.just(visitEntity)
     }
 

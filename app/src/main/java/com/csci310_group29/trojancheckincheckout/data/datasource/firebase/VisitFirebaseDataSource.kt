@@ -175,7 +175,7 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
         }
     }
 
-    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, force: Boolean): Single<VisitEntity> {
+    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, managerId: String?): Single<VisitEntity> {
         return Single.create { emitter ->
             val userRef = db.collection("users").document(userId)
             val visitRef = userRef.collection("visits").document(visitId)
@@ -184,7 +184,7 @@ class VisitFirebaseDataSource @Inject constructor(private val db: FirebaseFirest
                 batch.update(buildingRef, "numPeople", FieldValue.increment(-1.0))
                 batch.update(userRef, "checkedInBuildingId", null)
                 batch.update(visitRef, "checkOut", Date())
-                batch.update(visitRef, "force", force)
+                batch.update(visitRef, "managerId", managerId)
             }
                 .addOnSuccessListener {
                     visitRef.get()
