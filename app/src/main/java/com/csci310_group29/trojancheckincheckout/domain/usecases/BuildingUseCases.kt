@@ -1,13 +1,18 @@
 package com.csci310_group29.trojancheckincheckout.domain.usecases
 
 import android.os.Build
+import com.csci310_group29.trojancheckincheckout.di.RetrofitModule
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.net.URL
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -146,6 +151,20 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
             }
     }
 
+    open fun addBuilding(buildingName: String, capacity: Int): Completable {
+        return buildingRepo.create(
+            BuildingEntity("1", buildingName, null,
+            capacity, 0, "")
+            ).ignoreElement()
+    }
+
+    open fun removeBuilding(buildingName: String): Completable {
+        return buildingRepo.getByName(buildingName)
+            .flatMapCompletable { building ->
+                buildingRepo.delete(building.id!!)
+            }
+    }
+
     open fun updateSingleBuildingCapacity(buildingName: String, newCapacity: Double): Completable {
         /*
         Updates the capacity of a single building. If the number of students in the building
@@ -207,7 +226,12 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
         return getBuildingInfo(buildingName)
                 // calls PicturesRepository to get the QR ccode byte array of the building
                 .flatMap { building ->
-                    pictureRepo.get(building.qrCodeRef)
+//                    pictureRepo.get(building.qrCodeRef)
+                        val absolute_url = RetrofitModule.SELECT_URL + "buildings/${building.id}"
+                    val url = URL(absolute_url)
+                    pictureRepo.getFromExternalUrl(url)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                 }
     }
 

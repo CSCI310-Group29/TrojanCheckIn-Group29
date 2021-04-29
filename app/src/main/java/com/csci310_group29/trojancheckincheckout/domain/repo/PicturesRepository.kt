@@ -3,6 +3,7 @@ package com.csci310_group29.trojancheckincheckout.domain.repo
 import android.graphics.Bitmap
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import java.net.URL
 
 interface PicturesRepository {
     /*
@@ -16,7 +17,7 @@ interface PicturesRepository {
      */
     fun get(url: String): Single<ByteArray>
 
-    fun getFromExternalUrl(url: String): Single<ByteArray>
+    fun getFromExternalUrl(url: URL): Single<ByteArray>
 
     /*
     Creates a picture in a specified location in online storage
