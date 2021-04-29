@@ -74,7 +74,7 @@ open class VisitUseCases @Inject constructor(
                 if (user.checkedInBuilding != null && user.checkedInBuilding?.id == buildingId) {
                     visitRepo.getLatestVisit(user.id)
                         .flatMap { visitEntity ->
-                            visitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, user.checkedInBuilding?.id!!, false)
+                            visitRepo.runCheckOutTransaction(user.id, visitEntity.id!!, user.checkedInBuilding?.id!!)
                                 .flatMap { visitEntityCheckOut ->
                                     buildingUseCases.getBuildingInfoById(user.checkedInBuilding!!.id)
                                         .flatMap {building ->
@@ -89,13 +89,13 @@ open class VisitUseCases @Inject constructor(
             }
     }
 
-    open fun checkOutForce(userId: String): Completable {
+    open fun checkOutForce(userId: String, managerId: String): Completable {
         return userRepo.get(userId)
             .flatMapCompletable { userEntity ->
                 if (userEntity.checkedInBuildingId != null) {
                     visitRepo.getLatestVisit(userEntity.id!!)
                         .flatMap { visitEntity ->
-                            visitRepo.runCheckOutTransaction(userEntity.id!!, visitEntity.id!!, userEntity.checkedInBuildingId!!, true)
+                            visitRepo.runCheckOutTransaction(userEntity.id!!, visitEntity.id!!, userEntity.checkedInBuildingId!!, managerId)
                         }.ignoreElement()
                 } else {
                     throw Exception("User is not checked in or is checking out of the wrong building")

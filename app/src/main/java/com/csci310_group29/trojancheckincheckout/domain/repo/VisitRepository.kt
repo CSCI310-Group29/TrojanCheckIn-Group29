@@ -109,7 +109,7 @@ interface VisitRepository {
             Single that emits an updated VisitEntity object upon successful check out, or an error
             otherwise
      */
-    fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, force: Boolean): Single<VisitEntity>
+    fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, managerId: String? = null): Single<VisitEntity>
 
     /*
     Queries all visits based on the non null fields in the VisitQuery.
