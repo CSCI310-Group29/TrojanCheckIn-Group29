@@ -64,6 +64,9 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                                 emitter.onError(Exception("building could not be created"))
                             }
                         }
+                        .addOnFailureListener { e ->
+                            emitter.onError(e)
+                        }
                 }
         }
     }
