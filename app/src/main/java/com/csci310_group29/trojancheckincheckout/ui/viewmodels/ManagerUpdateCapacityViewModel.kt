@@ -56,12 +56,17 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
      * Update Capacity with CSV
      * commented out for assignment 3
      */
+
+    /**
+     * Pass List<String> of `operations` to UseCase
+     */
     fun updateWithCSV(uri: Uri): Completable {
         Log.i(TAG, "Curr directory: " + Paths.get("").toAbsolutePath().toString())
         Log.i(TAG, "Is absolute URI? " + uri.isAbsolute)
         Log.i(TAG, "Is relative URI? " + uri.isRelative)
         return Completable.create { emitter ->
-            var buildingMap: HashMap<String, Double> = HashMap()
+//            var buildingMap: HashMap<String, Double> = HashMap()
+            var opList: MutableList<String> = ArrayList()
 
             try {
 //                Log.i(TAG, "Inside ViewModel. CSV URI: " + uri.getPath())
@@ -70,18 +75,32 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
                 Log.i(TAG, "Successfully opened file")
                 csvReader().open(parsedUri) {
                     readAllAsSequence().forEach { row ->
-                        val b: String = row[0]
-                        val c: Double = row[1].toDouble()
+                        val x: String = row[0]
+                        if(x != "U" && x != "A" && x != "R") {
+                            throw Exception("Invalid operation")
+                        }
+                        val y: String = row[1]
+                        var s: String = x + "," + y
+                        if(x != "R") {
+                            val z: Double = row[1].toDouble()
+                            s += "," + z
+                        }
 
-                        buildingMap.put(b, c)
+//                        buildingMap.put(b, c)
+                        opList.add(s)
                     }
                 }
 
 
                 // Debugging
-                Log.i(TAG, "Building List size: " + buildingMap.size)
-                for(b in buildingMap) {
-                    val msg = "  B: " + b.key + "\t C: " + b.value
+//                Log.i(TAG, "Building List size: " + buildingMap.size)
+//                for(b in buildingMap) {
+//                    val msg = "  B: " + b.key + "\t C: " + b.value
+//                    Log.i(TAG, msg)
+//                }
+                Log.i(TAG, "Operation List size: " + opList.size)
+                for(o in opList) {
+                    val msg = "  Op: " + o
                     Log.i(TAG, msg)
                 }
 
@@ -101,7 +120,8 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
                 }
             }
 
-            val observe = buildingDomain.updateMultipleBuildingCapacities(buildingMap)
+//            val observe = buildingDomain.updateMultipleBuildingCapacities(buildingMap)
+            val observe = buildingDomain.FUNCTION(opList)
 
             observe.subscribe(object: CompletableObserver {
                 override fun onComplete() {
