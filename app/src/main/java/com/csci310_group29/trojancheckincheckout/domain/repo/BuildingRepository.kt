@@ -133,5 +133,5 @@ interface BuildingRepository {
         Return:
             True if building exists, false if it does not.
     */
-    fun buildingExists(buildingName: String): Boolean
+    fun buildingNameExists(buildingName: String): Single<Boolean>
 }
