@@ -13,7 +13,7 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

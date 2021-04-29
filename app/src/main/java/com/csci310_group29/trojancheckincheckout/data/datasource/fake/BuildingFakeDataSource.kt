@@ -3,9 +3,9 @@ package com.csci310_group29.trojancheckincheckout.data.datasource.fake
 import android.graphics.Bitmap
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 private val buildingEntity = BuildingEntity("12", "building", "12", 10, 5, "qrRef")
@@ -50,6 +50,10 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
 
     override fun updateSingleCapacity(buildingId: String, capacity: Double): Completable {
         return Completable.complete()
+    }
+
+    override fun buildingExists(buildingName: String): Boolean {
+        return true
     }
 
 }

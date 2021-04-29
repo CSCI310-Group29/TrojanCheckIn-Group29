@@ -15,9 +15,9 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerUpdateCapacityViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.CompletableObserver
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 

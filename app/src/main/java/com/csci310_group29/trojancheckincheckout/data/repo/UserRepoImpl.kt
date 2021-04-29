@@ -1,57 +1,54 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
-import android.graphics.Bitmap
+import com.csci310_group29.trojancheckincheckout.data.datasource.firebase.UserFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
-import com.csci310_group29.trojancheckincheckout.domain.models.User
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.UserFirebaseDataSource
-import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
-import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 import javax.inject.Named
 
-class UserRepoImpl @Inject constructor(@Named("Data") private val remoteDataSource: UserRepository): UserRepository {
+class UserRepoImpl @Inject constructor(
+    @Named("Data") private val firebaseDataSource: UserRepository): UserRepository {
 
     override fun get(id: String): Single<UserEntity> {
-        return remoteDataSource.get(id)
+        return firebaseDataSource.get(id)
     }
 
     override fun observeUsersInBuilding(buildingId: String): Observable<List<UserEntity>> {
-        return remoteDataSource.observeUsersInBuilding(buildingId)
+        return firebaseDataSource.observeUsersInBuilding(buildingId)
     }
 
     override fun observeUserById(userId: String): Observable<UserEntity> {
-        return remoteDataSource.observeUserById(userId)
+        return firebaseDataSource.observeUserById(userId)
     }
 
     override fun update(userEntity: UserEntity): Completable {
-        return remoteDataSource.update(userEntity)
+        return firebaseDataSource.update(userEntity)
     }
 
     override fun delete(id: String): Completable {
-        return remoteDataSource.delete(id)
+        return firebaseDataSource.delete(id)
     }
 
     override fun getAll(): Single<List<UserEntity>> {
-        return remoteDataSource.getAll()
+        return firebaseDataSource.getAll()
     }
 
     override fun addDeleteField(id: String): Completable {
-        return remoteDataSource.addDeleteField(id)
+        return firebaseDataSource.addDeleteField(id)
     }
 
     override fun create(userEntity: UserEntity): Single<UserEntity> {
-        return remoteDataSource.create(userEntity)
+        return firebaseDataSource.create(userEntity)
     }
 
     override fun setCheckedInBuilding(userId: String, buildingId: String?): Single<UserEntity> {
-        return remoteDataSource.setCheckedInBuilding(userId, buildingId)
+        return firebaseDataSource.setCheckedInBuilding(userId, buildingId)
     }
 
     override fun updatePhotoUrl(id: String, url: String): Completable {
-        return remoteDataSource.updatePhotoUrl(id, url)
+        return firebaseDataSource.updatePhotoUrl(id, url)
     }
 }

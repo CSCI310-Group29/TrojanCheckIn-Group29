@@ -1,11 +1,9 @@
 package com.csci310_group29.trojancheckincheckout.data.repo
 
 import com.csci310_group29.trojancheckincheckout.domain.entities.AuthEntity
-import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
-import com.csci310_group29.trojancheckincheckout.data.datasource.remote.AuthFirebaseDataSource
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 import javax.inject.Named
 

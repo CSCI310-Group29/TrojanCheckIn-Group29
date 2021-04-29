@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -22,10 +23,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrojanCheckInCheckOut"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.views.StudentQueryActivity"
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".ui.views.StudentQueryActivity"
             android:parentActivityName=".ui.views.ManagerHomeActivity"
-            android:windowSoftInputMode="adjustNothing"
-            ></activity>
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.views.QrCodeActivity"
             android:parentActivityName=".ui.views.BuildingInfoActivity" />
@@ -52,7 +61,7 @@
         <activity android:name=".ui.views.StudentHomeActivity" />
         <activity
             android:name=".ui.views.BuildingInfoActivity"
-            android:parentActivityName=".ui.views.BuildingInfoActivity"/>
+            android:parentActivityName=".ui.views.BuildingInfoActivity" />
         <activity
             android:name=".ui.views.ManagerUpdateCapacityActivity"
             android:parentActivityName=".ui.views.ManagerHomeActivity" />
