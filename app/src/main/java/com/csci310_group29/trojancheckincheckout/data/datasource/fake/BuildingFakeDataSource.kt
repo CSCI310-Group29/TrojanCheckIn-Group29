@@ -52,8 +52,8 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Completable.complete()
     }
 
-    override fun buildingExists(buildingName: String): Boolean {
-        return true
+    override fun buildingNameExists(buildingName: String): Single<Boolean> {
+        return Single.just(true)
     }
 
 }

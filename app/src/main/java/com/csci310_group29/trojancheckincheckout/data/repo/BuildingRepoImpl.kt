@@ -51,7 +51,7 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.updateSingleCapacity(buildingId, capacity)
     }
 
-    override fun buildingExists(buildingName: String): Boolean {
-        return remoteDataSource.buildingExists(buildingName)
+    override fun buildingNameExists(buildingName: String): Single<Boolean> {
+        return remoteDataSource.buildingNameExists(buildingName)
     }
 }

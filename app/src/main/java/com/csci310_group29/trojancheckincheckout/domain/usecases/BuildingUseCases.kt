@@ -12,6 +12,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.lang.Exception
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Named
@@ -68,29 +69,29 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
         */
 
         // Check which command it is if not empty
-        if(command.isNotEmpty()) {
-            if(command.elementAtOrNull(0) == "u") { // Update capacity of the building
-                // Save building name as String
-                val buildingName = command.elementAt(1)
-                // Save capacity as Double
-                val capacity = command.elementAt(2).toDouble()
-                // Update capacity function takes in HashMap so let's create one
-                val map: HashMap<String, Double> = hashMapOf(buildingName to capacity)
-                // Call update capacities function if building exists
-                if(buildingRepo.buildingExists(buildingName)) {
-                    buildingRepo.updateCapacities(map)
-                }
-            } else if(command.elementAtOrNull(1) == "a") { // Add the building
-                // Create new building entity
-                val addedBuilding = BuildingEntity(buildingName = command.elementAt(1),
-                    capacity = command.elementAt(2).toInt())
-                // Add it
-                buildingRepo.create(addedBuilding)
-            } else if(command.elementAtOrNull(2) == "r") { // Remove the building
-                // Call delete function to remove the building
-                buildingRepo.delete(command.elementAt(1))
-            } // otherwise do nothing
-        }
+//        if(command.isNotEmpty()) {
+//            if(command.elementAtOrNull(0) == "u") { // Update capacity of the building
+//                // Save building name as String
+//                val buildingName = command.elementAt(1)
+//                // Save capacity as Double
+//                val capacity = command.elementAt(2).toDouble()
+//                // Update capacity function takes in HashMap so let's create one
+//                val map: HashMap<String, Double> = hashMapOf(buildingName to capacity)
+//                // Call update capacities function if building exists
+//                if(buildingRepo.buildingExists(buildingName)) {
+//                    buildingRepo.updateCapacities(map)
+//                }
+//            } else if(command.elementAtOrNull(1) == "a") { // Add the building
+//                // Create new building entity
+//                val addedBuilding = BuildingEntity(buildingName = command.elementAt(1),
+//                    capacity = command.elementAt(2).toInt())
+//                // Add it
+//                buildingRepo.create(addedBuilding)
+//            } else if(command.elementAtOrNull(2) == "r") { // Remove the building
+//                // Call delete function to remove the building
+//                buildingRepo.delete(command.elementAt(1))
+//            } // otherwise do nothing
+//        }
 
         return Completable.complete()
     }
@@ -152,10 +153,17 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
     }
 
     open fun addBuilding(buildingName: String, capacity: Int): Completable {
-        return buildingRepo.create(
-            BuildingEntity("1", buildingName, null,
-            capacity, 0, "")
-            ).ignoreElement()
+        return buildingRepo.buildingNameExists(buildingName)
+            .flatMapCompletable { exists ->
+                if (!exists) {
+                    buildingRepo.create(
+                        BuildingEntity("1", buildingName, null,
+                            capacity, 0, "")
+                    ).ignoreElement()
+                } else {
+                    throw Exception("building ${buildingName} already exists")
+                }
+            }
     }
 
     open fun removeBuilding(buildingName: String): Completable {

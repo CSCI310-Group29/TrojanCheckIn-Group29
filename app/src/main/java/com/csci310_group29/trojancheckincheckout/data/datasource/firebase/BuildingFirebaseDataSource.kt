@@ -132,10 +132,27 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
         }
     }
     
-    override fun buildingExists(buildingName: String): Boolean {
-        val toFind = db.collection("buildings").whereEqualTo("buildingName", buildingName)
-        val found = toFind.toString()
-        return found.isNotEmpty()
+    override fun buildingNameExists(buildingName: String): Single<Boolean> {
+        val buildingRef = db.collection("buildings").whereEqualTo("buildingName", buildingName)
+        return Single.create { emitter ->
+            buildingRef.get()
+                .addOnSuccessListener { snap ->
+                    if (snap.isEmpty) {
+                        emitter.onSuccess(false)
+                    } else {
+                        val buildings = snap.toObjects<BuildingEntity>()
+                        if (buildings.isEmpty()) {
+                            emitter.onSuccess(false)
+                        } else {
+                            emitter.onSuccess(true)
+                        }
+
+                    }
+                }
+                .addOnFailureListener { e ->
+                    emitter.onSuccess(false)
+                }
+        }
     }
 
     override fun incrementNumPeople(buildingId: String, incrementCount: Double): Single<BuildingEntity> {
@@ -199,6 +216,9 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
             val buildingRef = db.collection("buildings").document(buildingId)
             db.runTransaction { transaction ->
                 val snap = transaction.get(buildingRef)
+                if (!snap.exists()) {
+                    throw FirebaseFirestoreException("Building does not exist ${buildingId}", FirebaseFirestoreException.Code.ABORTED)
+                }
                 if (capacity >= snap.getDouble("numPeople")!!) {
                     transaction.update(buildingRef, "capacity", capacity)
                 } else {
