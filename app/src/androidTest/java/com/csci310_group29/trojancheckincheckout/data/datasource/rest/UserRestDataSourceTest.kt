@@ -34,13 +34,13 @@ class UserRestDataSourceTest {
             .create(MessagingWebService::class.java)
     }
 
-    @Test
-    fun test() {
-        val completable = service.helloworld()
-        try {
-            completable.blockingAwait()
-        } catch(e: Exception) {
-            Log.d(TAG, e.localizedMessage)
-        }
-    }
+//    @Test
+//    fun test() {
+//        val completable = service.helloworld()
+//        try {
+//            completable.blockingAwait()
+//        } catch(e: Exception) {
+//            Log.d(TAG, e.localizedMessage)
+//        }
+//    }
 }

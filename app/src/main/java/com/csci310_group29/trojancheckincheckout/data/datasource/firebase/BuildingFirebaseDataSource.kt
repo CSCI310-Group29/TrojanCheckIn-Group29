@@ -51,8 +51,7 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
 
     override fun create(buildingEntity: BuildingEntity): Single<BuildingEntity> {
         return Single.create { emitter ->
-            val ref: DocumentReference = if (buildingEntity.id != null) db.collection("buildings").document(buildingEntity.id!!)
-            else db.collection("buildings").document()
+            val ref = db.collection("buildings").document()
             ref.set(buildingEntity)
                 .addOnSuccessListener {
                     ref.get()
@@ -67,6 +66,9 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                         .addOnFailureListener { e ->
                             emitter.onError(e)
                         }
+                }
+                .addOnFailureListener { e ->
+                    emitter.onError(e)
                 }
         }
     }

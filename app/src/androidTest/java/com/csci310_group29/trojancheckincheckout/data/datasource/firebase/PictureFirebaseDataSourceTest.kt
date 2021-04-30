@@ -53,12 +53,12 @@ class PictureFirebaseDataSourceTest {
         getPicture(url, null, true)
     }
 
-    @Test
-    fun getFromUrlTest() {
-        val url = "https://images-na.ssl-images-amazon.com/images/I/61oT0J2ipHL._AC_UL1000_.jpg"
-        getFromUrl(url)
-
-    }
+//    @Test
+//    fun getFromUrlTest() {
+//        val url = "https://images-na.ssl-images-amazon.com/images/I/61oT0J2ipHL._AC_UL1000_.jpg"
+//        getFromUrl(url)
+//
+//    }
 
     fun createPicture(url: String, byteArray: ByteArray) {
         val completable = dataSource.create(url, byteArray)
@@ -69,16 +69,16 @@ class PictureFirebaseDataSourceTest {
         }
     }
 
-    fun getFromUrl(url: String) {
-        val single = dataSource.getFromExternalUrl(url)
-        try {
-            val picture = single.blockingGet()
-            Log.d(TAG, "picture size is ${picture.size}")
-            assertTrue(picture.isNotEmpty())
-        } catch(e: Exception) {
-            fail("got an exception when trying to get picture from url: ${e.localizedMessage}")
-        }
-    }
+//    fun getFromUrl(url: String) {
+//        val single = dataSource.getFromExternalUrl(url)
+//        try {
+//            val picture = single.blockingGet()
+//            Log.d(TAG, "picture size is ${picture.size}")
+//            assertTrue(picture.isNotEmpty())
+//        } catch(e: Exception) {
+//            fail("got an exception when trying to get picture from url: ${e.localizedMessage}")
+//        }
+//    }
 
     fun getPicture(url: String, testByteArray: ByteArray?, expectError: Boolean = false) {
         val single = dataSource.get(url)
