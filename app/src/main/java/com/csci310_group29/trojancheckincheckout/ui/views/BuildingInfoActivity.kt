@@ -44,9 +44,13 @@ class BuildingInfoActivity : AppCompatActivity() {
         rv = findViewById<View>(R.id.buildingInfo) as RecyclerView
 
         try {
-            val observable = buildingDomain.getAllBuildings()
-            observable.subscribe(object : SingleObserver<List<Building>> {
-                override fun onSuccess(t: List<Building>) {
+            val observable = buildingDomain.observeAllBuildings()
+            observable.subscribe(object : Observer<List<Building>> {
+                override fun onComplete() {
+
+                }
+
+                override fun onNext(t: List<Building>) {
                     EspressoIdlingResource.decrement()
 
                     buildingInfo = initializeList(t)

@@ -16,6 +16,7 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCase
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerUpdateCapacityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
@@ -46,9 +47,14 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
         val spinner2 = findViewById<View>(R.id.RemoveBuildingInput) as Spinner
 
-        val observable = buildingDomain.getAllBuildings()
-        observable.subscribe(object: SingleObserver<List<Building>> {
-            override fun onSuccess(t: List<Building>) {
+        val observable = buildingDomain.observeAllBuildings()
+        observable.subscribe(object: Observer<List<Building>> {
+
+            override fun onComplete() {
+
+            }
+
+            override fun onNext(t: List<Building>) {
                 val adapter = ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,t)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
