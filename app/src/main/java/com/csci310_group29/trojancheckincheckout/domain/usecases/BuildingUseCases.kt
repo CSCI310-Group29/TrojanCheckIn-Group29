@@ -251,6 +251,13 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
             .flatMapCompletable { buildingIdCapacities ->  buildingRepo.updateCapacities(buildingIdCapacities) }
     }
 
+    open fun observeAllBuildings(): Observable<List<Building>> {
+        return buildingRepo.observeAll()
+            .flatMap { buildingEntities ->
+                buildModels(buildingEntities).toObservable()
+            }
+    }
+
     open fun getQrCode(buildingName: String): Single<ByteArray> {
         /*
             Retrieves the QR code a building.

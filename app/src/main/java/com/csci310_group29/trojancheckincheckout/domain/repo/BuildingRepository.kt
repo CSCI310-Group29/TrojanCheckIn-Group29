@@ -70,6 +70,8 @@ interface BuildingRepository {
      */
     fun observeByName(buildingName: String): Observable<BuildingEntity>
 
+    fun observeAll(): Observable<List<BuildingEntity>>
+
     /*
     Retrieves a building based on its name
 
