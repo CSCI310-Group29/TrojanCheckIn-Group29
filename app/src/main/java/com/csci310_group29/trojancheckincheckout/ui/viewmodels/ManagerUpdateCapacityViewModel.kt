@@ -46,8 +46,7 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 
     fun removeWithUI(buildingId: String): Completable {
         return Completable.create { emitter ->
-            //need arian's function
-           // val observe = buildingDomain.updateSingleBuildingCapacity(buildingId)
+            val observe = buildingDomain.removeBuilding(buildingId)
             observe.subscribe(object: CompletableObserver {
                 override fun onComplete() {
                     emitter.onComplete()
@@ -64,10 +63,9 @@ class ManagerUpdateCapacityViewModel @Inject constructor(private val buildingDom
 
     }
 
-    fun addWithUI(buildingId: String, newCapacity: Double): Completable {
+    fun addWithUI(buildingId: String, newCapacity: Int): Completable {
         return Completable.create { emitter ->
-            //need arian's function
-            //val observe = buildingDomain.updateSingleBuildingCapacity(buildingId, newCapacity)
+            val observe = buildingDomain.addBuilding(buildingId, newCapacity)
             observe.subscribe(object: CompletableObserver {
                 override fun onComplete() {
                     emitter.onComplete()

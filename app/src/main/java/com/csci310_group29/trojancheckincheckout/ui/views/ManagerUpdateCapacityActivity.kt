@@ -1,6 +1,5 @@
 package com.csci310_group29.trojancheckincheckout.ui.views
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -110,10 +109,8 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
         )
     }
 
-
-    @SuppressLint("WrongViewCast")
     fun onRemoveWithUI(view: View) {
-        val RSpinner = findViewById<Spinner>(R.id.RemoveBuildingUI)
+        val RSpinner = findViewById<Spinner>(R.id.RemoveBuildingInput)
         val buildingCode = RSpinner.selectedItem.toString()
 
         val str = "Attempting to remove Building "
@@ -138,12 +135,11 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
         )
     }
 
-    @SuppressLint("WrongViewCast")
     fun onAddWithUI(view: View) {
-        val newBuilding = findViewById<EditText>(R.id.AddCapacityUI)
+        val newBuilding = findViewById<EditText>(R.id.AddBuildingInput)
         val building = newBuilding.text.toString()
-        val newCapA = findViewById<EditText>(R.id.AddCapacityUI)
-        val newCapacity = newCapA.text.toString().toDouble()
+        val newCapA = findViewById<EditText>(R.id.AddCapacityInput)
+        val newCapacity = newCapA.text.toString().toInt()
 
         val str = "Attempting to add Building "
         Log.i(TAG, str)
