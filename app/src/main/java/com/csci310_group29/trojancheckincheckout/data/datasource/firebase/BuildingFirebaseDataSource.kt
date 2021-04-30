@@ -2,6 +2,7 @@ package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
@@ -75,10 +76,17 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
 
     override fun delete(buildingId: String): Completable {
         return Completable.create { emitter ->
-            val ref = db.collection("buildings").document(buildingId)
-            ref.delete()
+            val buildingRef = db.collection("buildings").document(buildingId)
+            db.runTransaction { transaction ->
+                val buildingSnap = transaction.get(buildingRef)
+                if (buildingSnap.getDouble("numPeople")!! > 0) {
+                    throw FirebaseFirestoreException("building contains people", FirebaseFirestoreException.Code.ABORTED)
+                } else {
+                    transaction.delete(buildingRef)
+                }
+            }
                 .addOnSuccessListener { emitter.onComplete() }
-                .addOnFailureListener { e -> emitter.onError(e) }
+                .addOnFailureListener { e ->  emitter.onError(e) }
         }
     }
 
@@ -115,6 +123,23 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                         emitter.onNext(buildingEntity)
                     }
                 }
+            }
+        }
+    }
+
+    override fun observeAll(): Observable<List<BuildingEntity>> {
+        return Observable.create { emitter ->
+            val ref = db.collection("buildings")
+            ref.addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.d(TAG, "observe buildings failed")
+                    emitter.onError(e)
+                }
+                if (snapshots != null) {
+                    val buildingEntities: List<BuildingEntity> = snapshots.toObjects<BuildingEntity>()
+                    Log.d(TAG, "Found ${snapshots.size()} Buildings")
+                    emitter.onNext(buildingEntities)
+                } else emitter.onError(Exception("Error occurred trying to get buildings"))
             }
         }
     }
