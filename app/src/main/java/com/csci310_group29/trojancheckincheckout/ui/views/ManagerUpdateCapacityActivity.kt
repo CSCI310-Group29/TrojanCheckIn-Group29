@@ -16,6 +16,8 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCase
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerUpdateCapacityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
@@ -46,9 +48,12 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
         val spinner2 = findViewById<View>(R.id.RemoveBuildingInput) as Spinner
 
-        val observable = buildingDomain.getAllBuildings()
-        observable.subscribe(object: SingleObserver<List<Building>> {
-            override fun onSuccess(t: List<Building>) {
+//        val observable = buildingDomain.getAllBuildings()
+        val observable = buildingDomain.observeAllBuildings()
+//        observable.subscribe(object: SingleObserver<List<Building>> {
+        observable.subscribe(object: Observer<List<Building>> {
+            override fun onNext(t: List<Building>) {
+//            override fun onSuccess(t: List<Building>) {
                 val adapter = ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,t)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
@@ -57,11 +62,15 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
             }
 
             override fun onSubscribe(d: Disposable) {
-
+                Log.i(TAG, "subscribed to building list for dropdown");
             }
 
             override fun onError(e: Throwable) {
 
+            }
+
+            override fun onComplete() {
+                Log.i(TAG, "completed building list for dropdown")
             }
         })
 
@@ -95,6 +104,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
             object : CompletableObserver {
                 override fun onComplete() {
                     makeToast("Successfully updated capacity")
+                    newCap.text.clear()
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -149,6 +159,8 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
             object : CompletableObserver {
                 override fun onComplete() {
                     makeToast("Successfully added building")
+                    newBuilding.text.clear()
+                    newCapA.text.clear()
                 }
 
                 override fun onSubscribe(d: Disposable) {
