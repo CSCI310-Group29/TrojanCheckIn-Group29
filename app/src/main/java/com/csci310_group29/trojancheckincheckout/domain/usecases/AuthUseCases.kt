@@ -8,21 +8,28 @@ import com.csci310_group29.trojancheckincheckout.data.repo.PicturesRepoImpl
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.repo.AuthRepository
+import com.csci310_group29.trojancheckincheckout.domain.repo.MessagingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
 open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo: AuthRepository,
                                             @Named("Repo") private val pictureRepo: PicturesRepository,
                                             @Named("Repo") private val userRepo: UserRepository,
+                                            @Named("Repo") private val messagingRepo: MessagingRepository,
                                             private val userUseCases: UserUseCases) {
 
     companion object {
         private val TAG = "AuthUseCases"
     }
+
+    private val disposables: CompositeDisposable = CompositeDisposable()
 
     open fun getUserAuth(): Single<AuthEntity> {
         /*
@@ -57,7 +64,7 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
             .flatMapCompletable {authEntity ->
                 userEntity.id = authEntity.id
                 // call UserRepository to create a user object in the database
-                userRepo.create(userEntity).toCompletable()
+                userRepo.create(userEntity).ignoreElement()
             }
     }
 
@@ -77,6 +84,13 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
         // call AuthRepository to login to user accountt
         return authRepo.loginUser(email, password)
                 .toSingleDefault(false)
+                .flatMap { authRepo.getCurrentUser() }
+                .flatMapCompletable { authEntity ->
+                    messagingRepo.getToken()
+                        .flatMapCompletable { token ->
+                            messagingRepo.updateDeviceToken(authEntity.id, token)
+                        }
+                }.toSingleDefault(false)
                 // call UserUseCases to get the currently logged in user
                 .flatMap { userUseCases.getCurrentlyLoggedInUser() }
     }
@@ -91,7 +105,14 @@ open class AuthUseCases @Inject constructor(@Named("Repo") private val authRepo:
          */
 
         // call AuthRepository to logout the user
-        return authRepo.logoutCurrentUser()
+        Log.d(TAG, "logging out user");
+        return authRepo.getCurrentUser()
+            .flatMapCompletable { authEntity ->
+                messagingRepo.getToken()
+                    .flatMapCompletable { token ->
+                        Completable.mergeArray(authRepo.logoutCurrentUser(), messagingRepo.removeDeviceToken(authEntity.id, token))
+                    }
+            }
     }
 
     open fun deleteAccount(): Completable {

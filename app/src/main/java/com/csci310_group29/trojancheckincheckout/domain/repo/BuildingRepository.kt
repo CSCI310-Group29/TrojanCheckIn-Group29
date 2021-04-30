@@ -1,9 +1,9 @@
 package com.csci310_group29.trojancheckincheckout.domain.repo
 
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 interface BuildingRepository {
 
@@ -70,6 +70,8 @@ interface BuildingRepository {
      */
     fun observeByName(buildingName: String): Observable<BuildingEntity>
 
+    fun observeAll(): Observable<List<BuildingEntity>>
+
     /*
     Retrieves a building based on its name
 
@@ -117,7 +119,21 @@ interface BuildingRepository {
     emit an error.
 
         Params:
+            HashMap containing building names and capacities.
+
+        Returns:
             Completable that emits completion if the capacity was updated, or an error otherwise.
-     */
+    */
     fun updateSingleCapacity(buildingId: String, capacity: Double): Completable
+    
+    /*
+    Checks if building exists.
+
+        Params:
+            Name of the building.
+
+        Return:
+            True if building exists, false if it does not.
+    */
+    fun buildingNameExists(buildingName: String): Single<Boolean>
 }

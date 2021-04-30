@@ -3,9 +3,9 @@ package com.csci310_group29.trojancheckincheckout.domain.repo
 import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 interface VisitRepository {
 
@@ -109,7 +109,7 @@ interface VisitRepository {
             Single that emits an updated VisitEntity object upon successful check out, or an error
             otherwise
      */
-    fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String): Single<VisitEntity>
+    fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, managerId: String? = null): Single<VisitEntity>
 
     /*
     Queries all visits based on the non null fields in the VisitQuery.

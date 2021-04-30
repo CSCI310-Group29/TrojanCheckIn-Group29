@@ -1,19 +1,15 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
-import android.graphics.Bitmap
-import android.os.Build
 import android.util.Log
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
-import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
-import com.google.firebase.ktx.Firebase
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFirestore): BuildingRepository {
@@ -56,8 +52,7 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
 
     override fun create(buildingEntity: BuildingEntity): Single<BuildingEntity> {
         return Single.create { emitter ->
-            val ref: DocumentReference = if (buildingEntity.id != null) db.collection("buildings").document(buildingEntity.id!!)
-            else db.collection("buildings").document()
+            val ref = db.collection("buildings").document()
             ref.set(buildingEntity)
                 .addOnSuccessListener {
                     ref.get()
@@ -69,16 +64,29 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                                 emitter.onError(Exception("building could not be created"))
                             }
                         }
+                        .addOnFailureListener { e ->
+                            emitter.onError(e)
+                        }
+                }
+                .addOnFailureListener { e ->
+                    emitter.onError(e)
                 }
         }
     }
 
     override fun delete(buildingId: String): Completable {
         return Completable.create { emitter ->
-            val ref = db.collection("buildings").document(buildingId)
-            ref.delete()
+            val buildingRef = db.collection("buildings").document(buildingId)
+            db.runTransaction { transaction ->
+                val buildingSnap = transaction.get(buildingRef)
+                if (buildingSnap.getDouble("numPeople")!! > 0) {
+                    throw FirebaseFirestoreException("building contains people", FirebaseFirestoreException.Code.ABORTED)
+                } else {
+                    transaction.delete(buildingRef)
+                }
+            }
                 .addOnSuccessListener { emitter.onComplete() }
-                .addOnFailureListener { e -> emitter.onError(e) }
+                .addOnFailureListener { e ->  emitter.onError(e) }
         }
     }
 
@@ -119,6 +127,23 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
         }
     }
 
+    override fun observeAll(): Observable<List<BuildingEntity>> {
+        return Observable.create { emitter ->
+            val ref = db.collection("buildings")
+            ref.addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.d(TAG, "observe buildings failed")
+                    emitter.onError(e)
+                }
+                if (snapshots != null) {
+                    val buildingEntities: List<BuildingEntity> = snapshots.toObjects<BuildingEntity>()
+                    Log.d(TAG, "Found ${snapshots.size()} Buildings")
+                    emitter.onNext(buildingEntities)
+                } else emitter.onError(Exception("Error occurred trying to get buildings"))
+            }
+        }
+    }
+
     override fun getByName(buildingName: String): Single<BuildingEntity> {
         return Single.create { emitter ->
             val buildingRef = db.collection("buildings").whereEqualTo("buildingName", buildingName)
@@ -133,6 +158,29 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
                 }
                 .addOnFailureListener { e ->
                     emitter.onError(e)
+                }
+        }
+    }
+    
+    override fun buildingNameExists(buildingName: String): Single<Boolean> {
+        val buildingRef = db.collection("buildings").whereEqualTo("buildingName", buildingName)
+        return Single.create { emitter ->
+            buildingRef.get()
+                .addOnSuccessListener { snap ->
+                    if (snap.isEmpty) {
+                        emitter.onSuccess(false)
+                    } else {
+                        val buildings = snap.toObjects<BuildingEntity>()
+                        if (buildings.isEmpty()) {
+                            emitter.onSuccess(false)
+                        } else {
+                            emitter.onSuccess(true)
+                        }
+
+                    }
+                }
+                .addOnFailureListener { e ->
+                    emitter.onSuccess(false)
                 }
         }
     }
@@ -198,6 +246,9 @@ class BuildingFirebaseDataSource @Inject constructor(private val db: FirebaseFir
             val buildingRef = db.collection("buildings").document(buildingId)
             db.runTransaction { transaction ->
                 val snap = transaction.get(buildingRef)
+                if (!snap.exists()) {
+                    throw FirebaseFirestoreException("Building does not exist ${buildingId}", FirebaseFirestoreException.Code.ABORTED)
+                }
                 if (capacity >= snap.getDouble("numPeople")!!) {
                     transaction.update(buildingRef, "capacity", capacity)
                 } else {

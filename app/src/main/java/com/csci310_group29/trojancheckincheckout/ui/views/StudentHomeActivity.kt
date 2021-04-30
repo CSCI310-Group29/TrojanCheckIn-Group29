@@ -16,9 +16,9 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Visit
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.CompletableObserver
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_student_home.*
 import java.util.jar.Attributes
 import javax.inject.Inject
@@ -62,6 +62,7 @@ class StudentHomeActivity : AppCompatActivity() {
     }
 
     fun onLogout(view: View) {
+        Log.d(TAG, "trying to log out")
         val observable = viewModel.logout()
         observable.subscribe(object: CompletableObserver {
             override fun onComplete() {

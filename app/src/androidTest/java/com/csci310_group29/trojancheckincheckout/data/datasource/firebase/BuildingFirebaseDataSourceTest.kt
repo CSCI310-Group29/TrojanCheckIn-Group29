@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -66,6 +66,26 @@ class BuildingFirebaseDataSourceTest {
     @Test
     fun getInvalidBuildingTest() {
         getBuildingById("invalid id", true)
+    }
+
+    @Test
+    fun checkBuildingExistTest() {
+        val buildingEntity = BuildingEntity(
+            id = "1",
+            buildingName = "A",
+            address = "A",
+            capacity = 10,
+            numPeople = 4,
+            qrCodeRef = "ref"
+        )
+        val id = createBuilding(buildingEntity)
+        buildingExist(buildingEntity.buildingName!!, true)
+        delete(id)
+    }
+
+    @Test
+    fun checkInvalidBuildingExistTest() {
+        buildingExist("DDFDF", false)
     }
 
     @Test
@@ -149,6 +169,16 @@ class BuildingFirebaseDataSourceTest {
         updateCapacities(buildingCapacities)
         for (id in buildingCapacities.keys) {
             delete(id)
+        }
+    }
+
+    fun buildingExist(buildingName: String, expectExists: Boolean) {
+        val single = dataSource.buildingNameExists(buildingName)
+        try {
+            val exists = single.blockingGet()
+            assertEquals(exists, expectExists)
+        } catch(e: Exception) {
+            fail("errror when checking if building exists")
         }
     }
 

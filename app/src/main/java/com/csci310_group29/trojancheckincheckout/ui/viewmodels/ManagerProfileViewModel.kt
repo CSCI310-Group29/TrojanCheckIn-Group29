@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
-import io.reactivex.*
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.disposables.Disposable
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 

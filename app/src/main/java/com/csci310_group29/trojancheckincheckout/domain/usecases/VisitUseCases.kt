@@ -12,8 +12,9 @@ import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -82,6 +83,20 @@ open class VisitUseCases @Inject constructor(
                                         }
                                 }
                         }
+                } else {
+                    throw Exception("User is not checked in or is checking out of the wrong building")
+                }
+            }
+    }
+
+    open fun checkOutForce(userId: String, managerId: String): Completable {
+        return userRepo.get(userId)
+            .flatMapCompletable { userEntity ->
+                if (userEntity.checkedInBuildingId != null) {
+                    visitRepo.getLatestVisit(userEntity.id!!)
+                        .flatMap { visitEntity ->
+                            visitRepo.runCheckOutTransaction(userEntity.id!!, visitEntity.id!!, userEntity.checkedInBuildingId!!, managerId)
+                        }.ignoreElement()
                 } else {
                     throw Exception("User is not checked in or is checking out of the wrong building")
                 }

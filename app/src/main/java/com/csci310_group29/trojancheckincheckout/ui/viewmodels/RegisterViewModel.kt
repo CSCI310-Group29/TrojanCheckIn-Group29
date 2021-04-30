@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import com.csci310_group29.trojancheckincheckout.domain.entities.UserEntity
 import com.csci310_group29.trojancheckincheckout.domain.usecases.AuthUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.Session.Companion.user
-import io.reactivex.Completable
-import io.reactivex.CompletableObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 

@@ -25,8 +25,9 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.StudentQueryAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_visit_query.*
 import java.util.*
 import javax.inject.Inject
@@ -66,9 +67,10 @@ class StudentQueryActivity : AppCompatActivity() {
         spinnerMajor.adapter = adapter
 
 
-        val observable = buildingDomain.getAllBuildings()
-        observable.subscribe(object: SingleObserver<List<Building>> {
-            override fun onSuccess(t: List<Building>) {
+        val observable = buildingDomain.observeAllBuildings()
+        observable.subscribe(object: Observer<List<Building>> {
+
+            override fun onNext(t: List<Building>) {
                 Log.i(TAG, "${t.size}")
                 val list = getBuildingOptions(t)
                 val adapter = ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,list)
@@ -81,6 +83,10 @@ class StudentQueryActivity : AppCompatActivity() {
             }
 
             override fun onError(e: Throwable) {
+
+            }
+
+            override fun onComplete() {
 
             }
         })
@@ -140,9 +146,9 @@ class StudentQueryActivity : AppCompatActivity() {
         observable.subscribe(object: SingleObserver<List<User>> {
             override fun onSuccess(t: List<User>) {
                 Log.i(TAG, "${t.size}")
-                val list = t.sortedWith(compareBy{it.lastName!!.toLowerCase()})
+                //val list = t.sortedWith(compareBy{it.lastName!!.toLowerCase()})
                 loadingEnd()
-                val adapter = StudentQueryAdapter(list)
+                val adapter = StudentQueryAdapter(t)
                 rv.adapter = adapter
                 adapter.notifyDataSetChanged()
                 if(t.size == 0)  makeToast("No results for this query")

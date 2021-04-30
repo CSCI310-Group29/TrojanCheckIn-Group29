@@ -15,9 +15,11 @@ import com.csci310_group29.trojancheckincheckout.domain.models.Building
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.ManagerUpdateCapacityViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.CompletableObserver
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 
@@ -42,22 +44,33 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        val spinner = findViewById<View>(R.id.BuildingInput) as Spinner
+        val spinner = findViewById<View>(R.id.UpdateBuildingInput) as Spinner
 
-        val observable = buildingDomain.getAllBuildings()
-        observable.subscribe(object: SingleObserver<List<Building>> {
-            override fun onSuccess(t: List<Building>) {
+        val spinner2 = findViewById<View>(R.id.RemoveBuildingInput) as Spinner
+
+//        val observable = buildingDomain.getAllBuildings()
+        val observable = buildingDomain.observeAllBuildings()
+//        observable.subscribe(object: SingleObserver<List<Building>> {
+        observable.subscribe(object: Observer<List<Building>> {
+            override fun onNext(t: List<Building>) {
+//            override fun onSuccess(t: List<Building>) {
                 val adapter = ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,t)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
+                spinner2.adapter = adapter
+
             }
 
             override fun onSubscribe(d: Disposable) {
-
+                Log.i(TAG, "subscribed to building list for dropdown");
             }
 
             override fun onError(e: Throwable) {
 
+            }
+
+            override fun onComplete() {
+                Log.i(TAG, "completed building list for dropdown")
             }
         })
 
@@ -73,9 +86,9 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
     }
 
     fun onUpdateWithUI(view: View) {
-        val bSpinner = findViewById<Spinner>(R.id.BuildingInput)
+        val bSpinner = findViewById<Spinner>(R.id.UpdateBuildingInput)
         val buildingCode = bSpinner.selectedItem.toString()
-        val newCap = findViewById<EditText>(R.id.NewCapacityInput)
+        val newCap = findViewById<EditText>(R.id.UpdateCapacityInput)
         val newCapacity = newCap.text.toString().toDouble()
         // Check if fields are populated
 //        if(NewCapacityInput.isEmpty || BuildingInput.isEmpty()) {
@@ -88,9 +101,10 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
         val observable = viewModel.updateWithUI(buildingCode, newCapacity)
         observable.subscribe(
-            object: CompletableObserver {
+            object : CompletableObserver {
                 override fun onComplete() {
                     makeToast("Successfully updated capacity")
+                    newCap.text.clear()
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -103,14 +117,70 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
                 }
             }
         )
+    }
 
+    fun onRemoveWithUI(view: View) {
+        val RSpinner = findViewById<Spinner>(R.id.RemoveBuildingInput)
+        val buildingCode = RSpinner.selectedItem.toString()
+
+        val str = "Attempting to remove Building "
+        Log.i(TAG, str)
+
+        val observable = viewModel.removeWithUI(buildingCode)
+        observable.subscribe(
+            object : CompletableObserver {
+                override fun onComplete() {
+                    makeToast("Successfully removed building")
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, e.localizedMessage)
+                    makeToast("Unable to remove building\n" + e.localizedMessage)
+                }
+            }
+        )
+    }
+
+    fun onAddWithUI(view: View) {
+        val newBuilding = findViewById<EditText>(R.id.AddBuildingInput)
+        val building = newBuilding.text.toString()
+        val newCapA = findViewById<EditText>(R.id.AddCapacityInput)
+        val newCapacity = newCapA.text.toString().toInt()
+
+        val str = "Attempting to add Building "
+        Log.i(TAG, str)
+
+        val observable = viewModel.addWithUI(building, newCapacity)
+        observable.subscribe(
+            object : CompletableObserver {
+                override fun onComplete() {
+                    makeToast("Successfully added building")
+                    newBuilding.text.clear()
+                    newCapA.text.clear()
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, e.localizedMessage)
+                    makeToast("Unable to add building\n" + e.localizedMessage)
+                }
+            }
+        )
+    }
 //        try {
 //            viewModel.updateWithUI()
 //
 //        } catch(e: Exception) {
 //            makeToast("Unable to update capacity. Try again")
 //        }
-    }
+
 
     /**
      * Update capacities with CSV
@@ -145,7 +215,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
                     observable.subscribe(
                         object: CompletableObserver {
                             override fun onComplete() {
-                                makeToast("Successfully updated capacity")
+                                makeToast("Successfully modified buildings")
                             }
 
                             override fun onSubscribe(d: Disposable) {
@@ -154,7 +224,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
                             override fun onError(e: Throwable) {
                                 Log.e(TAG, e.localizedMessage)
-                                makeToast("Unable to update capacity\n" + e.localizedMessage)
+                                makeToast("Unable to modify buildings\n" + e.localizedMessage)
                             }
                         }
                     )

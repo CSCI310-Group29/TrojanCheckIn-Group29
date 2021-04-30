@@ -14,11 +14,12 @@ import com.csci310_group29.trojancheckincheckout.domain.models.MutableBuilding
 import com.csci310_group29.trojancheckincheckout.domain.models.User
 import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
+import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.BuildingStudentListAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.Observer
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 
@@ -27,6 +28,9 @@ class BuildingStudentListActivity : AppCompatActivity() {
 
     @Inject
     lateinit var userDomain: UserUseCases
+
+    @Inject
+    lateinit var visitDomain: VisitUseCases
 
     lateinit var rv: RecyclerView
     var map: HashMap<String, Int> = HashMap<String, Int>()
@@ -55,7 +59,7 @@ class BuildingStudentListActivity : AppCompatActivity() {
                     Log.i(TAG, "size ${t.size}")
                     studentList = initializeList(t)
                     initializeHashmap(t)
-                    adapter = BuildingStudentListAdapter(userDomain, studentList)
+                    adapter = BuildingStudentListAdapter(userDomain, visitDomain, studentList)
                     rv.adapter = adapter
                 }
 

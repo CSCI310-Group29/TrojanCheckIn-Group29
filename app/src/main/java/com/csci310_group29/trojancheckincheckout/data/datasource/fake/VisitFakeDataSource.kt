@@ -4,9 +4,9 @@ import com.csci310_group29.trojancheckincheckout.domain.entities.VisitEntity
 import com.csci310_group29.trojancheckincheckout.domain.query.UserQuery
 import com.csci310_group29.trojancheckincheckout.domain.query.VisitQuery
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import java.util.*
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ class VisitFakeDataSource @Inject constructor(): VisitRepository {
         return Single.just(visitEntity)
     }
 
-    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String): Single<VisitEntity> {
+    override fun runCheckOutTransaction(userId: String, visitId: String, buildingId: String, managerId: String?): Single<VisitEntity> {
         return Single.just(visitEntity)
     }
 

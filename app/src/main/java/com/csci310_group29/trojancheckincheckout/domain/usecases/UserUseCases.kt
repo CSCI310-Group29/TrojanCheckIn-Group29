@@ -18,11 +18,12 @@ import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.UserRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.VisitRepository
 import com.google.rpc.context.AttributeContext
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.net.URL
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -86,7 +87,13 @@ open class UserUseCases @Inject constructor(
     }
 
     open fun updateProfilePictureByUrl(url: String): Single<User> {
-        return pictureRepo.getFromExternalUrl(url)
+        val urlPath = URL(url)
+        val split = urlPath.path.split(".")
+        val extension = split[split.size - 1]
+        if (extension !in setOf<String>("jpeg", "tiff", "png", "jpg")) {
+            return Single.error(Exception("invalid image extension"))
+        }
+        return pictureRepo.getFromExternalUrl(urlPath)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap { picture ->
@@ -213,7 +220,7 @@ open class UserUseCases @Inject constructor(
                                     }
                                     .distinct()
                                     .flatMap { userId ->
-                                        userRepo.get(userId).toObservable()
+                                        userRepo.get(userId!!).toObservable()
                                     }
                                     .filter { userEntity -> checkUser(userEntity, userQuery)}
                                     .flatMap { userEntity ->
@@ -235,7 +242,7 @@ open class UserUseCases @Inject constructor(
                             }
                             .distinct()
                             .flatMap { userId ->
-                                userRepo.get(userId).toObservable()
+                                userRepo.get(userId!!).toObservable()
                             }
                             .filter { userEntity -> checkUser(userEntity, userQuery)}
                             .flatMap { userEntity ->
@@ -378,11 +385,11 @@ open class UserUseCases @Inject constructor(
         var result = true
         if (userQuery.firstName != null) {
             if (userEntity.firstName == null) result = false
-            else if (userQuery.firstName !in userEntity.firstName!!) result = false
+            else if (userQuery.firstName.toLowerCase() !in userEntity.firstName!!.toLowerCase()) result = false
         }
         if (userQuery.lastName != null) {
             if (userEntity.lastName == null) result = false
-            else if (userQuery.lastName !in userEntity.lastName!!) result = false
+            else if (userQuery.lastName.toLowerCase() !in userEntity.lastName!!.toLowerCase()) result = false
         }
         if (userQuery.lastName != null && userQuery.lastName !in userEntity.lastName!!)
             result = false
@@ -412,6 +419,10 @@ open class UserUseCases @Inject constructor(
             if (visitEntity.checkIn != null && visitEntity.checkIn > visitQuery.end) return false
         }
         return true
+    }
+
+    open fun sendDeviceToken(token: String): Completable {
+        return Completable.complete()
     }
 
     private fun checkVisitQuery(visitQuery: VisitQuery): Boolean {

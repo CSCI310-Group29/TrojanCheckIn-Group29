@@ -1,4 +1,4 @@
-package com.csci310_group29.trojancheckincheckout.data.datasource.remote
+package com.csci310_group29.trojancheckincheckout.data.datasource.firebase
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -7,9 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.csci310_group29.trojancheckincheckout.R
 import com.google.firebase.FirebaseApp
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import org.junit.After
 import org.junit.Assert.*
@@ -56,12 +53,12 @@ class PictureFirebaseDataSourceTest {
         getPicture(url, null, true)
     }
 
-    @Test
-    fun getFromUrlTest() {
-        val url = "https://images-na.ssl-images-amazon.com/images/I/61oT0J2ipHL._AC_UL1000_.jpg"
-        getFromUrl(url)
-
-    }
+//    @Test
+//    fun getFromUrlTest() {
+//        val url = "https://images-na.ssl-images-amazon.com/images/I/61oT0J2ipHL._AC_UL1000_.jpg"
+//        getFromUrl(url)
+//
+//    }
 
     fun createPicture(url: String, byteArray: ByteArray) {
         val completable = dataSource.create(url, byteArray)
@@ -72,16 +69,16 @@ class PictureFirebaseDataSourceTest {
         }
     }
 
-    fun getFromUrl(url: String) {
-        val single = dataSource.getFromExternalUrl(url)
-        try {
-            val picture = single.blockingGet()
-            Log.d(TAG, "picture size is ${picture.size}")
-            assertTrue(picture.isNotEmpty())
-        } catch(e: Exception) {
-            fail("got an exception when trying to get picture from url: ${e.localizedMessage}")
-        }
-    }
+//    fun getFromUrl(url: String) {
+//        val single = dataSource.getFromExternalUrl(url)
+//        try {
+//            val picture = single.blockingGet()
+//            Log.d(TAG, "picture size is ${picture.size}")
+//            assertTrue(picture.isNotEmpty())
+//        } catch(e: Exception) {
+//            fail("got an exception when trying to get picture from url: ${e.localizedMessage}")
+//        }
+//    }
 
     fun getPicture(url: String, testByteArray: ByteArray?, expectError: Boolean = false) {
         val single = dataSource.get(url)

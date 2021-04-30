@@ -17,21 +17,24 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCase
 import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.csci310_group29.trojancheckincheckout.domain.usecases.VisitUseCases
 import com.csci310_group29.trojancheckincheckout.ui.views.ManagerStudentProfileActivity
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
+import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.core.CompletableObserver
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.item_buildingstudentlist.view.*
 import javax.inject.Inject
 
-class BuildingStudentListAdapter @Inject constructor(private val userDomain: UserUseCases, private val sList: List<User>): RecyclerView.Adapter<BuildingStudentListAdapter.ViewHolder>() {
+class BuildingStudentListAdapter @Inject constructor(private val userDomain: UserUseCases,
+                                                     private val visitDomain: VisitUseCases,
+                                                     private val sList: List<User>): RecyclerView.Adapter<BuildingStudentListAdapter.ViewHolder>() {
 
-    @Inject
-    lateinit var visitDomain: VisitUseCases
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
         val studentId = itemView.findViewById<TextView>(R.id.buildingStudentList_SID)
         val lName = itemView.findViewById<TextView>(R.id.buildingStudentList_lastName)
         var fName = itemView.findViewById<TextView>(R.id.buildingStudentList_firstName)
         val studentProfileButton = itemView.findViewById<Button>(R.id.buildingStudentList_viewProfile)
+        val kickOutButton = itemView.findViewById<Button>(R.id.buildingStudentListKickOut)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,12 +55,31 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
         holder.lName.text = user.lastName
         holder.fName.text = user.firstName
         holder.studentProfileButton.text = "Profile"
+        holder.kickOutButton.text = "Kick Out"
 
         holder.studentProfileButton.setOnClickListener(View.OnClickListener { v->
             val i = Intent(v.context, ManagerStudentProfileActivity::class.java)
             i.putExtra("studentUID", user.id)
 
             startActivity(v.context, i, null)
+        })
+
+        holder.kickOutButton.setOnClickListener(View.OnClickListener {v ->
+
+            val observable = visitDomain.checkOutForce(user.id, Session.uid);
+            observable.subscribe(object: CompletableObserver {
+                override fun onComplete() {
+                    Log.i(TAG, "kicked out student")
+                }
+
+                override fun onSubscribe(d: Disposable?) {
+                    Log.i(TAG, "subscribed kicked out student")
+                }
+
+                override fun onError(e: Throwable?) {
+                    Log.i(TAG, "error kicking out student")
+                }
+            })
         })
 
         /*val observable = userDomain.observeUserById(user.id)

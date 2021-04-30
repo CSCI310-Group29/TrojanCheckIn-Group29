@@ -17,9 +17,9 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.BuildingUseCase
 import com.csci310_group29.trojancheckincheckout.ui.util.EspressoIdlingResource
 import com.csci310_group29.trojancheckincheckout.ui.viewmodels.BuildingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.Observer
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,9 +44,13 @@ class BuildingInfoActivity : AppCompatActivity() {
         rv = findViewById<View>(R.id.buildingInfo) as RecyclerView
 
         try {
-            val observable = buildingDomain.getAllBuildings()
-            observable.subscribe(object : SingleObserver<List<Building>> {
-                override fun onSuccess(t: List<Building>) {
+            val observable = buildingDomain.observeAllBuildings()
+            observable.subscribe(object : Observer<List<Building>> {
+                override fun onComplete() {
+
+                }
+
+                override fun onNext(t: List<Building>) {
                     EspressoIdlingResource.decrement()
 
                     buildingInfo = initializeList(t)

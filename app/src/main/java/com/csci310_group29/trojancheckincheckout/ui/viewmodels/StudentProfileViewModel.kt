@@ -9,8 +9,8 @@ import com.csci310_group29.trojancheckincheckout.domain.usecases.UserUseCases
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import io.reactivex.*
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.disposables.Disposable
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
