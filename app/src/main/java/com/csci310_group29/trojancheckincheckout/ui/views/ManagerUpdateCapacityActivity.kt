@@ -120,7 +120,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
         observable.subscribe(
             object : CompletableObserver {
                 override fun onComplete() {
-                    makeToast("Successfully updated capacity")
+                    makeToast("Successfully removed building")
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -129,7 +129,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, e.localizedMessage)
-                    makeToast("Unable to update capacity\n" + e.localizedMessage)
+                    makeToast("Unable to remove building\n" + e.localizedMessage)
                 }
             }
         )
@@ -148,7 +148,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
         observable.subscribe(
             object : CompletableObserver {
                 override fun onComplete() {
-                    makeToast("Successfully updated capacity")
+                    makeToast("Successfully added building")
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -157,7 +157,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, e.localizedMessage)
-                    makeToast("Unable to update capacity\n" + e.localizedMessage)
+                    makeToast("Unable to add building\n" + e.localizedMessage)
                 }
             }
         )
@@ -203,7 +203,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
                     observable.subscribe(
                         object: CompletableObserver {
                             override fun onComplete() {
-                                makeToast("Successfully updated capacity")
+                                makeToast("Successfully modified buildings")
                             }
 
                             override fun onSubscribe(d: Disposable) {
@@ -212,7 +212,7 @@ class ManagerUpdateCapacityActivity : AppCompatActivity() {
 
                             override fun onError(e: Throwable) {
                                 Log.e(TAG, e.localizedMessage)
-                                makeToast("Unable to update capacity\n" + e.localizedMessage)
+                                makeToast("Unable to modify buildings\n" + e.localizedMessage)
                             }
                         }
                     )
