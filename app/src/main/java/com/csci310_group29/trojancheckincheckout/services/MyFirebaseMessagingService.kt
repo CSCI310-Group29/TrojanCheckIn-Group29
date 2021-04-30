@@ -52,9 +52,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(p0: RemoteMessage) {
+        Log.i(TAG, "Message Received")
         super.onMessageReceived(p0)
         val data = p0.data
         val notification = p0.notification
+
+        Log.d(TAG, data.toString())
+        Log.d(TAG, "notification: ${notification?.body}")
 
         val intent = Intent(this, StudentHomeActivity::class.java)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -76,9 +80,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .build()
 
         notificationManager.notify(notificationId, notif)
-
-        Log.d(TAG, data.toString())
-        Log.d(TAG, "notification: ${notification?.body}")
     }
 
     private fun createNotificationChannel(notificationManager: NotificationManager) {

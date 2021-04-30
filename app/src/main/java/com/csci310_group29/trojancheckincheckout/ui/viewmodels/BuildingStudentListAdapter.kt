@@ -66,20 +66,20 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
 
         holder.kickOutButton.setOnClickListener(View.OnClickListener {v ->
 
-//            val observable = visitDomain.checkOutForce(user.id);
-//            observable.subscribe(object: CompletableObserver {
-//                override fun onComplete() {
-//                    Log.i(TAG, "kicked out student")
-//                }
-//
-//                override fun onSubscribe(d: Disposable?) {
-//                    Log.i(TAG, "subscribed kicked out student")
-//                }
-//
-//                override fun onError(e: Throwable?) {
-//                    Log.i(TAG, "error kicking out student")
-//                }
-//            })
+            val observable = visitDomain.checkOutForce(user.id, Session.uid);
+            observable.subscribe(object: CompletableObserver {
+                override fun onComplete() {
+                    Log.i(TAG, "kicked out student")
+                }
+
+                override fun onSubscribe(d: Disposable?) {
+                    Log.i(TAG, "subscribed kicked out student")
+                }
+
+                override fun onError(e: Throwable?) {
+                    Log.i(TAG, "error kicking out student")
+                }
+            })
         })
 
         /*val observable = userDomain.observeUserById(user.id)
