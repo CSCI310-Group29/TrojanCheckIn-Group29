@@ -43,7 +43,7 @@ Note: May need to take a picture of the QR code to scan with computer webcam and
 #### CSV Format for Updating Building Capacity
 CSV should be formatted as  
 ```[operation],[buildling],([new capacity])```  
-with each action on a new line. Valid ```operation```s are 'U' (update capacity), 'A' (add building), and 'R' (remove building)   
+with each action on a new line. Valid ```operation```s are 'U' (update capacity), 'A' (add building), and 'R' (remove building). ```[new capacity]``` is only expected for 'U' and 'A' actions.     
 
 ### Updating Profile Pictures
 When updating profile picture with a link, the only extensions the image of the link can have are "png", "jpeg", "tiff", or "jpg".
