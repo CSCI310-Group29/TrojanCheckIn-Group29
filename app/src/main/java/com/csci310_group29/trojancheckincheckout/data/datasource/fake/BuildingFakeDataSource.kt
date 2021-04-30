@@ -36,6 +36,10 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Observable.just(buildingEntity)
     }
 
+    override fun observeAll(): Observable<List<BuildingEntity>> {
+        return Observable.just(listOf(buildingEntity))
+    }
+
     override fun getByName(buildingName: String): Single<BuildingEntity> {
         return Single.just(buildingEntity)
     }
@@ -52,8 +56,8 @@ class BuildingFakeDataSource @Inject constructor(): BuildingRepository {
         return Completable.complete()
     }
 
-    override fun buildingExists(buildingName: String): Boolean {
-        return true
+    override fun buildingNameExists(buildingName: String): Single<Boolean> {
+        return Single.just(true)
     }
 
 }

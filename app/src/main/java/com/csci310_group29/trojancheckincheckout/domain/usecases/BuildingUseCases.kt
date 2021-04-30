@@ -4,6 +4,8 @@ import android.os.Build
 import com.csci310_group29.trojancheckincheckout.di.RetrofitModule
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.models.BuildingOperation
+import com.csci310_group29.trojancheckincheckout.domain.models.Operation
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -15,6 +17,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.Exception
 
 open class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRepo: BuildingRepository,
                                            @Named("Repo") private val pictureRepo: PicturesRepository) {
@@ -68,29 +71,29 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
         */
 
         // Check which command it is if not empty
-        if(command.isNotEmpty()) {
-            if(command.elementAtOrNull(0) == "u") { // Update capacity of the building
-                // Save building name as String
-                val buildingName = command.elementAt(1)
-                // Save capacity as Double
-                val capacity = command.elementAt(2).toDouble()
-                // Update capacity function takes in HashMap so let's create one
-                val map: HashMap<String, Double> = hashMapOf(buildingName to capacity)
-                // Call update capacities function if building exists
-                if(buildingRepo.buildingExists(buildingName)) {
-                    buildingRepo.updateCapacities(map)
-                }
-            } else if(command.elementAtOrNull(1) == "a") { // Add the building
-                // Create new building entity
-                val addedBuilding = BuildingEntity(buildingName = command.elementAt(1),
-                    capacity = command.elementAt(2).toInt())
-                // Add it
-                buildingRepo.create(addedBuilding)
-            } else if(command.elementAtOrNull(2) == "r") { // Remove the building
-                // Call delete function to remove the building
-                buildingRepo.delete(command.elementAt(1))
-            } // otherwise do nothing
-        }
+//        if(command.isNotEmpty()) {
+//            if(command.elementAtOrNull(0) == "u") { // Update capacity of the building
+//                // Save building name as String
+//                val buildingName = command.elementAt(1)
+//                // Save capacity as Double
+//                val capacity = command.elementAt(2).toDouble()
+//                // Update capacity function takes in HashMap so let's create one
+//                val map: HashMap<String, Double> = hashMapOf(buildingName to capacity)
+//                // Call update capacities function if building exists
+//                if(buildingRepo.buildingExists(buildingName)) {
+//                    buildingRepo.updateCapacities(map)
+//                }
+//            } else if(command.elementAtOrNull(1) == "a") { // Add the building
+//                // Create new building entity
+//                val addedBuilding = BuildingEntity(buildingName = command.elementAt(1),
+//                    capacity = command.elementAt(2).toInt())
+//                // Add it
+//                buildingRepo.create(addedBuilding)
+//            } else if(command.elementAtOrNull(2) == "r") { // Remove the building
+//                // Call delete function to remove the building
+//                buildingRepo.delete(command.elementAt(1))
+//            } // otherwise do nothing
+//        }
 
         return Completable.complete()
     }
@@ -109,6 +112,37 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
             .flatMap { buildingEntities ->
                 buildModels(buildingEntities)
             }
+    }
+
+    /*
+    Takes in a list building operations and executes them.
+
+    If an error occurred during an operation, the rest of the operations will stop but the operations
+    performed before will still have their changes committed. The error that is thrown only describes
+    the error of the first operation that emits an error.
+     */
+    open fun processBuildingOperations(operations: List<BuildingOperation>): Completable {
+        val completables: MutableList<Completable> = mutableListOf()
+        for (operation in operations) {
+            when(operation.operation) {
+                Operation.ADD -> {
+                    if (operation.capacity == null) {
+                        return Completable.error(Exception("capacity should not be null on an add operation"))
+                    }
+                    completables.add(addBuilding(operation.buildingName, operation.capacity))
+                }
+                Operation.UPDATE -> {
+                    if (operation.capacity == null) {
+                        return Completable.error(Exception("capacity should not be null on an update operation"))
+                    }
+                    completables.add(updateSingleBuildingCapacity(operation.buildingName, operation.capacity.toDouble()))
+                }
+                Operation.REMOVE -> {
+                    completables.add(removeBuilding(operation.buildingName))
+                }
+            }
+        }
+        return Completable.merge(completables)
     }
 
     open fun observeBuilding(buildingName: String): Observable<Building> {
@@ -152,10 +186,17 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
     }
 
     open fun addBuilding(buildingName: String, capacity: Int): Completable {
-        return buildingRepo.create(
-            BuildingEntity("1", buildingName, null,
-            capacity, 0, "")
-            ).ignoreElement()
+        return buildingRepo.buildingNameExists(buildingName)
+            .flatMapCompletable { exists ->
+                if (!exists) {
+                    buildingRepo.create(
+                        BuildingEntity("1", buildingName, null,
+                            capacity, 0, "")
+                    ).ignoreElement()
+                } else {
+                    throw Exception("building ${buildingName} already exists")
+                }
+            }
     }
 
     open fun removeBuilding(buildingName: String): Completable {
@@ -208,6 +249,13 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
                 map[buildingEntity.id!!] = buildings[buildingEntity.buildingName]!!
             })
             .flatMapCompletable { buildingIdCapacities ->  buildingRepo.updateCapacities(buildingIdCapacities) }
+    }
+
+    open fun observeAllBuildings(): Observable<List<Building>> {
+        return buildingRepo.observeAll()
+            .flatMap { buildingEntities ->
+                buildModels(buildingEntities).toObservable()
+            }
     }
 
     open fun getQrCode(buildingName: String): Single<ByteArray> {

@@ -69,6 +69,26 @@ class BuildingFirebaseDataSourceTest {
     }
 
     @Test
+    fun checkBuildingExistTest() {
+        val buildingEntity = BuildingEntity(
+            id = "1",
+            buildingName = "A",
+            address = "A",
+            capacity = 10,
+            numPeople = 4,
+            qrCodeRef = "ref"
+        )
+        val id = createBuilding(buildingEntity)
+        buildingExist(buildingEntity.buildingName!!, true)
+        delete(id)
+    }
+
+    @Test
+    fun checkInvalidBuildingExistTest() {
+        buildingExist("DDFDF", false)
+    }
+
+    @Test
     fun incrementNumPeopleWhenOpenTest() {
         val buildingEntity = BuildingEntity(
             id = "1",
@@ -149,6 +169,16 @@ class BuildingFirebaseDataSourceTest {
         updateCapacities(buildingCapacities)
         for (id in buildingCapacities.keys) {
             delete(id)
+        }
+    }
+
+    fun buildingExist(buildingName: String, expectExists: Boolean) {
+        val single = dataSource.buildingNameExists(buildingName)
+        try {
+            val exists = single.blockingGet()
+            assertEquals(exists, expectExists)
+        } catch(e: Exception) {
+            fail("errror when checking if building exists")
         }
     }
 

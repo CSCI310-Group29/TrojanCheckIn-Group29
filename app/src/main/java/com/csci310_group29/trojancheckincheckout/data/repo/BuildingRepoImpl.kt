@@ -35,6 +35,10 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.observeByName(buildingName)
     }
 
+    override fun observeAll(): Observable<List<BuildingEntity>> {
+        return remoteDataSource.observeAll()
+    }
+
     override fun getByName(buildingName: String): Single<BuildingEntity> {
         return remoteDataSource.getByName(buildingName)
     }
@@ -51,7 +55,7 @@ class BuildingRepoImpl @Inject constructor(@Named("Data") private val remoteData
         return remoteDataSource.updateSingleCapacity(buildingId, capacity)
     }
 
-    override fun buildingExists(buildingName: String): Boolean {
-        return remoteDataSource.buildingExists(buildingName)
+    override fun buildingNameExists(buildingName: String): Single<Boolean> {
+        return remoteDataSource.buildingNameExists(buildingName)
     }
 }

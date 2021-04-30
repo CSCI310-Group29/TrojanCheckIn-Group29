@@ -9,6 +9,43 @@
     <!-- Update capacity with CSV || commented out for assignment 3 -->
 
     <Button
+        android:id="@+id/AddCapacityUI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onAddWithUI"
+        android:text="Add Building"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.548" />
+
+    <TextView
+        android:id="@+id/LabelAddCapacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Capacity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.693"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.426" />
+
+    <EditText
+        android:id="@+id/AddCapacityInput"
+        android:layout_width="79dp"
+        android:layout_height="42dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.678"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.479" />
+
+    <Button
         android:id="@+id/UpdateCapacityCSV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.627" />
+        app:layout_constraintVertical_bias="0.909" />
 
     <TextView
         android:id="@+id/TitleUpdateCapacity"
@@ -30,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.223" />
+        app:layout_constraintVertical_bias="0.085" />
 
     <Button
         android:id="@+id/UpdateCapacityUI"
@@ -42,10 +79,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.532" />
+        app:layout_constraintVertical_bias="0.317" />
+
+    <TextView
+        android:id="@+id/LabelUpdateCapacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Capacity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.628"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.201" />
 
     <EditText
-        android:id="@+id/NewCapacityInput"
+        android:id="@+id/UpdateCapacityInput"
         android:layout_width="79dp"
         android:layout_height="42dp"
         android:ems="10"
@@ -55,22 +104,10 @@
         app:layout_constraintHorizontal_bias="0.678"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.43" />
-
-    <Spinner
-        android:id="@+id/BuildingInput"
-        android:layout_width="114dp"
-        android:layout_height="42dp"
-        android:tooltipText="Building"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.215"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.43" />
+        app:layout_constraintVertical_bias="0.247" />
 
     <TextView
-        android:id="@+id/LabelBuildingSpinner"
+        android:id="@+id/LabelUpdateBuilding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Building"
@@ -79,18 +116,78 @@
         app:layout_constraintHorizontal_bias="0.359"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.379" />
+        app:layout_constraintVertical_bias="0.201" />
 
-    <TextView
-        android:id="@+id/LabelNewCapacity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Capacity"
+    <Spinner
+        android:id="@+id/UpdateBuildingInput"
+        android:layout_width="114dp"
+        android:layout_height="42dp"
+        android:tooltipText="Building"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.628"
+        app:layout_constraintHorizontal_bias="0.215"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.379" />
+        app:layout_constraintVertical_bias="0.247" />
+
+    <Spinner
+        android:id="@+id/RemoveBuildingInput"
+        android:layout_width="114dp"
+        android:layout_height="42dp"
+        android:tooltipText="Building"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.701" />
+
+    <Button
+        android:id="@+id/RemoveBuildingUI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onRemoveWithUI"
+        android:text="Remove Building"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.774" />
+
+    <TextView
+        android:id="@+id/LabelRemoveBuilding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Building"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.643" />
+
+    <EditText
+        android:id="@+id/AddBuildingInput"
+        android:layout_width="80dp"
+        android:layout_height="42dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.479" />
+
+    <TextView
+        android:id="@+id/LabelAddBuilding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Building Name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.185"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.426" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
