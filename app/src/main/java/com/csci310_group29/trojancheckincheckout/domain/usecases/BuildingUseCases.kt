@@ -4,6 +4,8 @@ import android.os.Build
 import com.csci310_group29.trojancheckincheckout.di.RetrofitModule
 import com.csci310_group29.trojancheckincheckout.domain.entities.BuildingEntity
 import com.csci310_group29.trojancheckincheckout.domain.models.Building
+import com.csci310_group29.trojancheckincheckout.domain.models.BuildingOperation
+import com.csci310_group29.trojancheckincheckout.domain.models.Operation
 import com.csci310_group29.trojancheckincheckout.domain.repo.BuildingRepository
 import com.csci310_group29.trojancheckincheckout.domain.repo.PicturesRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -12,10 +14,10 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.lang.Exception
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.Exception
 
 open class BuildingUseCases @Inject constructor(@Named("Repo") private val buildingRepo: BuildingRepository,
                                            @Named("Repo") private val pictureRepo: PicturesRepository) {
@@ -110,6 +112,37 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
             .flatMap { buildingEntities ->
                 buildModels(buildingEntities)
             }
+    }
+
+    /*
+    Takes in a list building operations and executes them.
+
+    If an error occurred during an operation, the rest of the operations will stop but the operations
+    performed before will still have their changes committed. The error that is thrown only describes
+    the error of the first operation that emits an error.
+     */
+    open fun processBuildingOperations(operations: List<BuildingOperation>): Completable {
+        val completables: MutableList<Completable> = mutableListOf()
+        for (operation in operations) {
+            when(operation.operation) {
+                Operation.ADD -> {
+                    if (operation.capacity == null) {
+                        return Completable.error(Exception("capacity should not be null on an add operation"))
+                    }
+                    completables.add(addBuilding(operation.buildingName, operation.capacity))
+                }
+                Operation.UPDATE -> {
+                    if (operation.capacity == null) {
+                        return Completable.error(Exception("capacity should not be null on an update operation"))
+                    }
+                    completables.add(updateSingleBuildingCapacity(operation.buildingName, operation.capacity.toDouble()))
+                }
+                Operation.REMOVE -> {
+                    completables.add(removeBuilding(operation.buildingName))
+                }
+            }
+        }
+        return Completable.merge(completables)
     }
 
     open fun observeBuilding(buildingName: String): Observable<Building> {
