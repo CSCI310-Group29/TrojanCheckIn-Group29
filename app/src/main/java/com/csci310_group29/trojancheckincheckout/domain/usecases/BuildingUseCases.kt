@@ -114,6 +114,13 @@ open class BuildingUseCases @Inject constructor(@Named("Repo") private val build
             }
     }
 
+    /*
+    Takes in a list building operations and executes them.
+
+    If an error occurred during an operation, the rest of the operations will stop but the operations
+    performed before will still have their changes committed. The error that is thrown only describes
+    the error of the first operation that emits an error.
+     */
     open fun processBuildingOperations(operations: List<BuildingOperation>): Completable {
         val completables: MutableList<Completable> = mutableListOf()
         for (operation in operations) {
