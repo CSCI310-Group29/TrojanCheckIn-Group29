@@ -1,11 +1,14 @@
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +33,8 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
 
 
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
-        val studentId = itemView.findViewById<TextView>(R.id.buildingStudentList_SID)
+        val pfp = itemView.findViewById<ImageView>(R.id.buildingStudentListPFP)
+//        val studentId = itemView.findViewById<TextView>(R.id.buildingStudentList_SID)
         val lName = itemView.findViewById<TextView>(R.id.buildingStudentList_lastName)
         var fName = itemView.findViewById<TextView>(R.id.buildingStudentList_firstName)
         val studentProfileButton = itemView.findViewById<Button>(R.id.buildingStudentList_viewProfile)
@@ -51,7 +55,8 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
         Log.i(TAG, "Building Student List bind")
         val user: User = sList.get(position)
 
-        holder.studentId.text = user.studentId
+        if(user.profilePicture != null) holder.pfp.setImageBitmap(toBitmap(user.profilePicture))
+//        holder.studentId.text = user.studentId
         holder.lName.text = user.lastName
         holder.fName.text = user.firstName
         holder.studentProfileButton.text = "Profile"
@@ -108,6 +113,13 @@ class BuildingStudentListAdapter @Inject constructor(private val userDomain: Use
 
     override fun getItemCount(): Int {
         return sList.size
+    }
+
+    private fun toBitmap(bArray: ByteArray?): Bitmap? {
+        if(bArray == null) {
+            return null;
+        }
+        return BitmapFactory.decodeByteArray(bArray, 0, bArray.size)
     }
 
 }

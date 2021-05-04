@@ -2,11 +2,14 @@
 package com.csci310_group29.trojancheckincheckout.ui.viewmodels
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +24,8 @@ class StudentQueryAdapter(private val vHistory: List<User>): RecyclerView.Adapte
     inner class ViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView){
         val studentFirst = itemView.findViewById<TextView>(R.id.queryFirstName)
         val studentLast = itemView.findViewById<TextView>(R.id.queryLastName)
-        val studentId = itemView.findViewById<TextView>(R.id.queryStudentId)
+//        val studentId = itemView.findViewById<TextView>(R.id.queryStudentId)
+        val pfp = itemView.findViewById<ImageView>(R.id.queryPFP)
         val profileButton = itemView.findViewById<Button>(R.id.queryStudentProfile)
 
     }
@@ -51,8 +55,11 @@ class StudentQueryAdapter(private val vHistory: List<User>): RecyclerView.Adapte
         val sLast = holder.studentLast
         sLast.text = user.lastName
 
-        val sId = holder.studentId
-        sId.text = user.studentId
+//        val sId = holder.studentId
+//        sId.text = user.studentId
+
+        val sPFP = holder.pfp
+        if(user.profilePicture != null) sPFP.setImageBitmap(toBitmap(user.profilePicture))
 
         val pButton = holder.profileButton
 
@@ -62,5 +69,12 @@ class StudentQueryAdapter(private val vHistory: List<User>): RecyclerView.Adapte
             startActivity(v.context,i,null)
         })
 
+    }
+
+    private fun toBitmap(bArray: ByteArray?): Bitmap? {
+        if(bArray == null) {
+            return null;
+        }
+        return BitmapFactory.decodeByteArray(bArray, 0, bArray.size)
     }
 }
