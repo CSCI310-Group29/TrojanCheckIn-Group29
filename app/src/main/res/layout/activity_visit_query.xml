@@ -67,19 +67,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.107" />
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
-        android:text="Student ID"
-        app:layout_constraintBottom_toTopOf="@+id/queryRecyclerView"
-        app:layout_constraintEnd_toStartOf="@+id/textView12"
-        app:layout_constraintHorizontal_bias="0.29"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button6"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_constraintStart_toStartOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/textView11"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="68dp"-->
+<!--        android:text="Student ID"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/queryRecyclerView"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/textView12"-->
+<!--        app:layout_constraintHorizontal_bias="0.29"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/button6"-->
+<!--        app:layout_constraintVertical_bias="1.0"-->
+<!--        tools:layout_constraintStart_toStartOf="parent" />-->
 
     <TextView
         android:id="@+id/textView12"
@@ -88,10 +88,10 @@
         android:text="First"
         app:layout_constraintBottom_toTopOf="@+id/queryRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.312"
+        app:layout_constraintHorizontal_bias="0.232"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button6"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.99" />
 
     <TextView
         android:id="@+id/textView13"
@@ -100,10 +100,10 @@
         android:text="Last"
         app:layout_constraintBottom_toTopOf="@+id/queryRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.590"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button6"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.99" />
 
     <TextView
         android:id="@+id/textView14"
